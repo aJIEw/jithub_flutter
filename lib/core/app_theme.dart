@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../i18n/i18n.dart';
 import '/core/util/sputils.dart';
 
 const _appColor = 0xFF05A9F4;
@@ -57,6 +58,9 @@ class AppTheme with ChangeNotifier {
 
   static void changeTheme(ThemeData theme) {
     Get.changeTheme(theme);
+    if (Platform.isAndroid) {
+      I18n.updateLocale();
+    }
   }
 
   MaterialColor _themeColor;

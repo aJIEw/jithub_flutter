@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -25,34 +27,36 @@ class _ThemePageState extends State<ThemePage> {
         appBar: AppBar(title: Text('choose_theme'.tr)),
         body: CustomScrollView(
           slivers: [
-            SliverPadding(
-              padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-              sliver: SliverFixedExtentList(
-                itemExtent: 50.0,
-                delegate: SliverChildBuilderDelegate(
-                    (BuildContext context, int index) {
-                  return ListTile(
-                    title: Text(
-                      'theme_dark'.tr,
-                      style: TextStyle(
-                          color: _isDark
-                              ? Colors.grey
-                              : Theme.of(context).primaryColor),
-                    ),
-                    trailing: Switch(
-                      value: _isDark,
-                      onChanged: (value) {
-                        AppTheme.changeTheme(
-                            _isDark ? ThemeData.light() : ThemeData.dark());
-                        setState(() {
-                          _isDark = value;
-                        });
-                      },
-                    ),
-                  );
-                }, childCount: 1),
+            if (Platform.isIOS)
+              SliverPadding(
+                padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                sliver: SliverFixedExtentList(
+                  itemExtent: 50.0,
+                  delegate: SliverChildBuilderDelegate(
+                      (BuildContext context, int index) {
+                    return ListTile(
+                      title: Text(
+                        'theme_dark'.tr,
+                        style: TextStyle(
+                            color: _isDark
+                                ? Colors.grey
+                                : Theme.of(context).primaryColor),
+                      ),
+                      trailing: Switch(
+                        value: _isDark,
+                        onChanged: (value) {
+                          AppTheme.changeTheme(Get.isDarkMode
+                              ? ThemeData.light()
+                              : ThemeData.dark());
+                          setState(() {
+                            _isDark = value;
+                          });
+                        },
+                      ),
+                    );
+                  }, childCount: 1),
+                ),
               ),
-            ),
             SliverPadding(
                 padding: const EdgeInsets.all(10),
                 sliver: SliverGrid(
@@ -69,11 +73,12 @@ class _ThemePageState extends State<ThemePage> {
                       },
                       childCount: AppTheme.materialColors.length,
                     ),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        mainAxisSpacing: 10.0,
-                        crossAxisSpacing: 10.0,
-                        childAspectRatio: 1.0)))
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3,
+                            mainAxisSpacing: 10.0,
+                            crossAxisSpacing: 10.0,
+                            childAspectRatio: 1.0)))
           ],
         ));
   }
