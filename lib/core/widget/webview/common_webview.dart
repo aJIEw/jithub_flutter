@@ -1,8 +1,13 @@
-import 'dart:io';
+import 'dart:convert';
+import 'dart:io' hide HttpClient;
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:jithub_flutter/core/api_service.dart';
+import 'package:jithub_flutter/core/http/http_client.dart';
+import 'package:jithub_flutter/core/http/http_response.dart';
+import 'package:jithub_flutter/router/router.dart';
 
 import '/core/util/logger.dart';
 import '../../base/base_app_bar.dart';
@@ -150,14 +155,20 @@ class _CommonWebViewState extends State<CommonWebView> {
   Future<NavigationActionPolicy> addHeaderForOverrideUrlLoading(
       InAppWebViewController controller,
       NavigationAction shouldOverrideUrlLoadingRequest) async {
-    logger.d('URL: ${shouldOverrideUrlLoadingRequest.request.url}');
+    var url = shouldOverrideUrlLoadingRequest.request.url;
+    logger.d('URL: $url');
+
+    if (url.toString().startsWith(githubRedirectUrl)) {
+      handleLoginCallback(url);
+      return NavigationActionPolicy.CANCEL;
+    }
 
     if (Platform.isAndroid ||
         shouldOverrideUrlLoadingRequest.iosWKNavigationType ==
             IOSWKNavigationType.LINK_ACTIVATED) {
       var header = <String, String>{};
 
-      addHeader(header, shouldOverrideUrlLoadingRequest.request.url!);
+      addHeader(header, url!);
 
       if (shouldOverrideUrlLoadingRequest.request.headers != null) {
         header.addAll(shouldOverrideUrlLoadingRequest.request.headers!);
@@ -181,11 +192,42 @@ class _CommonWebViewState extends State<CommonWebView> {
     return cookies.firstWhereOrNull((c) => c.name == name)?.value;
   }
 
-  void handleCallback(Uri? url) {
-    /*if (url.toString().startsWith('auth_namespace://url')) {
+  void handleCallback(Uri? url) {}
+
+  void handleLoginCallback(Uri? url) {
+    if (url.toString().startsWith(githubRedirectUrl)) {
       var code = url?.queryParameters["code"];
-      logger.d(code);
-      Navigator.of(context).pop(code);
-    }*/
+      requestAccessToken(code);
+    }
+  }
+
+  void requestAccessToken(String? code) async {
+    if (code == null) {
+      return;
+    }
+
+    var param = <String, String>{};
+    param["client_id"] = clientId;
+    param["client_secret"] = clientSecret;
+    param["code"] = code;
+
+    var response = await HttpClient.post(githubUrl + apiAccessToken,
+        data: json.encode(param));
+    if (response.ok) {
+      var url = githubUrl + '/?' + response.data;
+      try {
+        var accessToken = Uri.parse(url).queryParameters['access_token'];
+        HttpClient.setAuthToken(accessToken!);
+        XRouter.pop(result: accessToken);
+      } catch (e) {
+        logger.e(e);
+      }
+    } else {
+      onRequestError(response);
+    }
+  }
+
+  void onRequestError(HttpResponse response) {
+    logger.d('_CommonWebViewState - onRequestError: ${response.error}');
   }
 }

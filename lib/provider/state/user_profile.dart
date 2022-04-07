@@ -27,12 +27,8 @@ class UserProfile with ChangeNotifier {
     HttpClient.setAuthToken(authToken!);
     SPUtils.saveAuthToken(authToken!);
 
-    // Todo: set the real user info
     user = User(
-      id: 0,
-      name: "aJIEw",
-      displayName: null,
-      avatar: 'https://avatars.githubusercontent.com/u/13328707?v=4',
+      name: info['name'],
     );
     SPUtils.saveUser(user!);
 

@@ -13,7 +13,7 @@ class Store {
   static init(Widget child) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider.value(value: AppStatus(tabIndexHome)),
+        ChangeNotifierProvider.value(value: AppStatus(tabIndexExplore)),
         ChangeNotifierProvider.value(value: UserProfile()),
       ],
       child: child,

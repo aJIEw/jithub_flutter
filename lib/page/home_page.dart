@@ -1,17 +1,15 @@
 import 'package:after_layout/after_layout.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:jithub_flutter/core/base/base_controller.dart';
-import 'package:jithub_flutter/core/util/event.dart';
-import 'package:jithub_flutter/core/util/toast.dart';
-import 'package:jithub_flutter/core/widget/loading/loading_dialog.dart';
-import 'package:jithub_flutter/data/event/bus_event.dart';
+import 'package:jithub_flutter/core/http/http_client.dart';
+import 'package:jithub_flutter/data/response/user_feeds.dart';
+import 'package:jithub_flutter/provider/provider.dart';
 import 'package:jithub_flutter/util/app_utils.dart';
-import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 
+import '../core/api_service.dart';
 import '/core/base/provider_widget.dart';
 import '/core/util/click.dart';
 import '/core/util/logger.dart';
@@ -70,11 +68,12 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin<HomePage> {
                       fixedColor: Theme.of(context).primaryColor,
                       selectedFontSize: 12,
                       unselectedFontSize: 12,
-                      onTap: (index) {
+                      onTap: (index) async {
                         if (SPUtils.isLoggedIn()) {
                           status.tabIndex = index;
                         } else {
-                          XRouter.push(XRouter.loginPage);
+                          var result = await XRouter.goWeb(context, githubAuthUrl, "");
+                          initLoginInfo(result);
                         }
                       },
                     ),
@@ -151,6 +150,31 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin<HomePage> {
               XRouter.push(XRouter.settingsPage);
             },
             child: Text('btn_to_settings'.tr)));
+  }
+
+  void initLoginInfo(String accessToken) async {
+    var feeds = await requestUserFeeds(accessToken);
+    var userUrl = feeds?.currentUserPublicUrl;
+    if (userUrl != null) {
+      var name = userUrl.substring(userUrl.lastIndexOf("/") + 1);
+      var info = {
+        'token': accessToken,
+        'name': name,
+      };
+      var userProfile = Store.value<UserProfile>(context);
+      userProfile.initWithLoginInfo(info);
+    }
+  }
+
+  Future<UserFeeds?> requestUserFeeds(String accessToken) async {
+    var response = await HttpClient.get('/feeds');
+    if (response.ok) {
+      var feeds = UserFeeds.fromJson(response.data);
+      return feeds;
+    } else {
+      logger.d('_CommonWebViewState - onRequestError: ${response.error}');
+      return null;
+    }
   }
 }
 

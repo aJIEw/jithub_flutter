@@ -70,7 +70,7 @@ class XRouter {
   }
 
   /// pops the last page unless stack has 1 entry
-  static void pop() {
-    Get.back();
+  static void pop<T>({T? result}) {
+    Get.back(result: result);
   }
 }

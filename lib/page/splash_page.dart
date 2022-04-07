@@ -10,7 +10,7 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
-  static const String displayText = 'Flutter';
+  static const String displayText = 'Jithub';
 
   @override
   void initState() {
@@ -56,7 +56,7 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   void countDown() {
-    var _duration = const Duration(seconds: 3);
+    var _duration = const Duration(seconds: 1);
     Future.delayed(_duration, goMainPage);
   }
 

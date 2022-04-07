@@ -17,7 +17,7 @@ const Map<String, String> zh_CN = {
   "btn_login": "登录",
   "btn_logout": "登出",
   "_comment_explore": "============Explore============",
-  "tab_explore": "消息",
+  "tab_explore": "发现",
   "_comment_profile": "============Profile============",
   "tab_profile": "我的",
   "btn_to_settings": "去设置页",
