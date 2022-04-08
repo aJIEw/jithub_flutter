@@ -1,5 +1,7 @@
 const Map<String, String> en_US = {
   "app_title": "Jithub(Flutter)",
+  "error_page_title": "Error",
+  "reload_button": "Reload",
   "_comment_login": "============Login============",
   "phone_number": "Phone",
   "input_phone_number": "Please input your phone number",

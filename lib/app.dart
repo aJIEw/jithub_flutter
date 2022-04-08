@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:jithub_flutter/page/init_binding.dart';
 
 import '/core/constants.dart';
 import '/core/util/sputils.dart';
@@ -29,6 +30,7 @@ class AppEntrance extends StatelessWidget with WidgetsBindingObserver {
         localizationsDelegates: I18n.delegates,
         translations: I18n(),
         getPages: XRouter.getPages,
+        initialBinding: InitialBinding(),
         transitionDuration: 250.milliseconds,
         defaultTransition: Transition.rightToLeft,
       ),

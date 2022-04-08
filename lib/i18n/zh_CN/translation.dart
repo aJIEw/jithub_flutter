@@ -1,5 +1,7 @@
 const Map<String, String> zh_CN = {
   "app_title": "Jithub(Flutter)",
+  "error_page_title": "页面出错",
+  "reload_button": "重新加载",
   "_comment_login": "============Login============",
   "phone_number": "手机号码",
   "input_phone_number": "在这里输入您的手机号码",

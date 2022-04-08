@@ -15,6 +15,7 @@ const String githubRedirectUrl = "jithub://oauth.login";
 
 // Rest APIs
 const String apiAccessToken = '/login/oauth/access_token';
+const String apiTrendingRepos = '/repositories';
 
 
 const int perPageSize = 30;

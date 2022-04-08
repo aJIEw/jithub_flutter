@@ -13,4 +13,6 @@ extension StringExtension on String {
   int timeStringToTimestamp() {
     return DateTime.parse(this).millisecondsSinceEpoch;
   }
+
+  int toHexValue() => int.parse(replaceAll('#', '0xff'));
 }

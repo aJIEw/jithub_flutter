@@ -5,11 +5,11 @@ import 'package:get/get.dart';
 import 'package:jithub_flutter/core/base/base_controller.dart';
 import 'package:jithub_flutter/core/http/http_client.dart';
 import 'package:jithub_flutter/data/response/user_feeds.dart';
+import 'package:jithub_flutter/page/explore/explore_page.dart';
 import 'package:jithub_flutter/provider/provider.dart';
 import 'package:jithub_flutter/util/app_utils.dart';
 import 'package:provider/provider.dart';
 
-import '../core/api_service.dart';
 import '/core/base/provider_widget.dart';
 import '/core/util/click.dart';
 import '/core/util/logger.dart';
@@ -19,6 +19,7 @@ import '/core/widget/common_dialogs.dart';
 import '/provider/state/app_status.dart';
 import '/provider/state/user_profile.dart';
 import '/router/router.dart';
+import '../core/api_service.dart';
 import '../core/base/base_page.dart';
 import 'viewmodel/home_viewmodel.dart';
 
@@ -72,7 +73,8 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin<HomePage> {
                         if (SPUtils.isLoggedIn()) {
                           status.tabIndex = index;
                         } else {
-                          var result = await XRouter.goWeb(context, githubAuthUrl, "");
+                          var result =
+                              await XRouter.goWeb(context, githubAuthUrl, "");
                           initLoginInfo(result);
                         }
                       },
@@ -119,7 +121,9 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin<HomePage> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          if (loggedIn) Text('home_text'.trParams({'user_name': userProfile.user?.name ?? ''})),
+          if (loggedIn)
+            Text('home_text'
+                .trParams({'user_name': userProfile.user?.name ?? ''})),
           RoundButton(
             onPressed: () {
               if (loggedIn) {
@@ -140,7 +144,7 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin<HomePage> {
   }
 
   _exploreTab(BuildContext context) {
-    return const Center(child: Text("Explore Tab"));
+    return const ExplorePage();
   }
 
   _profileTab(BuildContext context) {
