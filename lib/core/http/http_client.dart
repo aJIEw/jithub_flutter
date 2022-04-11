@@ -12,7 +12,7 @@ class HttpClient {
 
   static final AppDio _dio = AppDio(
       dioConfig: HttpConfig(
-    baseUrl: baseUrl,
+    baseUrl: ApiService.baseUrl,
     connectTimeout: 5000,
     sendTimeout: 3000,
     receiveTimeout: 3000,

@@ -6,6 +6,8 @@ import 'package:jithub_flutter/core/base/base_controller.dart';
 import 'package:jithub_flutter/core/http/http_client.dart';
 import 'package:jithub_flutter/data/response/user_feeds.dart';
 import 'package:jithub_flutter/page/explore/explore_page.dart';
+import 'package:jithub_flutter/page/home/home_page.dart';
+import 'package:jithub_flutter/page/viewmodel/main_viewmodel.dart';
 import 'package:jithub_flutter/provider/provider.dart';
 import 'package:jithub_flutter/util/app_utils.dart';
 import 'package:provider/provider.dart';
@@ -21,18 +23,17 @@ import '/provider/state/user_profile.dart';
 import '/router/router.dart';
 import '../core/api_service.dart';
 import '../core/base/base_page.dart';
-import 'viewmodel/home_viewmodel.dart';
 
 /// This page is built with [ProviderWidget], just to show you how to use it.
 /// In most cases, you should use [BaseController] instead.
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+class MainPage extends StatefulWidget {
+  const MainPage({Key? key}) : super(key: key);
 
   @override
-  _HomePageState createState() => _HomePageState();
+  _MainPageState createState() => _MainPageState();
 }
 
-class _HomePageState extends State<HomePage> with AfterLayoutMixin<HomePage> {
+class _MainPageState extends State<MainPage> with AfterLayoutMixin<MainPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -46,15 +47,15 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin<HomePage> {
         UserProfile userProfile, Widget? child) {
       return BasePageWrapper(
         child: WillPopScope(
-            child: ProviderWidget<HomeViewModel>(
-                viewModel: HomeViewModel(),
+            child: ProviderWidget<MainViewModel>(
+                viewModel: MainViewModel(),
                 onViewModelCreated: (viewModel) {
                   if (userProfile.authToken == null &&
                       SPUtils.getAuthToken().isNotEmpty) {
                     userProfile.init(SPUtils.getAuthToken(), SPUtils.getUser());
                   }
                 },
-                builder: (BuildContext context, HomeViewModel viewModel,
+                builder: (BuildContext context, MainViewModel viewModel,
                     Widget? child) {
                   return Scaffold(
                     key: _scaffoldKey,
@@ -74,7 +75,7 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin<HomePage> {
                           status.tabIndex = index;
                         } else {
                           var result =
-                              await XRouter.goWeb(context, githubAuthUrl, "");
+                              await XRouter.goWeb(context, ApiService.githubAuthUrl, "");
                           initLoginInfo(result);
                         }
                       },
@@ -107,8 +108,8 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin<HomePage> {
   }
 
   List<Widget> getTabWidget(BuildContext context) => [
-        _homeTab(context),
-        _exploreTab(context),
+        const HomePage(),
+        const ExplorePage(),
         _profileTab(context),
       ];
 
@@ -141,10 +142,6 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin<HomePage> {
         ],
       ),
     );
-  }
-
-  _exploreTab(BuildContext context) {
-    return const ExplorePage();
   }
 
   _profileTab(BuildContext context) {

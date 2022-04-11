@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jithub_flutter/page/home_page.dart';
+import 'package:jithub_flutter/page/main_page.dart';
 import 'package:jithub_flutter/page/login/login_page.dart';
 import 'package:jithub_flutter/page/settings/language_page.dart';
 import 'package:jithub_flutter/page/settings/settings_page.dart';
@@ -26,7 +26,7 @@ class XRouter {
         transitionDuration: 200.milliseconds),
     GetPage(
         name: homePage,
-        page: () => const HomePage(),
+        page: () => const MainPage(),
         transition: Transition.fadeIn),
     GetPage(
         name: settingsPage,

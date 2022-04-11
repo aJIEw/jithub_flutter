@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '/page/home_page.dart';
+import '/page/main_page.dart';
 import '/provider/state/app_status.dart';
 import '/provider/state/user_profile.dart';
 

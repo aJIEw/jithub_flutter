@@ -4,7 +4,7 @@ import '/core/util/logger.dart';
 import '/core/base/base_viewmodel.dart';
 
 /// 带下拉刷新、上拉加载页的 ViewModel
-abstract class BaseRefreshLoadMoreViewModel<T> extends BaseViewModel {
+abstract class RefreshLoadMoreViewModel<T> extends BaseViewModel {
   RefreshController refreshController = RefreshController(
     initialRefresh: false,
     initialLoadStatus: LoadStatus.noMore,
@@ -20,14 +20,14 @@ abstract class BaseRefreshLoadMoreViewModel<T> extends BaseViewModel {
 
   List<T> dataList = [];
 
-  init() async {
+  init({dynamic param}) async {
     isLoading = true;
-    await loadRemoteData();
+    await loadRemoteData(param: param);
   }
 
-  Future<List<T>> loadRemoteData() async {
+  Future<List<T>> loadRemoteData({dynamic param}) async {
     try {
-      var response = await loadData();
+      var response = await loadData(data: param);
 
       if (isLoading) {
         isLoading = false;
@@ -61,7 +61,7 @@ abstract class BaseRefreshLoadMoreViewModel<T> extends BaseViewModel {
   }
 
   /// 加载数据
-  Future<List<T>> loadData();
+  Future<List<T>> loadData({dynamic data});
 
   /// 下拉刷新
   Future<List<T>> onRefresh();

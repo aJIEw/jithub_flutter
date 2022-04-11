@@ -158,7 +158,7 @@ class _CommonWebViewState extends State<CommonWebView> {
     var url = shouldOverrideUrlLoadingRequest.request.url;
     logger.d('URL: $url');
 
-    if (url.toString().startsWith(githubRedirectUrl)) {
+    if (url.toString().startsWith(ApiService.githubRedirectUrl)) {
       handleLoginCallback(url);
       return NavigationActionPolicy.CANCEL;
     }
@@ -195,7 +195,7 @@ class _CommonWebViewState extends State<CommonWebView> {
   void handleCallback(Uri? url) {}
 
   void handleLoginCallback(Uri? url) {
-    if (url.toString().startsWith(githubRedirectUrl)) {
+    if (url.toString().startsWith(ApiService.githubRedirectUrl)) {
       var code = url?.queryParameters["code"];
       requestAccessToken(code);
     }
@@ -207,14 +207,14 @@ class _CommonWebViewState extends State<CommonWebView> {
     }
 
     var param = <String, String>{};
-    param["client_id"] = clientId;
-    param["client_secret"] = clientSecret;
+    param["client_id"] = ApiService.clientId;
+    param["client_secret"] = ApiService.clientSecret;
     param["code"] = code;
 
-    var response = await HttpClient.post(githubUrl + apiAccessToken,
+    var response = await HttpClient.post(ApiService.githubUrl + ApiService.apiAccessToken,
         data: json.encode(param));
     if (response.ok) {
-      var url = githubUrl + '/?' + response.data;
+      var url = ApiService.githubUrl + '/?' + response.data;
       try {
         var accessToken = Uri.parse(url).queryParameters['access_token'];
         HttpClient.setAuthToken(accessToken!);
