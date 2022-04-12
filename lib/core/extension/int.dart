@@ -42,4 +42,8 @@ extension IntExtension on int {
 
     return hour + min + sec;
   }
+
+  String autoPluralize(String single, String plural) {
+    return this == 1 ? single : (this.toString() + plural);
+  }
 }
