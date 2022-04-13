@@ -1,4 +1,4 @@
-import 'package:jithub_flutter/data/response/user_repo.dart';
+import 'package:jithub_flutter/data/response/github_repo.dart';
 
 class EventTimeline {
   String? id;
@@ -125,7 +125,7 @@ class Actor {
 
 class Payload {
   String? action; // watch event
-  UserRepo? forkee; // fork event
+  GithubUser? forkee; // fork event
   String? ref_type; // create event
   ReleaseRepo? release; // release event
   List<Commit>? commits; // push event
@@ -142,7 +142,7 @@ class Payload {
 
   Payload.fromJson(dynamic json) {
     action = json['action'];
-    forkee = json['forkee'] != null ? UserRepo.fromJson(json['forkee']) : null;
+    forkee = json['forkee'] != null ? GithubUser.fromJson(json['forkee']) : null;
     ref_type = json['ref_type'];
     release = json['release'] != null ? ReleaseRepo.fromJson(json['release']) : null;
     commits = json['commits']?.map((dynamic item) => Commit.fromJson(item))?.toList();
@@ -151,7 +151,7 @@ class Payload {
 
   Payload copyWith({
     String? action,
-    UserRepo? forkee,
+    GithubUser? forkee,
     String? ref_type,
     ReleaseRepo? release,
     List<Commit>? commits,

@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:jithub_flutter/core/base/provider_widget.dart';
 import 'package:jithub_flutter/core/extension/string.dart';
+import 'package:jithub_flutter/core/util/event.dart';
+import 'package:jithub_flutter/core/util/logger.dart';
 import 'package:jithub_flutter/core/widget/container/shadow_container.dart';
 import 'package:jithub_flutter/core/widget/pull_to_refresh.dart';
 import 'package:jithub_flutter/data/model/github_event.dart';
 import 'package:jithub_flutter/data/response/event_timeline.dart';
+import 'package:jithub_flutter/data/response/user_repo.dart';
 import 'package:jithub_flutter/page/home/home_viewmodel.dart';
 import 'package:jithub_flutter/provider/provider.dart';
 import 'package:jithub_flutter/provider/state/user_profile.dart';
 import 'package:jithub_flutter/widget/network_image.dart';
-import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class HomePage extends StatefulWidget {
@@ -20,6 +22,23 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
+  ScrollController scrollController = ScrollController();
+
+  void registerBusEvent(HomeViewModel viewModel) {
+    XEvent.on('EventRefreshUserProfile', (value) async {
+      initUserProfile(viewModel);
+    });
+  }
+
+  void initUserProfile(HomeViewModel viewModel) {
+    var userProfile = Store.value<UserProfile>(context);
+
+    logger.d('_HomePageState - registerBusEvent: userProfile initialized: ${userProfile.user?.name}');
+
+    viewModel.init(param: userProfile.user);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,9 +46,9 @@ class _HomePageState extends State<HomePage> {
       child: ProviderWidget<HomeViewModel>(
         viewModel: HomeViewModel(),
         onViewModelCreated: (HomeViewModel viewModel) async {
-          var userProfile = Store.value<UserProfile>(context);
+          initUserProfile(viewModel);
 
-          viewModel.init(param: userProfile.user);
+          registerBusEvent(viewModel);
         },
         builder:
             (BuildContext context, HomeViewModel viewModel, Widget? child) =>
@@ -44,17 +63,42 @@ class _HomePageState extends State<HomePage> {
             onLoading: viewModel.onLoadMore,
             child: ListView.builder(
                 physics: const RangeMaintainingScrollPhysics(),
+                controller: scrollController,
                 itemCount: viewModel.dataList.length,
-                itemBuilder: (context, index) => _buildItem(context, index)),
+                itemBuilder: (context, index) {
+                  EventTimeline item = viewModel.dataList[index];
+
+                  Future<UserRepo> future;
+                  if (viewModel.userRepoRequests.length > index) {
+                    future = viewModel.userRepoRequests[index];
+                  } else {
+                    future = viewModel.getUserRepoRequest(index, item.repo?.url ?? '');
+                  }
+
+                  return FutureBuilder<UserRepo>(
+                      future: future,
+                      builder: (context, snapshot) {
+                        var state = snapshot.connectionState;
+                        if (state == ConnectionState.done) {
+                          if (snapshot.hasData) {
+                            return _buildItem(item, snapshot.data!);
+                          }
+                        } else if (state == ConnectionState.waiting) {
+                          return Container(
+                            padding: const EdgeInsets.all(20),
+                            child: const Text('Loading...'),
+                          );
+                        }
+                        return Container();
+                      });
+                }),
           ),
         ),
       ),
     ));
   }
 
-  _buildItem(BuildContext context, int index) {
-    EventTimeline item = context.read<HomeViewModel>().dataList[index];
-
+  Widget _buildItem(EventTimeline item, UserRepo repo) {
     return Container(
       padding: const EdgeInsets.all(8),
       child: Column(
@@ -99,20 +143,19 @@ class _HomePageState extends State<HomePage> {
                             fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 8),
-                      const Text(
-                        'This is a demo project to show you how to develop an android app with Jetpack Libraries.',
-                      ),
+                      if (repo.description != null && repo.description != '')
+                        Text(repo.description!),
                       const SizedBox(height: 8),
                       Row(
                         children: [
                           _buildIconText(
-                              '100',
+                              (repo.stargazersCount ?? 0).toString(),
                               const Icon(Icons.star,
                                   color: Colors.yellow, size: 12)),
                           Padding(
                             padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
                             child: _buildIconText(
-                                'Kotlin',
+                                repo.language ?? '',
                                 Icon(Icons.circle,
                                     color: Colors.grey[850], size: 10)),
                           ),

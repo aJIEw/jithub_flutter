@@ -1,144 +1,127 @@
 class UserRepo {
-  String? login;
   int? id;
-  String? avatarUrl;
-  String? gravatarId;
-  String? type;
-  String? company;
-  String? blog;
-  String? location;
-  String? email;
-  String? bio;
-  String? twitterUsername;
-  int? publicRepos;
-  int? publicGists;
-  int? followers;
-  int? following;
-  String? createdAt;
-  String? updatedAt;
-  int? privateGists;
-  int? totalPrivateRepos;
-  int? ownedPrivateRepos;
-  int? collaborators;
+  String? name;
+  String? fullName;
+  bool? private;
+  String? htmlUrl;
+  String? description;
+  bool? fork;
+  String? url;
+  int? size;
+  int? stargazersCount;
+  int? watchersCount;
+  String? language;
+  int? forksCount;
+  int? openIssuesCount;
+  String? visibility;
+  int? forks;
+  int? openIssues;
+  int? watchers;
 
   UserRepo({
-    this.login,
     this.id,
-    this.avatarUrl,
-    this.gravatarId,
-    this.type,
-    this.company,
-    this.blog,
-    this.location,
-    this.email,
-    this.bio,
-    this.twitterUsername,
-    this.publicRepos,
-    this.publicGists,
-    this.followers,
-    this.following,
-    this.createdAt,
-    this.updatedAt,
-    this.privateGists,
-    this.totalPrivateRepos,
-    this.ownedPrivateRepos,
-    this.collaborators,
+    this.name,
+    this.fullName,
+    this.private,
+    this.htmlUrl,
+    this.description,
+    this.fork,
+    this.url,
+    this.size,
+    this.stargazersCount,
+    this.watchersCount,
+    this.language,
+    this.forksCount,
+    this.openIssuesCount,
+    this.visibility,
+    this.forks,
+    this.openIssues,
+    this.watchers,
   });
 
   UserRepo.fromJson(dynamic json) {
-    login = json['login'];
     id = json['id'];
-    avatarUrl = json['avatar_url'];
-    gravatarId = json['gravatar_id'];
-    type = json['type'];
-    company = json['company'];
-    blog = json['blog'];
-    location = json['location'];
-    email = json['email'];
-    bio = json['bio'];
-    twitterUsername = json['twitter_username'];
-    publicRepos = json['public_repos'];
-    publicGists = json['public_gists'];
-    followers = json['followers'];
-    following = json['following'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
-    privateGists = json['private_gists'];
-    totalPrivateRepos = json['total_private_repos'];
-    ownedPrivateRepos = json['owned_private_repos'];
-    collaborators = json['collaborators'];
+    name = json['name'];
+    fullName = json['full_name'];
+    private = json['private'];
+    htmlUrl = json['html_url'];
+    description = json['description'];
+    fork = json['fork'];
+    url = json['url'];
+    size = json['size'];
+    stargazersCount = json['stargazers_count'];
+    watchersCount = json['watchers_count'];
+    language = json['language'];
+    forksCount = json['forks_count'];
+    openIssuesCount = json['open_issues_count'];
+    visibility = json['visibility'];
+    forks = json['forks'];
+    openIssues = json['open_issues'];
+    watchers = json['watchers'];
   }
 
   UserRepo copyWith({
-    String? login,
     int? id,
-    String? avatarUrl,
-    String? gravatarId,
-    String? type,
-    String? company,
-    String? blog,
-    String? location,
-    String? email,
-    String? bio,
-    String? twitterUsername,
-    int? publicRepos,
-    int? publicGists,
-    int? followers,
-    int? following,
-    String? createdAt,
-    String? updatedAt,
-    int? privateGists,
-    int? totalPrivateRepos,
-    int? ownedPrivateRepos,
-    int? collaborators,
+    String? name,
+    String? fullName,
+    bool? private,
+    String? htmlUrl,
+    String? description,
+    bool? fork,
+    String? url,
+    int? size,
+    int? stargazersCount,
+    int? watchersCount,
+    String? language,
+    int? forksCount,
+    int? openIssuesCount,
+    String? license,
+    String? visibility,
+    int? forks,
+    int? openIssues,
+    int? watchers,
   }) =>
       UserRepo(
-        login: login ?? this.login,
         id: id ?? this.id,
-        avatarUrl: avatarUrl ?? this.avatarUrl,
-        gravatarId: gravatarId ?? this.gravatarId,
-        type: type ?? this.type,
-        company: company ?? this.company,
-        blog: blog ?? this.blog,
-        location: location ?? this.location,
-        email: email ?? this.email,
-        bio: bio ?? this.bio,
-        twitterUsername: twitterUsername ?? this.twitterUsername,
-        publicRepos: publicRepos ?? this.publicRepos,
-        publicGists: publicGists ?? this.publicGists,
-        followers: followers ?? this.followers,
-        following: following ?? this.following,
-        createdAt: createdAt ?? this.createdAt,
-        updatedAt: updatedAt ?? this.updatedAt,
-        privateGists: privateGists ?? this.privateGists,
-        totalPrivateRepos: totalPrivateRepos ?? this.totalPrivateRepos,
-        ownedPrivateRepos: ownedPrivateRepos ?? this.ownedPrivateRepos,
-        collaborators: collaborators ?? this.collaborators,
+        name: name ?? this.name,
+        fullName: fullName ?? this.fullName,
+        private: private ?? this.private,
+        htmlUrl: htmlUrl ?? this.htmlUrl,
+        description: description ?? this.description,
+        fork: fork ?? this.fork,
+        url: url ?? this.url,
+        size: size ?? this.size,
+        stargazersCount: stargazersCount ?? this.stargazersCount,
+        watchersCount: watchersCount ?? this.watchersCount,
+        language: language ?? this.language,
+        forksCount: forksCount ?? this.forksCount,
+        openIssuesCount: openIssuesCount ?? this.openIssuesCount,
+        visibility: visibility ?? this.visibility,
+        forks: forks ?? this.forks,
+        openIssues: openIssues ?? this.openIssues,
+        watchers: watchers ?? this.watchers,
       );
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
-    map['login'] = login;
     map['id'] = id;
-    map['avatar_url'] = avatarUrl;
-    map['gravatar_id'] = gravatarId;
-    map['type'] = type;
-    map['company'] = company;
-    map['blog'] = blog;
-    map['location'] = location;
-    map['email'] = email;
-    map['bio'] = bio;
-    map['twitter_username'] = twitterUsername;
-    map['public_repos'] = publicRepos;
-    map['public_gists'] = publicGists;
-    map['followers'] = followers;
-    map['following'] = following;
-    map['created_at'] = createdAt;
-    map['updated_at'] = updatedAt;
-    map['private_gists'] = privateGists;
-    map['total_private_repos'] = totalPrivateRepos;
-    map['owned_private_repos'] = ownedPrivateRepos;
-    map['collaborators'] = collaborators;
+    map['name'] = name;
+    map['full_name'] = fullName;
+    map['private'] = private;
+    map['html_url'] = htmlUrl;
+    map['description'] = description;
+    map['fork'] = fork;
+    map['url'] = url;
+    map['size'] = size;
+    map['stargazers_count'] = stargazersCount;
+    map['watchers_count'] = watchersCount;
+    map['language'] = language;
+    map['forks_count'] = forksCount;
+    map['open_issues_count'] = openIssuesCount;
+    map['visibility'] = visibility;
+    map['forks'] = forks;
+    map['open_issues'] = openIssues;
+    map['watchers'] = watchers;
     return map;
   }
 }

@@ -13,21 +13,26 @@ abstract class RefreshLoadMoreViewModel<T> extends BaseViewModel {
   /// 下一页的请求地址
   String? nextPageUrl;
 
+  /// 请求所需要的参数
+  dynamic params;
+
   /// 是否刷新中
   /// 当用户首次进入页面/手动下拉刷新时 ---> true
   /// 手动上拉加载 ---> false
   bool isRefreshing = true;
 
+  /// 请求结果
   List<T> dataList = [];
 
   init({dynamic param}) async {
     isLoading = true;
-    await loadRemoteData(param: param);
+    params = param;
+    await loadRemoteData();
   }
 
-  Future<List<T>> loadRemoteData({dynamic param}) async {
+  Future<List<T>> loadRemoteData() async {
     try {
-      var response = await loadData(data: param);
+      var response = await loadData();
 
       if (isLoading) {
         isLoading = false;
@@ -61,7 +66,7 @@ abstract class RefreshLoadMoreViewModel<T> extends BaseViewModel {
   }
 
   /// 加载数据
-  Future<List<T>> loadData({dynamic data});
+  Future<List<T>> loadData();
 
   /// 下拉刷新
   Future<List<T>> onRefresh();

@@ -37,11 +37,23 @@ android {
         versionName flutterVersionName
     }
 
-    buildTypes {
+    signingConfigs {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig signingConfigs.debug
+            storeFile file('../ajiew.keystore')
+            storePassword 'ajiew42'
+            keyAlias 'ajiew'
+            keyPassword 'ajiew42'
+            v2SigningEnabled true
+        }
+    }
+
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.release
+        }
+        release {
+            signingConfig signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 

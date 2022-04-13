@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:jithub_flutter/core/base/base_controller.dart';
 import 'package:jithub_flutter/core/http/http_client.dart';
+import 'package:jithub_flutter/core/util/event.dart';
 import 'package:jithub_flutter/data/response/user_feeds.dart';
 import 'package:jithub_flutter/page/explore/explore_page.dart';
 import 'package:jithub_flutter/page/home/home_page.dart';
@@ -74,8 +75,8 @@ class _MainPageState extends State<MainPage> with AfterLayoutMixin<MainPage> {
                         if (SPUtils.isLoggedIn()) {
                           status.tabIndex = index;
                         } else {
-                          var result =
-                              await XRouter.goWeb(context, ApiService.githubAuthUrl, "");
+                          var result = await XRouter.goWeb(
+                              context, ApiService.githubAuthUrl, "");
                           initLoginInfo(result);
                         }
                       },
@@ -113,37 +114,6 @@ class _MainPageState extends State<MainPage> with AfterLayoutMixin<MainPage> {
         _profileTab(context),
       ];
 
-  _homeTab(BuildContext context) {
-    var userProfile = context.read<UserProfile>();
-    var loggedIn = SPUtils.isLoggedIn();
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          if (loggedIn)
-            Text('home_text'
-                .trParams({'user_name': userProfile.user?.name ?? ''})),
-          RoundButton(
-            onPressed: () {
-              if (loggedIn) {
-                showAlertDialog('logout_confirm_title'.tr,
-                    confirmText: 'dialog_confirm_text'.tr,
-                    cancelText: 'dialog_cancel_text'.tr, onConfirm: () {
-                  AppUtils.logout(context);
-                });
-              } else {
-                XRouter.push(XRouter.loginPage);
-              }
-            },
-            child: Text(loggedIn ? 'btn_logout'.tr : 'btn_login'.tr),
-          )
-        ],
-      ),
-    );
-  }
-
   _profileTab(BuildContext context) {
     return Center(
         child: RoundButton(
@@ -164,6 +134,8 @@ class _MainPageState extends State<MainPage> with AfterLayoutMixin<MainPage> {
       };
       var userProfile = Store.value<UserProfile>(context);
       userProfile.initWithLoginInfo(info);
+
+      XEvent.post('EventRefreshUserProfile', true);
     }
   }
 
