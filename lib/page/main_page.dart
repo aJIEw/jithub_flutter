@@ -8,6 +8,7 @@ import 'package:jithub_flutter/core/util/event.dart';
 import 'package:jithub_flutter/data/response/user_feeds.dart';
 import 'package:jithub_flutter/page/explore/explore_page.dart';
 import 'package:jithub_flutter/page/home/home_page.dart';
+import 'package:jithub_flutter/page/profile/profile_page.dart';
 import 'package:jithub_flutter/page/viewmodel/main_viewmodel.dart';
 import 'package:jithub_flutter/provider/provider.dart';
 import 'package:jithub_flutter/util/app_utils.dart';
@@ -111,17 +112,8 @@ class _MainPageState extends State<MainPage> with AfterLayoutMixin<MainPage> {
   List<Widget> getTabWidget(BuildContext context) => [
         const HomePage(),
         const ExplorePage(),
-        _profileTab(context),
+        const ProfilePage(),
       ];
-
-  _profileTab(BuildContext context) {
-    return Center(
-        child: RoundButton(
-            onPressed: () {
-              XRouter.push(XRouter.settingsPage);
-            },
-            child: Text('btn_to_settings'.tr)));
-  }
 
   void initLoginInfo(String accessToken) async {
     var feeds = await requestUserFeeds(accessToken);

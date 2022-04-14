@@ -148,13 +148,13 @@ class _HomePageState extends State<HomePage> {
                       const SizedBox(height: 8),
                       Row(
                         children: [
-                          _buildIconText(
+                          buildIconText(
                               (repo.stargazersCount ?? 0).toString(),
                               const Icon(Icons.star,
                                   color: Colors.yellow, size: 12)),
                           Padding(
                             padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
-                            child: _buildIconText(
+                            child: buildIconText(
                                 repo.language ?? '',
                                 Icon(Icons.circle,
                                     color: Colors.grey[850], size: 10)),
@@ -242,15 +242,15 @@ class _HomePageState extends State<HomePage> {
       actionText ?? const TextSpan(text: ''),
     ]));
   }
+}
 
-  Widget _buildIconText(String text, Widget icon) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        icon,
-        const SizedBox(width: 4),
-        Text(text),
-      ],
-    );
-  }
+Widget buildIconText(String text, Widget icon) {
+  return Row(
+    crossAxisAlignment: CrossAxisAlignment.center,
+    children: [
+      icon,
+      const SizedBox(width: 4),
+      Text(text),
+    ],
+  );
 }

@@ -11,6 +11,7 @@ import 'package:jithub_flutter/data/response/trending_repo.dart';
 import 'package:jithub_flutter/page/explore/explore_controller.dart';
 import 'package:jithub_flutter/router/router.dart';
 import 'package:jithub_flutter/widget/network_image.dart';
+import 'package:jithub_flutter/page/home/home_page.dart';
 
 class ExplorePage extends BaseView<ExploreController> {
   const ExplorePage({Key? key}) : super(key: key);
@@ -67,12 +68,12 @@ class ExplorePage extends BaseView<ExploreController> {
                           padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
                           child: Row(
                             children: [
-                              _buildIconText(
+                              buildIconText(
                                   (repo.stars ?? 0).toString() + ' Today',
                                   const Icon(Icons.star,
                                       color: Colors.yellow, size: 12)),
                               const SizedBox(width: 12),
-                              _buildIconText(
+                              buildIconText(
                                   repo.language ?? '',
                                   Icon(Icons.circle,
                                       color: Color(
@@ -86,12 +87,12 @@ class ExplorePage extends BaseView<ExploreController> {
                           padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
                           child: Row(
                             children: [
-                              _buildIconText(
+                              buildIconText(
                                   (repo.stars ?? '0').toString(),
                                   Icon(Icons.star_border,
                                       color: Colors.grey[850], size: 12)),
                               const SizedBox(width: 12),
-                              _buildIconText(
+                              buildIconText(
                                   (repo.forks ?? '0').toString(),
                                   SvgPicture.asset(
                                       'assets/images/ic_trending_fork.svg',
@@ -104,7 +105,7 @@ class ExplorePage extends BaseView<ExploreController> {
                           padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
                           child: Row(
                             children: [
-                              _buildIconText(
+                              buildIconText(
                                   'Built By',
                                   Icon(Icons.person,
                                       color: Colors.grey[700], size: 14)),
@@ -160,16 +161,5 @@ class ExplorePage extends BaseView<ExploreController> {
     if (url != null) {
       XRouter.goWeb(context, url, name);
     }
-  }
-
-  Widget _buildIconText(String text, Widget icon) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        icon,
-        const SizedBox(width: 4),
-        Text(text),
-      ],
-    );
   }
 }
