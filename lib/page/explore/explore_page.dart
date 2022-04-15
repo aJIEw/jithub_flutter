@@ -69,7 +69,7 @@ class ExplorePage extends BaseView<ExploreController> {
                           child: Row(
                             children: [
                               buildIconText(
-                                  (repo.stars ?? 0).toString() + ' Today',
+                                  (repo.currentPeriodStars ?? 0).toString() + ' Today',
                                   const Icon(Icons.star,
                                       color: Colors.yellow, size: 12)),
                               const SizedBox(width: 12),
