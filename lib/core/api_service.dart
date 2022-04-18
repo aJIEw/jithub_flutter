@@ -19,4 +19,5 @@ class ApiService {
   static const String apiAccessToken = '/login/oauth/access_token';
   static const String apiTrendingRepos = '/repositories';
   static const String apiReceivedEvents = '/users/%s/received_events';
+  static const String apiUserInfo = '/users/%s';
 }
