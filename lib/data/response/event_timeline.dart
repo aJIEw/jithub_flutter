@@ -145,7 +145,12 @@ class Payload {
     forkee = json['forkee'] != null ? GithubUser.fromJson(json['forkee']) : null;
     ref_type = json['ref_type'];
     release = json['release'] != null ? ReleaseRepo.fromJson(json['release']) : null;
-    commits = json['commits']?.map((dynamic item) => Commit.fromJson(item))?.toList();
+    if (json['commits'] != null) {
+      commits = [];
+      for (dynamic item in json['commits']) {
+        commits?.add(Commit.fromJson(item));
+      }
+    }
     size = json['size'];
   }
 
@@ -180,7 +185,7 @@ class Payload {
 
 class Commit {
   Author? author;
-  String? distinct;
+  bool? distinct;
   String? message;
   String? sha;
   String? url;
@@ -194,7 +199,7 @@ class Commit {
   });
 
   Commit.fromJson(dynamic json) {
-    author = json['author'];
+    author = json['author'] != null ? Author.fromJson(json['author']) : null;
     distinct = json['distinct'];
     message = json['message'];
     sha = json['sha'];
@@ -203,7 +208,7 @@ class Commit {
 
   Commit copyWith({
     Author? author,
-    String? distinct,
+    bool? distinct,
     String? message,
     String? sha,
     String? url,

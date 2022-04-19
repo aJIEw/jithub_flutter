@@ -1,4 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 import '../api_service.dart';
 import 'app_dio.dart';
@@ -15,20 +17,21 @@ class HttpClient {
     baseUrl: ApiService.baseUrl,
     connectTimeout: 5000,
     sendTimeout: 3000,
-    receiveTimeout: 3000,
+    receiveTimeout: 10000,
   ));
 
   /// do some initialization work if it's needed
   static init() {
-    /*
-    _dio.interceptors.add(PrettyDioLogger(
-        requestHeader: false,
-        requestBody: true,
-        responseBody: false,
-        responseHeader: false,
-        error: true,
-        compact: true,
-        maxWidth: 90));*/
+    if (kDebugMode) {
+      _dio.interceptors.add(PrettyDioLogger(
+          requestHeader: true,
+          requestBody: false,
+          responseBody: false,
+          responseHeader: false,
+          error: true,
+          compact: true,
+          maxWidth: 90));
+    }
   }
 
   static void setAuthToken(String authToken) {

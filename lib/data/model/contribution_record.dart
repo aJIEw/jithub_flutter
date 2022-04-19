@@ -1,9 +1,9 @@
 class ContributionRecord {
-  var index;
-  var date;
-  var number;
+  int index = 0;
+  String date = '';
+  int number = -1;
 
-  ContributionRecord({this.index, this.date, this.number});
+  ContributionRecord({this.index = 0, this.date = '', this.number = -1});
 
   ContributionRecord.fromJson(dynamic json) {
     index = json["index"];

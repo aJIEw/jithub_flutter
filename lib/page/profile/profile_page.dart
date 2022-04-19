@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_notifier.dart';
 import 'package:jithub_flutter/core/base/base_page.dart';
 import 'package:jithub_flutter/core/widget/clickable.dart';
@@ -185,23 +186,28 @@ class ProfilePage extends BaseView<ProfileController> {
                         const SizedBox(height: 8),
                         Row(
                           children: [
-                            Text.rich(TextSpan(
-                                style: TextStyle(
-                                    fontSize: 14, color: Colors.grey[850]),
-                                children: const [
-                                  TextSpan(
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                    children: [
-                                      TextSpan(
-                                        text: '48',
-                                        style: TextStyle(fontSize: 16),
-                                      ),
-                                      TextSpan(text: ' contributions')
-                                    ],
-                                  ),
-                                  TextSpan(text: ' in the last 90 days'),
-                                ])),
+                            Obx(
+                              () => Text.rich(TextSpan(
+                                  style: TextStyle(
+                                      fontSize: 14, color: Colors.grey[850]),
+                                  children: [
+                                    TextSpan(
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                      children: [
+                                        TextSpan(
+                                          text: controller
+                                              .totalContribution.value
+                                              .toString(),
+                                          style: const TextStyle(fontSize: 16),
+                                        ),
+                                        const TextSpan(text: ' contributions')
+                                      ],
+                                    ),
+                                    const TextSpan(
+                                        text: ' in the last 90 days'),
+                                  ])),
+                            ),
                             Icon(
                               Icons.question_mark,
                               size: 14,

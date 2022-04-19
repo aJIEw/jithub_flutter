@@ -20,4 +20,5 @@ class ApiService {
   static const String apiTrendingRepos = '/repositories';
   static const String apiReceivedEvents = '/users/%s/received_events';
   static const String apiUserInfo = '/users/%s';
+  static const String apiUserEvents = '/users/%s/events';
 }

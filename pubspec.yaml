@@ -52,6 +52,7 @@ dependencies:
   dio_cache_interceptor: ^3.2.6
   dio_cookie_manager: ^2.0.0
   cookie_jar: ^3.0.1
+  pretty_dio_logger: ^1.2.0-beta-1
 
   # dev utils
   after_layout: ^1.1.0
