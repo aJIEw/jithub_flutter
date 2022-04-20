@@ -6,9 +6,52 @@
 // tree, read text, and verify that the values of widget properties are correct.
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:jiffy/jiffy.dart';
 
 void main() {
-  test('test', () {
+  test('Jiffy days diff', () {
+    var date = Jiffy('2022-04-19T10:40:34Z').dateTime;
+    var daysInBetween = Jiffy().diff(date, Units.DAY).ceil();
+    print('daysInBetween: $daysInBetween');
+  });
 
+  test('Reverse list column index', () {
+    /*
+    == Problem ==
+    * 14 > 20 | 7  > 13
+    * 15 > 19 | 8  > 12
+    * 16 > 18 | 9  > 11
+    * 17 > 17 | 10 > 10
+    * 18 > 16 | 11 > 9
+    * 19 > 15 | 12 > 8
+    * 20 > 14 | 13 > 7
+    * */
+
+    /*
+    == Solution ==
+    * input: i
+    * mid = (i / 7.0).floor() * 7 + 3
+    * if (i > mid) {
+    *   return mid - (i - mid);
+    * } else if (i < mid) {
+    *   return mid + (mid - i);
+    * } else {
+    *   return i;
+    * }
+    * */
+
+    var daysInBetween = 15;
+    var _contributionPlaceholderDays = 3;
+
+    var total = daysInBetween + _contributionPlaceholderDays;
+
+    var mid = (total / 7.0).floor() * 7 + 3;
+    var updateIndex = mid;
+    if (total > mid) {
+      updateIndex = mid - (total - mid);
+    } else if (total < mid) {
+      updateIndex = mid + (mid - total);
+    }
+    expect(updateIndex, 16);
   });
 }

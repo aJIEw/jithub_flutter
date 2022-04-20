@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/src/rx_flutter/rx_notifier.dart';
 import 'package:jithub_flutter/core/base/base_page.dart';
+import 'package:jithub_flutter/core/util/event.dart';
 import 'package:jithub_flutter/core/widget/clickable.dart';
 import 'package:jithub_flutter/core/widget/container/shadow_container.dart';
+import 'package:jithub_flutter/data/event/bus_event.dart';
 import 'package:jithub_flutter/data/response/github_repo.dart';
 import 'package:jithub_flutter/page/home/home_page.dart';
 import 'package:jithub_flutter/page/profile/contribution_graph_view.dart';
@@ -26,7 +27,13 @@ class ProfilePage extends BaseView<ProfileController> {
         key: const Key('tab_eco'),
         onVisibilityChanged: (VisibilityInfo info) {
           if (info.visibleFraction > 0) {
-            // todo: call graph method to move to the utter right and show popup
+            if (!controller.popupShown && controller.canShowPopup &&
+                controller.contributionList.isNotEmpty) {
+              // 显示今日贡献弹窗
+              var event = controller
+                  .contributionList[6 - controller.contributionPlaceholderDays];
+              XEvent.post(BusEvent.showInitPopup, event);
+            }
           }
         },
         child: Scaffold(
