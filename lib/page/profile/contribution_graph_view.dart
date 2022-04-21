@@ -1,4 +1,5 @@
 import 'package:bruno/bruno.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jiffy/jiffy.dart';
@@ -50,7 +51,7 @@ class ContributionGraphView extends GetView<ProfileController> {
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         for (var i = 0; i < 7; i++)
-          Container(
+          SizedBox(
             width: 30,
             height: _graphSize / 7,
             child: Center(
@@ -70,90 +71,97 @@ class ContributionGraphView extends GetView<ProfileController> {
   Widget _buildContributionTable(BuildContext context) {
     return Obx(
       () => Expanded(
-        child: ScrollConfiguration(
-          behavior: const MaterialScrollBehavior().copyWith(overscroll: false),
-          child: GridView.builder(
-              itemCount: controller.contributionList.length,
-              scrollDirection: Axis.horizontal,
-              controller: _scrollController,
-              physics: const BouncingScrollPhysics(),
-              reverse: true,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 7,
-                childAspectRatio: 1,
-              ),
-              itemBuilder: (_, index) {
-                // contribution item
-                ContributionRecord contribution =
-                    controller.contributionList[index];
-
-                // popup window 的内容
-                var num = contribution.number;
-                var messageText = Text.rich(TextSpan(
-                    style: const TextStyle(fontSize: 12, color: Colors.white),
-                    children: [
-                      TextSpan(
-                          text: num.toString() +
-                              ' contribution' +
-                              (num > 1 ? 's' : ''),
-                          style: const TextStyle(fontWeight: FontWeight.bold)),
-                      TextSpan(text: ' on ' + contribution.date.toString()),
-                    ]));
-                var popupKey = GlobalKey();
-
-                // 保存当日的 key 和 message，用于初次点击到 profile 时显示 popup
-                if (_todayKey == null &&
-                    Jiffy(contribution.date, Constants.dateDefaultFormat)
-                            .dayOfYear ==
-                        _today.dayOfYear) {
-                  _todayKey = popupKey;
-                  _todayMessage = messageText;
-                }
-
-                // 根据当日最多和最少 commit 数显示不同深度的颜色
-                var maxNum = controller.maxDailyContribution.value;
-                var minNum = controller.minDailyContribution.value;
-                var step = (maxNum - minNum) / 3;
-                var minLevel = minNum + step;
-                var midLevel = minNum + step * 2;
-                var maxLevel = minNum + step * 3;
-                Color? contributionColor = Colors.transparent;
-                if (contribution.number >= maxLevel) {
-                  contributionColor = Colors.green[800];
-                } else if (contribution.number >= midLevel) {
-                  contributionColor = Colors.green[600];
-                } else if (contribution.number >= minLevel) {
-                  contributionColor = Colors.green[400];
-                } else if (contribution.number > 0) {
-                  contributionColor = Colors.green[200];
-                } else if (contribution.number > -1) {
-                  contributionColor = const Color(0xFFE9E9E9);
-                }
-                return Clickable(
-                  key: popupKey,
-                  onPressed: () {
-                    _showPopupWindow(
-                        context, num.toString(), popupKey, messageText);
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(3),
-                      color: contributionColor,
+        child: controller.contributionList.isNotEmpty
+            ? ScrollConfiguration(
+                behavior:
+                    const MaterialScrollBehavior().copyWith(overscroll: false),
+                child: GridView.builder(
+                    itemCount: controller.contributionList.length,
+                    scrollDirection: Axis.horizontal,
+                    controller: _scrollController,
+                    physics: const BouncingScrollPhysics(),
+                    reverse: true,
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 7,
+                      childAspectRatio: 1,
                     ),
-                    margin: const EdgeInsets.all(4),
-                    /*child: Center(
-                      child: Text(
-                        '${index}',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey[600],
+                    itemBuilder: (_, index) {
+                      // contribution item
+                      ContributionRecord contribution =
+                          controller.contributionList[index];
+
+                      // popup window 的内容
+                      var num = contribution.number;
+                      var messageText = Text.rich(TextSpan(
+                          style: const TextStyle(
+                              fontSize: 12, color: Colors.white),
+                          children: [
+                            TextSpan(
+                                text: num.toString() +
+                                    ' contribution' +
+                                    (num > 1 ? 's' : ''),
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold)),
+                            TextSpan(
+                                text: ' on ' + contribution.date.toString()),
+                          ]));
+                      var popupKey = GlobalKey();
+
+                      // 保存当日的 key 和 message，用于初次点击到 profile 时显示 popup
+                      if (_todayKey == null &&
+                          Jiffy(contribution.date, Constants.dateDefaultFormat)
+                                  .dayOfYear ==
+                              _today.dayOfYear) {
+                        _todayKey = popupKey;
+                        _todayMessage = messageText;
+                      }
+
+                      // 根据当日最多和最少 commit 数显示不同深度的颜色
+                      var maxNum = controller.maxDailyContribution.value;
+                      var minNum = controller.minDailyContribution.value;
+                      var step = (maxNum - minNum) / 3;
+                      var minLevel = minNum + step;
+                      var midLevel = minNum + step * 2;
+                      var maxLevel = minNum + step * 3;
+                      Color? contributionColor = Colors.transparent;
+                      if (contribution.number >= maxLevel) {
+                        contributionColor = Colors.green[800];
+                      } else if (contribution.number >= midLevel) {
+                        contributionColor = Colors.green[600];
+                      } else if (contribution.number >= minLevel) {
+                        contributionColor = Colors.green[400];
+                      } else if (contribution.number > 0) {
+                        contributionColor = Colors.green[200];
+                      } else if (contribution.number > -1) {
+                        contributionColor = const Color(0xFFE9E9E9);
+                      }
+                      return Clickable(
+                        key: popupKey,
+                        onPressed: () {
+                          _showPopupWindow(
+                              context, num.toString(), popupKey, messageText);
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(3),
+                            color: contributionColor,
+                          ),
+                          margin: const EdgeInsets.all(4),
+                          /*child: Center(
+                        child: Text(
+                          '${index}',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey[600],
+                          ),
                         ),
-                      ),
-                    ),*/
-                  ),
-                );
-              }),
-        ),
+                      ),*/
+                        ),
+                      );
+                    }),
+              )
+            : const CupertinoActivityIndicator(radius: 8),
       ),
     );
   }
@@ -166,7 +174,7 @@ class ContributionGraphView extends GetView<ProfileController> {
       popupKey,
       widget: message,
       popDirection: BrnPopupDirection.top,
-      backgroundColor: const Color(0x383D3B),
+      backgroundColor: const Color(0xFF383D3B),
       borderRadius: 6,
       offset: 6,
       spaceMargin: -6,
@@ -177,7 +185,9 @@ class ContributionGraphView extends GetView<ProfileController> {
 
   void registerBusEvent(BuildContext context) {
     XEvent.on(BusEvent.showInitPopup, (ContributionRecord event) {
-      if (_todayKey != null && _todayMessage != null && controller.canShowPopup) {
+      if (_todayKey != null &&
+          _todayMessage != null &&
+          controller.canShowPopup) {
         var num = event.number.toString();
         _showPopupWindow(context, num, _todayKey!, _todayMessage!);
         controller.popupShown = true;

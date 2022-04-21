@@ -157,7 +157,7 @@ class ProfileController extends BaseController {
         _userEventsPage++;
         await getUserEventsRequest();
       } else {
-        initObservableData();
+        _initObservableData();
       }
     } else {
       onRequestError(response);
@@ -167,29 +167,30 @@ class ProfileController extends BaseController {
 
   void _filterPushEvent(List<EventTimeline> events) {
     var firstWeekDays = 7 - contributionPlaceholderDays;
+    var today = Jiffy().dayOfYear;
     for (var event in events) {
       if (event.type == GithubEvent.PushEvent.name) {
-        var date = Jiffy(event.createdAt).dateTime;
-        var daysInBetween = Jiffy().diff(date, Units.DAY, true).ceil().toInt();
-        if (daysInBetween > 0 && daysInBetween < firstWeekDays) {
+        var date = Jiffy(event.createdAt).dayOfYear;
+        var daysInBetween = today - date;
+        if (daysInBetween >= 0 && daysInBetween < firstWeekDays) {
           var updateIndex = firstWeekDays - 1 - daysInBetween;
-          updateContributionNumber(updateIndex, event.payload?.commits);
+          _updateContributionNumber(updateIndex, event.payload?.commits);
         } else if (daysInBetween >= firstWeekDays) {
           var total = daysInBetween + contributionPlaceholderDays;
           var mid = (total / 7.0).floor() * 7 + 3;
           var updateIndex = mid;
           if (total > mid) {
             updateIndex = mid - (total - mid);
-          } else {
+          } else if (total < mid) {
             updateIndex = mid + (mid - total);
           }
-          updateContributionNumber(updateIndex.toInt(), event.payload?.commits);
+          _updateContributionNumber(updateIndex.toInt(), event.payload?.commits);
         }
       }
     }
   }
 
-  void updateContributionNumber(int updateIndex, List<Commit>? commits) {
+  void _updateContributionNumber(int updateIndex, List<Commit>? commits) {
     if (updateIndex < 0 || updateIndex >= _contributionRecords.length) {
       logger.e(
           'ProfileController - updateContributionNumber: index out of range: $updateIndex');
@@ -197,11 +198,11 @@ class ProfileController extends BaseController {
     }
 
     var contribution = _contributionRecords[updateIndex];
-    contribution.number += filterCurrentUserCommits(commits);
+    contribution.number += _filterCurrentUserCommits(commits);
     _contributionRecords[updateIndex] = contribution;
   }
 
-  int filterCurrentUserCommits(List<Commit>? commits) {
+  int _filterCurrentUserCommits(List<Commit>? commits) {
     if (commits == null) return 0;
 
     int count = 0;
@@ -214,27 +215,26 @@ class ProfileController extends BaseController {
     return count;
   }
 
-  void initObservableData() {
+  void _initObservableData() {
     contributionList.value = _contributionRecords;
 
-    int total = 0;
-    for (var item in contributionList) {
-      total += item.number;
-    }
-    totalContribution.value = total;
-
-    int max = 0, min = 0;
+    int total = 0, max = 0, min = 0;
     for (var i in contributionList) {
-      min = min == 0 ? i.number : min;
+      if (i.number > 0 ) {
+        total += i.number;
+      }
+
       if (i.number > max) {
         max = i.number;
       }
 
-      if (i.number < min) {
+      min = min == 0 && i.number > 0 ? i.number : min;
+      if (i.number > 0 && i.number < min) {
         min = i.number;
       }
     }
 
+    totalContribution.value = total;
     maxDailyContribution.value = max;
     minDailyContribution.value = min;
     canShowPopup = true;
