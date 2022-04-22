@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jithub_flutter/page/main_page.dart';
 import 'package:jithub_flutter/page/login/login_page.dart';
+import 'package:jithub_flutter/page/repo/RepoListPage.dart';
 import 'package:jithub_flutter/page/settings/language_page.dart';
 import 'package:jithub_flutter/page/settings/settings_page.dart';
 import 'package:jithub_flutter/page/settings/theme_page.dart';
@@ -16,6 +17,7 @@ class XRouter {
   static const String settingsPage = '/settings-page';
   static const String languagePage = '/language-page';
   static const String themePage = '/theme-page';
+  static const String repoListPage = '/repo-list-page';
 
   static List<GetPage> getPages = [
     GetPage(name: '/', page: () => const SplashPage()),
@@ -28,6 +30,7 @@ class XRouter {
         name: homePage,
         page: () => const MainPage(),
         transition: Transition.fadeIn),
+    GetPage(name: repoListPage, page: () => const RepoListPage()),
     GetPage(
         name: settingsPage,
         page: () => const SettingsPage(),

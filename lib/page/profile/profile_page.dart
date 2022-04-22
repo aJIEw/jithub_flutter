@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jithub_flutter/core/base/base_page.dart';
+import 'package:jithub_flutter/core/extension/string.dart';
 import 'package:jithub_flutter/core/util/event.dart';
+import 'package:jithub_flutter/core/util/toast.dart';
 import 'package:jithub_flutter/core/widget/clickable.dart';
 import 'package:jithub_flutter/core/widget/container/shadow_container.dart';
 import 'package:jithub_flutter/data/event/bus_event.dart';
@@ -27,7 +29,8 @@ class ProfilePage extends BaseView<ProfileController> {
         key: const Key('tab_eco'),
         onVisibilityChanged: (VisibilityInfo info) {
           if (info.visibleFraction > 0) {
-            if (!controller.popupShown && controller.canShowPopup &&
+            if (!controller.popupShown &&
+                controller.canShowPopup &&
                 controller.contributionList.isNotEmpty) {
               // 显示今日贡献弹窗
               var event = controller
@@ -228,6 +231,31 @@ class ProfilePage extends BaseView<ProfileController> {
                       ],
                     ),
                   )),
+                  const SizedBox(height: 20),
+                  ShadowContainer(
+                    child: Container(
+                      color: Colors.white,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildListItem(
+                              'assets/images/ic_option_repo.png',
+                              Color('0xFF3E444D'.toHexValue()),
+                              'Repositories', () {
+                            XRouter.push(XRouter.repoListPage);
+                          }),
+                          _buildListItem('assets/images/ic_option_starred.png',
+                              Color('0xFFFFC600'.toHexValue()), 'Starred', () {
+                            ToastUtils.toast('Clicked Starred Repositories');
+                          }),
+                          _buildListItem('assets/images/ic_option_settings.png',
+                              Color('0xFF707070'.toHexValue()), 'Settings', () {
+                                ToastUtils.toast('Clicked Settings');
+                              }),
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -247,5 +275,41 @@ class ProfilePage extends BaseView<ProfileController> {
     }
 
     return [];
+  }
+
+  Widget _buildListItem(
+      String iconPath, Color iconBg, String title, VoidCallback onTab) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTab,
+        child: Container(
+          padding: const EdgeInsets.fromLTRB(30, 12, 15, 12),
+          child: Row(
+            children: [
+              Container(
+                  width: 35,
+                  height: 35,
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                    color: iconBg,
+                  ),
+                  child: Image.asset(iconPath, width: 20, height: 20)),
+              Padding(
+                padding: const EdgeInsets.only(left: 20),
+                child: Text(title, style: const TextStyle(fontSize: 16)),
+              ),
+              Expanded(
+                  child: Container(
+                      alignment: Alignment.centerRight,
+                      padding: const EdgeInsets.only(right: 12),
+                      child: Icon(Icons.arrow_forward_ios,
+                          size: 20, color: Colors.grey[400]))),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

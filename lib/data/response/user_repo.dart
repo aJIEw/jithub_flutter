@@ -17,6 +17,9 @@ class UserRepo {
   int? forks;
   int? openIssues;
   int? watchers;
+  String? createdAt;
+  String? updatedAt;
+  String? pushedAt;
 
   UserRepo({
     this.id,
@@ -37,6 +40,9 @@ class UserRepo {
     this.forks,
     this.openIssues,
     this.watchers,
+    this.createdAt,
+    this.updatedAt,
+    this.pushedAt,
   });
 
   UserRepo.fromJson(dynamic json) {
@@ -58,6 +64,9 @@ class UserRepo {
     forks = json['forks'];
     openIssues = json['open_issues'];
     watchers = json['watchers'];
+    createdAt = json['created_at'];
+    updatedAt = json['updated_at'];
+    pushedAt = json['pushed_at'];
   }
 
   UserRepo copyWith({
@@ -80,6 +89,9 @@ class UserRepo {
     int? forks,
     int? openIssues,
     int? watchers,
+    String? createdAt,
+    String? updatedAt,
+    String? pushedAt,
   }) =>
       UserRepo(
         id: id ?? this.id,
@@ -100,6 +112,9 @@ class UserRepo {
         forks: forks ?? this.forks,
         openIssues: openIssues ?? this.openIssues,
         watchers: watchers ?? this.watchers,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt,
+        pushedAt: pushedAt ?? this.pushedAt,
       );
 
   Map<String, dynamic> toJson() {
@@ -122,6 +137,9 @@ class UserRepo {
     map['forks'] = forks;
     map['open_issues'] = openIssues;
     map['watchers'] = watchers;
+    map['created_at'] = createdAt;
+    map['updated_at'] = updatedAt;
+    map['pushed_at'] = pushedAt;
     return map;
   }
 }

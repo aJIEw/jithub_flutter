@@ -23,6 +23,8 @@ const Map<String, String> zh_CN = {
   "_comment_profile": "============Profile============",
   "tab_profile": "我的",
   "btn_to_settings": "去设置页",
+  "_comment_repo": "============Repo============",
+  "repo_title": "我的仓库",
   "_comment_settings": "============Settings============",
   "title_settings": "设置",
   "choose_language": "选择语言",
