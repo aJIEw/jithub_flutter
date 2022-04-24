@@ -22,7 +22,7 @@ class HttpClient {
 
   /// do some initialization work if it's needed
   static init() {
-    if (kDebugMode) {
+    /*if (kDebugMode) {
       _dio.interceptors.add(PrettyDioLogger(
           requestHeader: true,
           requestBody: false,
@@ -31,11 +31,11 @@ class HttpClient {
           error: true,
           compact: true,
           maxWidth: 90));
-    }
+    }*/
   }
 
   static void setAuthToken(String authToken) {
-    Map<String, dynamic> _headers = new Map();
+    Map<String, dynamic> _headers = {};
     _headers["Authorization"] = 'Bearer $authToken';
     _dio.options.headers.addAll(_headers);
   }
