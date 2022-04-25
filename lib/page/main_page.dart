@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:jithub_flutter/core/base/base_controller.dart';
 import 'package:jithub_flutter/core/http/http_client.dart';
 import 'package:jithub_flutter/core/util/event.dart';
+import 'package:jithub_flutter/data/event/bus_event.dart';
 import 'package:jithub_flutter/data/response/user_feeds.dart';
 import 'package:jithub_flutter/page/explore/explore_page.dart';
 import 'package:jithub_flutter/page/home/home_page.dart';
@@ -41,6 +42,14 @@ class _MainPageState extends State<MainPage> with AfterLayoutMixin<MainPage> {
   @override
   void afterFirstLayout(BuildContext context) {
     logger.d('HomePage - afterFirstLayout: ${context.size}');
+
+    registerBusEvent();
+  }
+
+  void registerBusEvent() {
+    XEvent.on(BusEvent.showLoginPage, (value) async {
+      goToLogin();
+    });
   }
 
   @override
@@ -72,13 +81,11 @@ class _MainPageState extends State<MainPage> with AfterLayoutMixin<MainPage> {
                       fixedColor: Theme.of(context).primaryColor,
                       selectedFontSize: 12,
                       unselectedFontSize: 12,
-                      onTap: (index) async {
+                      onTap: (index) {
                         if (SPUtils.isLoggedIn()) {
                           status.tabIndex = index;
                         } else {
-                          var result = await XRouter.goWeb(
-                              context, ApiService.githubAuthUrl, "");
-                          initLoginInfo(result);
+                          goToLogin();
                         }
                       },
                     ),
@@ -114,6 +121,11 @@ class _MainPageState extends State<MainPage> with AfterLayoutMixin<MainPage> {
         const ExplorePage(),
         const ProfilePage(),
       ];
+
+  void goToLogin() async {
+    var result = await XRouter.goWeb(context, ApiService.githubAuthUrl, "");
+    initLoginInfo(result);
+  }
 
   void initLoginInfo(String accessToken) async {
     var feeds = await requestUserFeeds(accessToken);

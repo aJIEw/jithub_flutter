@@ -23,4 +23,5 @@ class ApiService {
   static const String apiUserEvents = '/users/%s/events';
   static const String apiUserRepos = '/user/repos';
   static const String apiStarredRepos = '/users/%s/starred';
+  static const String apiStarRepo = '/user/starred/%s/%s';
 }

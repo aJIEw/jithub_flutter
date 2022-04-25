@@ -10,7 +10,7 @@ class LoginViewModel extends BaseViewModel {
 
     // Todo: change to real request later
     HttpResponse response = await Future.delayed(1.seconds)
-        .then((value) => HttpResponse.success(""));
+        .then((value) => HttpResponse.success("", 200));
     if (response.ok) {
       return true;
     } else {
@@ -28,7 +28,7 @@ class LoginViewModel extends BaseViewModel {
 
     // Todo: change to real request later
     HttpResponse response = await Future.delayed(1.seconds)
-        .then((value) => HttpResponse.success(""));
+        .then((value) => HttpResponse.success("", 200));
 
     dynamic loginInfo;
     if (response.ok) {

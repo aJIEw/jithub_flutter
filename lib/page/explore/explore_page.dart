@@ -5,14 +5,13 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:jithub_flutter/core/base/base_page.dart';
 import 'package:jithub_flutter/core/extension/string.dart';
-import 'package:jithub_flutter/core/util/logger.dart';
-import 'package:jithub_flutter/core/util/toast.dart';
 import 'package:jithub_flutter/core/widget/container/shadow_container.dart';
 import 'package:jithub_flutter/data/response/trending_repo.dart';
 import 'package:jithub_flutter/page/explore/explore_controller.dart';
+import 'package:jithub_flutter/page/explore/explore_star_button.dart';
+import 'package:jithub_flutter/page/home/home_page.dart';
 import 'package:jithub_flutter/router/router.dart';
 import 'package:jithub_flutter/widget/network_image.dart';
-import 'package:jithub_flutter/page/home/home_page.dart';
 
 class ExplorePage extends BaseView<ExploreController> {
   const ExplorePage({Key? key}) : super(key: key);
@@ -26,6 +25,8 @@ class ExplorePage extends BaseView<ExploreController> {
       List<TrendingRepo> trendingRepos = controller.trendingRepos;
       return Scaffold(
         body: ListView.builder(
+            physics: const BouncingScrollPhysics(),
+            cacheExtent: 9999,
             itemCount: trendingRepos.length,
             itemBuilder: (_, index) {
               TrendingRepo repo = trendingRepos[index];
@@ -62,7 +63,8 @@ class ExplorePage extends BaseView<ExploreController> {
                                 ),
                                 title: Text(repo.name ?? "",
                                     style: const TextStyle(
-                                        fontSize: 16, fontWeight: FontWeight.bold)),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold)),
                                 subtitle: Text(repo.author ?? "")),
                             Padding(
                               padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
@@ -77,16 +79,18 @@ class ExplorePage extends BaseView<ExploreController> {
                               child: Row(
                                 children: [
                                   buildIconText(
-                                      (repo.currentPeriodStars ?? 0).toString() + ' Today',
+                                      (repo.currentPeriodStars ?? 0)
+                                              .toString() +
+                                          ' Today',
                                       const Icon(Icons.star,
                                           color: Colors.yellow, size: 12)),
                                   const SizedBox(width: 12),
                                   buildIconText(
                                       repo.language ?? '',
                                       Icon(Icons.circle,
-                                          color: Color(
-                                              repo.languageColor?.toHexValue() ??
-                                                  0xffffff),
+                                          color: Color(repo.languageColor
+                                                  ?.toHexValue() ??
+                                              0xffffff),
                                           size: 10)),
                                 ],
                               ),
@@ -135,23 +139,8 @@ class ExplorePage extends BaseView<ExploreController> {
                                 ],
                               ),
                             ),
-                            Container(
-                              margin: const EdgeInsets.fromLTRB(50, 0, 50, 12),
-                              child: ElevatedButton(
-                                  style: ButtonStyle(
-                                    minimumSize: MaterialStateProperty.all(
-                                        const Size(double.infinity, 40)),
-                                    shape: MaterialStateProperty.all(
-                                        RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(4),
-                                    )),
-                                  ),
-                                  onPressed: () {
-                                    ToastUtils.success('Starred ${repo.name}');
-                                  },
-                                  child: const Text("Star",
-                                      style: TextStyle(color: Colors.white))),
-                            ),
+                            ExploreStarButton(
+                                repo.author ?? '', repo.name ?? '')
                           ],
                         ),
                       ),

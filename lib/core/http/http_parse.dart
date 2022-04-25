@@ -19,7 +19,7 @@ HttpResponse handleResponse(Response? response,
   // token失效
   if (_isTokenTimeout(response.statusCode)) {
     return HttpResponse.failureFromError(
-        UnauthorisedException(message: "没有权限", code: response.statusCode));
+        UnauthorisedException(message: "没有权限", code: response.statusCode), 401);
   }
   // 接口调用成功
   if (_isRequestSuccess(response.statusCode)) {
@@ -32,8 +32,8 @@ HttpResponse handleResponse(Response? response,
 }
 
 HttpResponse handleException(Exception exception) {
-  var parseException = _parseException(exception);
-  return HttpResponse.failureFromError(parseException);
+  HttpException parseException = _parseException(exception);
+  return HttpResponse.failureFromError(parseException, parseException.code);
 }
 
 /// 鉴权失败
