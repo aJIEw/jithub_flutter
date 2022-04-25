@@ -110,7 +110,7 @@ class _RepoListPageState extends State<RepoListPage> {
                               color: Colors.yellow, size: 12)),
                       const SizedBox(width: 12),
                       buildIconText(
-                          (item.forks ?? '0').toString(),
+                          (item.forksCount ?? '0').toString(),
                           SvgPicture.asset('assets/images/ic_trending_fork.svg',
                               width: 10, height: 10)),
                       if (updateTime.isNotEmpty)
