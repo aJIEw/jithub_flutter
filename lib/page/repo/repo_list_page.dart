@@ -81,7 +81,7 @@ class _RepoListPageState extends State<RepoListPage> {
       child: InkWell(
         borderRadius: cardRadius,
         onTap: () {
-          ToastUtils.toast('Clicked item at ${item.name}');
+          onPressRepo(context, item);
         },
         child: Stack(
           children: [

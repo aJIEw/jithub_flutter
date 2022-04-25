@@ -11,6 +11,7 @@ import 'package:jithub_flutter/data/response/user_repo.dart';
 import 'package:jithub_flutter/page/home/home_viewmodel.dart';
 import 'package:jithub_flutter/provider/provider.dart';
 import 'package:jithub_flutter/provider/state/user_profile.dart';
+import 'package:jithub_flutter/router/router.dart';
 import 'package:jithub_flutter/widget/network_image.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -22,7 +23,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   ScrollController scrollController = ScrollController();
 
   void registerBusEvent(HomeViewModel viewModel) {
@@ -34,7 +34,8 @@ class _HomePageState extends State<HomePage> {
   void initUserProfile(HomeViewModel viewModel) {
     var userProfile = Store.value<UserProfile>(context);
 
-    logger.d('_HomePageState - registerBusEvent: userProfile initialized: ${userProfile.user?.name}');
+    logger.d(
+        '_HomePageState - registerBusEvent: userProfile initialized: ${userProfile.user?.name}');
 
     viewModel.init(param: userProfile.user);
   }
@@ -72,7 +73,8 @@ class _HomePageState extends State<HomePage> {
                   if (viewModel.userRepoRequests.length > index) {
                     future = viewModel.userRepoRequests[index];
                   } else {
-                    future = viewModel.getUserRepoRequest(index, item.repo?.url ?? '');
+                    future = viewModel.getUserRepoRequest(
+                        index, item.repo?.url ?? '');
                   }
 
                   return FutureBuilder<UserRepo>(
@@ -126,42 +128,55 @@ class _HomePageState extends State<HomePage> {
               offsetY: -3,
               color: Colors.grey[300],
               child: Container(
-                padding: const EdgeInsets.all(12),
-                margin: const EdgeInsets.symmetric(horizontal: 8),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(6),
                 ),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        item.repo?.name ?? '',
-                        style: TextStyle(
-                            color: Colors.grey[850],
-                            fontSize: 15,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 8),
-                      if (repo.description != null && repo.description != '')
-                        Text(repo.description!),
-                      const SizedBox(height: 8),
-                      Row(
-                        children: [
-                          buildIconText(
-                              (repo.stargazersCount ?? 0).toString(),
-                              const Icon(Icons.star,
-                                  color: Colors.yellow, size: 12)),
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
-                            child: buildIconText(
-                                repo.language ?? '',
-                                Icon(Icons.circle,
-                                    color: Colors.grey[850], size: 8)),
-                          ),
-                        ],
-                      )
-                    ]),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(6),
+                    onTap: () {
+                      onPressRepo(context, repo);
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(12),
+                      margin: const EdgeInsets.symmetric(horizontal: 8),
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              item.repo?.name ?? '',
+                              style: TextStyle(
+                                  color: Colors.grey[850],
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(height: 8),
+                            if (repo.description != null &&
+                                repo.description != '')
+                              Text(repo.description!),
+                            const SizedBox(height: 8),
+                            Row(
+                              children: [
+                                buildIconText(
+                                    (repo.stargazersCount ?? 0).toString(),
+                                    const Icon(Icons.star,
+                                        color: Colors.yellow, size: 12)),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(8, 0, 0, 0),
+                                  child: buildIconText(
+                                      repo.language ?? '',
+                                      Icon(Icons.circle,
+                                          color: Colors.grey[850], size: 8)),
+                                ),
+                              ],
+                            )
+                          ]),
+                    ),
+                  ),
+                ),
               ))
         ],
       ),
@@ -241,6 +256,14 @@ class _HomePageState extends State<HomePage> {
       TextSpan(text: item.actor?.login ?? '', style: boldStyle),
       actionText ?? const TextSpan(text: ''),
     ]));
+  }
+}
+
+void onPressRepo(BuildContext context, UserRepo repo) {
+  var name = (repo.owner?.login ?? "") + " / " + (repo.name ?? "");
+  var url = repo.htmlUrl;
+  if (url != null) {
+    XRouter.goWeb(context, url, name);
   }
 }
 

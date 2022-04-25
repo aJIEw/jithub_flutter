@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:jithub_flutter/core/base/base_app_bar.dart';
 import 'package:jithub_flutter/core/base/provider_widget.dart';
 import 'package:jithub_flutter/core/util/logger.dart';
-import 'package:jithub_flutter/core/util/toast.dart';
 import 'package:jithub_flutter/core/widget/pull_to_refresh.dart';
 import 'package:jithub_flutter/data/response/user_repo.dart';
 import 'package:jithub_flutter/page/home/home_page.dart';
@@ -79,7 +78,7 @@ class _StarredReposPageState extends State<StarredReposPage> {
       child: InkWell(
         borderRadius: cardRadius,
         onTap: () {
-          ToastUtils.toast('Clicked item at ${item.name}');
+          onPressRepo(context, item);
         },
         child: Padding(
           padding: const EdgeInsets.fromLTRB(12, 4, 12, 8),
@@ -96,7 +95,8 @@ class _StarredReposPageState extends State<StarredReposPage> {
                     height: 36,
                   ),
                 ),
-                title: Text((item.owner?.login ?? '') + ' / ' + (item.name ?? ''),
+                title: Text(
+                    (item.owner?.login ?? '') + ' / ' + (item.name ?? ''),
                     style: Theme.of(context)
                         .textTheme
                         .headline6
