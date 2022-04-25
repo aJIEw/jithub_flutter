@@ -9,7 +9,7 @@ import 'package:jithub_flutter/core/util/toast.dart';
 import 'package:jithub_flutter/core/widget/pull_to_refresh.dart';
 import 'package:jithub_flutter/data/response/user_repo.dart';
 import 'package:jithub_flutter/page/home/home_page.dart';
-import 'package:jithub_flutter/page/repo/RepoListViewModel.dart';
+import 'package:jithub_flutter/page/repo/repo_list_viewmodel.dart';
 import 'package:jithub_flutter/provider/provider.dart';
 import 'package:jithub_flutter/provider/state/user_profile.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';

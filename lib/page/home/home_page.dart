@@ -157,7 +157,7 @@ class _HomePageState extends State<HomePage> {
                             child: buildIconText(
                                 repo.language ?? '',
                                 Icon(Icons.circle,
-                                    color: Colors.grey[850], size: 10)),
+                                    color: Colors.grey[850], size: 8)),
                           ),
                         ],
                       )

@@ -36,6 +36,8 @@ const Map<String, String> en_US = {
   "privacy_policy": "Privacy Policy",
   "_comment_repo": "============Repo============",
   "repo_title": "Repositories",
+  "_comment_starred": "============Starred============",
+  "starred_title": "Starred Repositories",
   "_comment_tip_message": "============Tip Message============",
   "click_twice_to_exit": "Click again to exit the app",
   "message_handling": "Processing...",

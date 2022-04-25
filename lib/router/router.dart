@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jithub_flutter/page/main_page.dart';
 import 'package:jithub_flutter/page/login/login_page.dart';
-import 'package:jithub_flutter/page/repo/RepoListPage.dart';
+import 'package:jithub_flutter/page/repo/repo_list_page.dart';
 import 'package:jithub_flutter/page/settings/language_page.dart';
 import 'package:jithub_flutter/page/settings/settings_page.dart';
 import 'package:jithub_flutter/page/settings/theme_page.dart';
 import 'package:jithub_flutter/page/splash_page.dart';
 
+import '../page/repo/starred_repos_page.dart';
 import '/core/widget/webview/common_webview.dart';
 
 /// Router manager
@@ -18,6 +19,7 @@ class XRouter {
   static const String languagePage = '/language-page';
   static const String themePage = '/theme-page';
   static const String repoListPage = '/repo-list-page';
+  static const String starredReposPage = '/starred-repos-page';
 
   static List<GetPage> getPages = [
     GetPage(name: '/', page: () => const SplashPage()),
@@ -31,6 +33,7 @@ class XRouter {
         page: () => const MainPage(),
         transition: Transition.fadeIn),
     GetPage(name: repoListPage, page: () => const RepoListPage()),
+    GetPage(name: starredReposPage, page: () => const StarredReposPage()),
     GetPage(
         name: settingsPage,
         page: () => const SettingsPage(),

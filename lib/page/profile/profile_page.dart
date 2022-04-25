@@ -246,12 +246,12 @@ class ProfilePage extends BaseView<ProfileController> {
                           }),
                           _buildListItem('assets/images/ic_option_starred.png',
                               Color('0xFFFFC600'.toHexValue()), 'Starred', () {
-                            ToastUtils.toast('Clicked Starred Repositories');
+                            XRouter.push(XRouter.starredReposPage);
                           }),
-                          _buildListItem('assets/images/ic_option_settings.png',
+                          /*_buildListItem('assets/images/ic_option_settings.png',
                               Color('0xFF707070'.toHexValue()), 'Settings', () {
-                                ToastUtils.toast('Clicked Settings');
-                              }),
+                            ToastUtils.toast('Clicked Settings');
+                          }),*/
                         ],
                       ),
                     ),

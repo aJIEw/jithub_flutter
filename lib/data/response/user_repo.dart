@@ -1,3 +1,5 @@
+import 'package:jithub_flutter/data/response/github_repo.dart';
+
 class UserRepo {
   int? id;
   String? name;
@@ -5,6 +7,7 @@ class UserRepo {
   bool? private;
   String? htmlUrl;
   String? description;
+  GithubUser? owner;
   bool? fork;
   String? url;
   int? size;
@@ -28,6 +31,7 @@ class UserRepo {
     this.private,
     this.htmlUrl,
     this.description,
+    this.owner,
     this.fork,
     this.url,
     this.size,
@@ -52,6 +56,7 @@ class UserRepo {
     private = json['private'];
     htmlUrl = json['html_url'];
     description = json['description'];
+    owner = json['owner'] != null ? GithubUser.fromJson(json['owner']) : null;
     fork = json['fork'];
     url = json['url'];
     size = json['size'];
@@ -76,6 +81,7 @@ class UserRepo {
     bool? private,
     String? htmlUrl,
     String? description,
+    GithubUser? owner,
     bool? fork,
     String? url,
     int? size,
@@ -100,6 +106,7 @@ class UserRepo {
         private: private ?? this.private,
         htmlUrl: htmlUrl ?? this.htmlUrl,
         description: description ?? this.description,
+        owner: owner ?? this.owner,
         fork: fork ?? this.fork,
         url: url ?? this.url,
         size: size ?? this.size,
@@ -125,6 +132,9 @@ class UserRepo {
     map['private'] = private;
     map['html_url'] = htmlUrl;
     map['description'] = description;
+    if (owner != null) {
+      map['owner'] = owner?.toJson();
+    }
     map['fork'] = fork;
     map['url'] = url;
     map['size'] = size;
