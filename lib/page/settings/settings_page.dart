@@ -1,17 +1,12 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:provider/provider.dart';
-
-import '/core/base/base_controller.dart';
-import '../../core/base/base_app_bar.dart';
-import '../../core/base/base_page.dart';
-import '/core/widget/common_dialogs.dart';
-import '/core/widget/divider.dart';
-import '/provider/state/app_status.dart';
-import '/provider/state/user_profile.dart';
-import '/router/router.dart';
-import '/util/app_utils.dart';
+import 'package:jithub_flutter/core/base/base_app_bar.dart';
+import 'package:jithub_flutter/core/base/base_controller.dart';
+import 'package:jithub_flutter/core/base/base_page.dart';
+import 'package:jithub_flutter/core/widget/common_dialogs.dart';
+import 'package:jithub_flutter/core/widget/divider.dart';
+import 'package:jithub_flutter/router/router.dart';
+import 'package:jithub_flutter/util/app_utils.dart';
 
 class SettingsController extends BaseController {
   @override
@@ -35,54 +30,48 @@ class SettingsPage extends BaseView<SettingsController> {
     return (state) {
       return Scaffold(
         appBar: BaseAppBar(title: 'title_settings'.tr),
-        body: Consumer2(
-          builder: (BuildContext context, AppStatus appStatus,
-              UserProfile userProfile, Widget? child) {
-            return Container(
-              padding: const EdgeInsets.only(top: 20),
-              child: Column(
-                children: [
-                  _buildListItem('choose_language'.tr, '', onPress: () {
-                    XRouter.push(XRouter.languagePage);
-                  }),
-                  _buildListItem('choose_theme'.tr, '', onPress: () {
-                    XRouter.push(XRouter.themePage);
-                  }),
-                  _buildListItem('privacy_policy'.tr, '', onPress: () {
+        body: Container(
+          padding: const EdgeInsets.only(top: 20),
+          child: Column(
+            children: [
+              _buildListItem('choose_language'.tr, '', onPress: () {
+                XRouter.push(XRouter.languagePage);
+              }),
+              _buildListItem('choose_theme'.tr, '', onPress: () {
+                XRouter.push(XRouter.themePage);
+              }),
+              /*_buildListItem('privacy_policy'.tr, '', onPress: () {
                     XRouter.goWeb(
                         context,
                         'http://your.domain.com/privacy_policy',
                         'privacy_policy'.tr);
-                  }),
-                  const Spacer(),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(40, 0, 40, 60),
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                          elevation: MaterialStateProperty.all(0.2),
-                          backgroundColor: MaterialStateProperty.all(
-                              Theme.of(context).primaryColor),
-                          minimumSize: MaterialStateProperty.all(
-                              const Size(double.infinity, 50)),
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(25),
-                          ))),
-                      onPressed: () {
-                        onPressLogout(context);
-                      },
-                      child: Text(
-                        'btn_logout'.tr,
-                        style: Theme.of(context).textTheme.bodyText1?.merge(
-                            const TextStyle(color: Colors.white, fontSize: 18)),
-                      ),
-                    ),
+                  }),*/
+              const Spacer(),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(40, 0, 40, 60),
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                      elevation: MaterialStateProperty.all(0.2),
+                      backgroundColor: MaterialStateProperty.all(
+                          Theme.of(context).primaryColor),
+                      minimumSize: MaterialStateProperty.all(
+                          const Size(double.infinity, 50)),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25),
+                      ))),
+                  onPressed: () {
+                    onPressLogout(context);
+                  },
+                  child: Text(
+                    'btn_logout'.tr,
+                    style: Theme.of(context).textTheme.bodyText1?.merge(
+                        const TextStyle(color: Colors.white, fontSize: 18)),
                   ),
-                ],
+                ),
               ),
-            );
-          },
+            ],
+          ),
         ),
       );
     };

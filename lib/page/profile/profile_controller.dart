@@ -18,8 +18,9 @@ import 'package:jithub_flutter/data/response/github_repo.dart';
 import 'package:sprintf/sprintf.dart';
 
 class ProfileController extends BaseController {
-  late String userName;
-  late String authToken;
+  late String _userName;
+  late String _authToken;
+  Options? _options;
 
   var contributionList = <ContributionRecord>[].obs;
   var totalContribution = 0.obs;
@@ -38,11 +39,14 @@ class ProfileController extends BaseController {
     super.initParams();
 
     var userJson = SPUtils.getUser();
-    userName = userJson.isNotEmpty
+    _userName = userJson.isNotEmpty
         ? User.fromJson(json.decode(userJson)).name ?? ''
         : '';
 
-    authToken = SPUtils.getAuthToken();
+    _authToken = SPUtils.getAuthToken();
+    if (_authToken.isNotEmpty) {
+      _options = Options(headers: {'Authorization': 'Bearer $_authToken'});
+    }
   }
 
   @override
@@ -51,16 +55,16 @@ class ProfileController extends BaseController {
 
     _initContributionData();
 
-    getUserEventsRequest();
+    if (_options != null) {
+      getUserEventsRequest();
+    }
   }
 
   @override
   Future loadData() async {
-    var response =
-        await HttpClient.get(sprintf(ApiService.apiUserInfo, [userName]),
-            options: Options(headers: {
-              'Authorization': 'Bearer $authToken',
-            }));
+    var response = await HttpClient.get(
+        sprintf(ApiService.apiUserInfo, [_userName]),
+        options: _options);
 
     if (response.ok) {
       var user = GithubUser.fromJson(response.data);
@@ -139,12 +143,10 @@ class ProfileController extends BaseController {
       'page': _userEventsPage,
       'per_page': 100,
     };
-    var response =
-        await HttpClient.get(sprintf(ApiService.apiUserEvents, [userName]),
-            queryParameters: param,
-            options: Options(headers: {
-              'Authorization': 'Bearer $authToken',
-            }));
+    var response = await HttpClient.get(
+        sprintf(ApiService.apiUserEvents, [_userName]),
+        queryParameters: param,
+        options: _options);
 
     if (response.ok) {
       var list = (response.data as List)
@@ -207,7 +209,7 @@ class ProfileController extends BaseController {
 
     int count = 0;
     for (var commit in commits) {
-      if (commit.author?.name == userName) {
+      if (commit.author?.name == _userName) {
         count++;
       }
     }
@@ -220,7 +222,7 @@ class ProfileController extends BaseController {
 
     int total = 0, max = 0, min = 0;
     for (var i in contributionList) {
-      if (i.number > 0 ) {
+      if (i.number > 0) {
         total += i.number;
       }
 

@@ -15,6 +15,7 @@ void showAlertDialog(
   VoidCallback? onConfirm,
   String cancelText = '取消',
   VoidCallback? onCancel,
+  bool hideCancel = false,
   bool useThinDivider = false,
 }) {
   Get.dialog(
@@ -49,6 +50,7 @@ void showAlertDialog(
                 onConfirm: onConfirm,
                 cancelText: cancelText,
                 onCancel: onCancel,
+                hideCancel: hideCancel,
                 height: useThinDivider ? 60 : 50,
                 dividerHeight: useThinDivider ? 20 : 50,
               ),
@@ -218,6 +220,7 @@ class OptionButtonGroup extends StatelessWidget {
   final VoidCallback? onConfirm;
   final String cancelText;
   final VoidCallback? onCancel;
+  final bool hideCancel;
 
   final double height;
   final double dividerHeight;
@@ -228,6 +231,7 @@ class OptionButtonGroup extends StatelessWidget {
     this.onConfirm,
     this.cancelText = '取消',
     this.onCancel,
+    this.hideCancel = false,
     this.height = 50,
     this.dividerHeight = 50,
   }) : super(key: key);
@@ -238,23 +242,27 @@ class OptionButtonGroup extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Expanded(
-            child: Clickable(
-                onPressed: () {
-                  onCancel?.call();
-                  Navigator.of(context).pop();
-                },
-                child: Container(
-                  height: height,
-                  alignment: Alignment.center,
-                  child: Text(cancelText,
-                      style: const TextStyle(
-                          color: Colors.black87, fontWeight: FontWeight.w400)),
-                )),
-          ),
-          SizedBox(
-              height: dividerHeight,
-              child: const DefaultVerticalDivider(1, color: Color(0xCCE6E6E6))),
+          if (!hideCancel) ...[
+            Expanded(
+              child: Clickable(
+                  onPressed: () {
+                    onCancel?.call();
+                    Navigator.of(context).pop();
+                  },
+                  child: Container(
+                    height: height,
+                    alignment: Alignment.center,
+                    child: Text(cancelText,
+                        style: const TextStyle(
+                            color: Colors.black87,
+                            fontWeight: FontWeight.w400)),
+                  )),
+            ),
+            SizedBox(
+                height: dividerHeight,
+                child:
+                    const DefaultVerticalDivider(1, color: Color(0xCCE6E6E6)))
+          ],
           Expanded(
             child: Clickable(
                 onPressed: () {

@@ -13,6 +13,7 @@ class StarButtonController extends GetxController {
 
   late String _authToken;
   Options? _options;
+
   String author;
   String repoName;
 
@@ -29,11 +30,7 @@ class StarButtonController extends GetxController {
     if (_authToken.isNotEmpty) {
       checkIsRepoStarred();
       notLoggedIn.value = false;
-      _options = Options(
-        headers: {
-          'Authorization': 'token $_authToken',
-        },
-      );
+      _options = Options(headers: {'Authorization': 'Bearer $_authToken'});
     }
   }
 
@@ -50,8 +47,11 @@ class StarButtonController extends GetxController {
     var response = await HttpClient.get(url, options: _options);
     if (response.ok) {
       hasStarred.value = response.code == 204;
+    } else if (response.code == 404) {
+      hasStarred.value = false;
     } else {
-      logger.e('StarButtonController - checkIsRepoStarred: $url');
+      logger.e(
+          'StarButtonController - checkIsRepoStarred: response.code = ${response.code}');
     }
 
     loading.value = false;

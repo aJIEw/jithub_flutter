@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:jithub_flutter/core/base/base_page.dart';
 import 'package:jithub_flutter/core/extension/string.dart';
 import 'package:jithub_flutter/core/util/event.dart';
-import 'package:jithub_flutter/core/util/toast.dart';
 import 'package:jithub_flutter/core/widget/clickable.dart';
+import 'package:jithub_flutter/core/widget/common_dialogs.dart';
 import 'package:jithub_flutter/core/widget/container/shadow_container.dart';
 import 'package:jithub_flutter/data/event/bus_event.dart';
 import 'package:jithub_flutter/data/response/github_repo.dart';
@@ -42,6 +43,7 @@ class ProfilePage extends BaseView<ProfileController> {
         child: Scaffold(
           body: SafeArea(
             child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
               child: Column(
                 children: [
                   ShadowContainer(
@@ -218,10 +220,22 @@ class ProfilePage extends BaseView<ProfileController> {
                                         text: ' in the last 90 days'),
                                   ])),
                             ),
-                            Icon(
-                              Icons.question_mark,
-                              size: 14,
-                              color: Colors.grey[700],
+                            Clickable(
+                              onPressed: () {
+                                showAlertDialog(
+                                  'contribution_explain'.tr,
+                                  confirmText: 'dialog_confirm_text'.tr,
+                                  hideCancel: true,
+                                );
+                              },
+                              child: Container(
+                                margin: const EdgeInsets.only(top: 2),
+                                padding: const EdgeInsets.all(4),
+                                child: SvgPicture.asset(
+                                    'assets/images/ic_question.svg',
+                                    width: 16,
+                                    height: 16),
+                              ),
                             ),
                           ],
                         ),
@@ -241,11 +255,13 @@ class ProfilePage extends BaseView<ProfileController> {
                           _buildListItem(
                               'assets/images/ic_option_repo.png',
                               Color('0xFF3E444D'.toHexValue()),
-                              'Repositories', () {
+                              'repositories'.tr, () {
                             XRouter.push(XRouter.repoListPage);
                           }),
-                          _buildListItem('assets/images/ic_option_starred.png',
-                              Color('0xFFFFC600'.toHexValue()), 'Starred', () {
+                          _buildListItem(
+                              'assets/images/ic_option_starred.png',
+                              Color('0xFFFFC600'.toHexValue()),
+                              'starred_repos'.tr, () {
                             XRouter.push(XRouter.starredReposPage);
                           }),
                           /*_buildListItem('assets/images/ic_option_settings.png',
