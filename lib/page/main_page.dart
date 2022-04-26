@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:jithub_flutter/core/base/base_controller.dart';
 import 'package:jithub_flutter/core/http/http_client.dart';
 import 'package:jithub_flutter/core/util/event.dart';
+import 'package:jithub_flutter/core/util/toast.dart';
 import 'package:jithub_flutter/data/event/bus_event.dart';
 import 'package:jithub_flutter/data/response/user_feeds.dart';
 import 'package:jithub_flutter/page/explore/explore_page.dart';
@@ -12,15 +13,12 @@ import 'package:jithub_flutter/page/home/home_page.dart';
 import 'package:jithub_flutter/page/profile/profile_page.dart';
 import 'package:jithub_flutter/page/viewmodel/main_viewmodel.dart';
 import 'package:jithub_flutter/provider/provider.dart';
-import 'package:jithub_flutter/util/app_utils.dart';
 import 'package:provider/provider.dart';
 
 import '/core/base/provider_widget.dart';
 import '/core/util/click.dart';
 import '/core/util/logger.dart';
 import '/core/util/sputils.dart';
-import '/core/widget/button/round_button.dart';
-import '/core/widget/common_dialogs.dart';
 import '/provider/state/app_status.dart';
 import '/provider/state/user_profile.dart';
 import '/router/router.dart';
@@ -123,12 +121,14 @@ class _MainPageState extends State<MainPage> with AfterLayoutMixin<MainPage> {
       ];
 
   void goToLogin() async {
-    var result = await XRouter.goWeb(context, ApiService.githubAuthUrl, "");
-    initLoginInfo(result);
+    String? result = await XRouter.goWeb(context, ApiService.githubAuthUrl, "");
+    if (result != null && result.isNotEmpty) {
+      initLoginInfo(result);
+    }
   }
 
   void initLoginInfo(String accessToken) async {
-    var feeds = await requestUserFeeds(accessToken);
+    var feeds = await requestUserFeeds();
     var userUrl = feeds?.currentUserPublicUrl;
     if (userUrl != null) {
       var name = userUrl.substring(userUrl.lastIndexOf("/") + 1);
@@ -139,11 +139,13 @@ class _MainPageState extends State<MainPage> with AfterLayoutMixin<MainPage> {
       var userProfile = Store.value<UserProfile>(context);
       userProfile.initWithLoginInfo(info);
 
-      XEvent.post('EventRefreshUserProfile', true);
+      ToastUtils.toast('login_success'.tr);
+
+      XEvent.post(BusEvent.userLoggedIn, true);
     }
   }
 
-  Future<UserFeeds?> requestUserFeeds(String accessToken) async {
+  Future<UserFeeds?> requestUserFeeds() async {
     var response = await HttpClient.get('/feeds');
     if (response.ok) {
       var feeds = UserFeeds.fromJson(response.data);

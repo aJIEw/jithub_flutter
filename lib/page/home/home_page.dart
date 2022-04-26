@@ -4,6 +4,7 @@ import 'package:jithub_flutter/core/extension/string.dart';
 import 'package:jithub_flutter/core/util/event.dart';
 import 'package:jithub_flutter/core/util/logger.dart';
 import 'package:jithub_flutter/core/widget/pull_to_refresh.dart';
+import 'package:jithub_flutter/data/event/bus_event.dart';
 import 'package:jithub_flutter/data/model/github_event.dart';
 import 'package:jithub_flutter/data/response/event_timeline.dart';
 import 'package:jithub_flutter/data/response/user_repo.dart';
@@ -26,7 +27,7 @@ class _HomePageState extends State<HomePage> {
   ScrollController scrollController = ScrollController();
 
   void registerBusEvent(HomeViewModel viewModel) {
-    XEvent.on('EventRefreshUserProfile', (value) async {
+    XEvent.on(BusEvent.userLoggedIn, (value) async {
       initUserProfile(viewModel);
     });
   }

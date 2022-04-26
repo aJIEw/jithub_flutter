@@ -8,8 +8,10 @@ import 'package:jithub_flutter/core/api_service.dart';
 import 'package:jithub_flutter/core/base/base_controller.dart';
 import 'package:jithub_flutter/core/constants.dart';
 import 'package:jithub_flutter/core/http/http_client.dart';
+import 'package:jithub_flutter/core/util/event.dart';
 import 'package:jithub_flutter/core/util/logger.dart';
 import 'package:jithub_flutter/core/util/sputils.dart';
+import 'package:jithub_flutter/data/event/bus_event.dart';
 import 'package:jithub_flutter/data/model/contribution_record.dart';
 import 'package:jithub_flutter/data/model/github_event.dart';
 import 'package:jithub_flutter/data/model/user.dart';
@@ -47,6 +49,17 @@ class ProfileController extends BaseController {
     if (_authToken.isNotEmpty) {
       _options = Options(headers: {'Authorization': 'Bearer $_authToken'});
     }
+  }
+
+  @override
+  void registerBusEvent() {
+    XEvent.on(BusEvent.userLoggedIn, (value) async {
+      initParams();
+
+      append(() => loadData);
+
+      getUserEventsRequest();
+    });
   }
 
   @override

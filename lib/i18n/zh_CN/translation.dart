@@ -3,6 +3,7 @@ const Map<String, String> zh_CN = {
   "error_page_title": "页面出错",
   "reload_button": "重新加载",
   "_comment_login": "============Login============",
+  "login_success": "登录成功",
   "phone_number": "手机号码",
   "input_phone_number": "在这里输入您的手机号码",
   "login_app_privacy_agreement": "@app_name©用户隐私协议",

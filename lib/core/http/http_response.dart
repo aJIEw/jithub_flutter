@@ -25,7 +25,7 @@ class HttpResponse {
   }
 
   HttpResponse.failureFromError([HttpException? error, int? errorCode]) {
-    error = error ?? UnknownException();
+    this.error = error ?? UnknownException();
     ok = false;
     code = errorCode ?? -1;
   }

@@ -3,6 +3,7 @@ const Map<String, String> en_US = {
   "error_page_title": "Error",
   "reload_button": "Reload",
   "_comment_login": "============Login============",
+  "login_success": "Login Success",
   "phone_number": "Phone",
   "input_phone_number": "Please input your phone number",
   "login_app_privacy_agreement": "@app_name©Services and Terms",
