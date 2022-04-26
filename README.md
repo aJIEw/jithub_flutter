@@ -1,16 +1,18 @@
-# jithub_flutter
+## jithub_flutter
 
-A new Flutter project.
+[![Releases](https://img.shields.io/github/license/aJIEw/jithub_flutter?style=plastic)](https://github.com/aJIEw/jithub_flutter/blob/app/LICENSE)
 
-## Getting Started
+Flutter 版本的 [Jithub](https://github.com/aJIEw/Jithub) 客户端。
 
-This project is a starting point for a Flutter application.
+### Android
 
-A few resources to get you started if this is your first Flutter project:
+|      Home        |      Explore      |       Profile      |
+| :--------------: | :---------------: | :-----------------------: |
+| <img src="./assets/screenshots/android/home.png" style="zoom:50%;" /> | <img src="./assets/screenshots/android/explore.png" style="zoom:50%;" /> | <img src="./assets/screenshots/android/profile.png" style="zoom:50%;" /> |
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+### iOS
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+|      Home        |      Explore      |       Profile      |
+| :--------------: | :---------------: | :-----------------------: |
+| <img src="./assets/screenshots/ios/home.png" style="zoom:50%;" /> | <img src="./assets/screenshots/ios/explore.png" style="zoom:50%;" /> | <img src="./assets/screenshots/ios/profile.png" style="zoom:50%;" /> |
+
