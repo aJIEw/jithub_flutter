@@ -4,10 +4,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:jithub_flutter/page/init_binding.dart';
 
+import '/core/app_theme.dart';
 import '/core/constants.dart';
 import '/core/util/sputils.dart';
 import '/i18n/i18n.dart';
-import 'core/app_theme.dart';
 import '/router/router.dart';
 
 const bool showDebugBanner = false;
@@ -19,7 +19,7 @@ class AppEntrance extends StatelessWidget with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return ScreenUtilInit(
       designSize: const Size(390, 844), // based on iPhone 13
-      builder: () => GetMaterialApp(
+      builder: (context, child) => GetMaterialApp(
         title: Constants.appTitle,
         debugShowCheckedModeBanner: kDebugMode && showDebugBanner,
         theme: AppTheme.getDefaultTheme(SPUtils.getThemeIndex()),
