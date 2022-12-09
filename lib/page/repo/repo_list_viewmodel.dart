@@ -10,7 +10,7 @@ class RepoListViewModel extends BaseRefreshLoadMoreViewModel {
   String get requestUrl => ApiService.apiUserRepos;
 
   @override
-  int get perPageSizeOnCheck => 100;
+  int get perPageSize => 100;
 
   @override
   Future<List> loadData() async {
@@ -20,7 +20,7 @@ class RepoListViewModel extends BaseRefreshLoadMoreViewModel {
 
     var param = {
       'page': page,
-      'per_page': 100,
+      'per_page': perPageSize,
       'sort': 'pushed',
     };
     // var url = sprintf.call(requestUrl, [params]);

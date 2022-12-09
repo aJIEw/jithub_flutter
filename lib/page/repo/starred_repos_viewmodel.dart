@@ -6,7 +6,6 @@ import 'package:jithub_flutter/page/repo/repo_list_viewmodel.dart';
 import 'package:sprintf/sprintf.dart';
 
 class StarredReposViewModel extends RepoListViewModel {
-
   @override
   String get requestUrl => ApiService.apiStarredRepos;
 
@@ -18,7 +17,7 @@ class StarredReposViewModel extends RepoListViewModel {
 
     var param = {
       'page': page,
-      'per_page': 100,
+      'per_page': perPageSize,
       'sort': 'pushed',
     };
     var url = sprintf.call(requestUrl, [params]);

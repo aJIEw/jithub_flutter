@@ -1,7 +1,19 @@
 import 'package:sprintf/sprintf.dart';
 
 extension IntExtension on int {
-  static const List<String> ZH_NUM = ["", "一", "二", "三", "四", "五", "六", "七", "八", "九", "十"];
+  static const List<String> ZH_NUM = [
+    "",
+    "一",
+    "二",
+    "三",
+    "四",
+    "五",
+    "六",
+    "七",
+    "八",
+    "九",
+    "十"
+  ];
 
   /// 将 100 以内的整数转换为中文数字
   String toChineseNumber() {

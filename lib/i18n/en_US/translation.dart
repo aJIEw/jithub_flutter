@@ -27,7 +27,8 @@ const Map<String, String> en_US = {
   "btn_to_settings": "Go to Settings",
   "repositories": "Repositories",
   "starred_repos": "Starred Repositories",
-  "contribution_explain": "Due to the API limitation, all commits pushed in the same day are considered contributions for that day.",
+  "contribution_explain":
+      "Due to the API limitation, all commits pushed in the same day are considered contributions for that day.",
   "_comment_settings": "============Settings============",
   "title_settings": "Settings",
   "choose_language": "Choose Language",

@@ -27,7 +27,8 @@ class I18n extends Translations {
 
   static String get appLocaleString => SPUtils.getLocale();
 
-  static Future<bool> setAppLocaleString(String localeString) => SPUtils.saveLocale(localeString);
+  static Future<bool> setAppLocaleString(String localeString) =>
+      SPUtils.saveLocale(localeString);
 
   static List<LocalizationsDelegate<dynamic>> get delegates => [
         GlobalMaterialLocalizations.delegate,

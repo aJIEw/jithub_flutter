@@ -142,9 +142,11 @@ class Payload {
 
   Payload.fromJson(dynamic json) {
     action = json['action'];
-    forkee = json['forkee'] != null ? GithubUser.fromJson(json['forkee']) : null;
+    forkee =
+        json['forkee'] != null ? GithubUser.fromJson(json['forkee']) : null;
     ref_type = json['ref_type'];
-    release = json['release'] != null ? ReleaseRepo.fromJson(json['release']) : null;
+    release =
+        json['release'] != null ? ReleaseRepo.fromJson(json['release']) : null;
     if (json['commits'] != null) {
       commits = [];
       for (dynamic item in json['commits']) {
@@ -235,7 +237,8 @@ class Commit {
 class Author {
   Author({
     this.email,
-    this.name,});
+    this.name,
+  });
 
   Author.fromJson(dynamic json) {
     email = json['email'];
@@ -243,18 +246,20 @@ class Author {
   }
   String? email;
   String? name;
-  Author copyWith({  String? email,
+  Author copyWith({
+    String? email,
     String? name,
-  }) => Author(  email: email ?? this.email,
-    name: name ?? this.name,
-  );
+  }) =>
+      Author(
+        email: email ?? this.email,
+        name: name ?? this.name,
+      );
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['email'] = email;
     map['name'] = name;
     return map;
   }
-
 }
 
 class Repo {
@@ -342,4 +347,3 @@ class ReleaseRepo {
     return map;
   }
 }
-

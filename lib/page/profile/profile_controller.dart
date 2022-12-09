@@ -199,7 +199,8 @@ class ProfileController extends BaseController {
           } else if (total < mid) {
             updateIndex = mid + (mid - total);
           }
-          _updateContributionNumber(updateIndex.toInt(), event.payload?.commits);
+          _updateContributionNumber(
+              updateIndex.toInt(), event.payload?.commits);
         }
       }
     }

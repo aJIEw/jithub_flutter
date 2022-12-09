@@ -11,7 +11,8 @@ class ExploreController extends BaseController {
 
   @override
   Future loadData() async {
-    var response = await HttpClient.get(ApiService.trendingUrl + ApiService.apiTrendingRepos);
+    var response = await HttpClient.get(
+        ApiService.trendingUrl + ApiService.apiTrendingRepos);
 
     // var response = await Future.delayed(const Duration(seconds: 3)).then(
     //         (value) => HttpResponse.failureFromError(NetworkException(message: "Network Error")));

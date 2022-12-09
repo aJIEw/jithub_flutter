@@ -30,7 +30,8 @@ class BaseListResponse<T> {
   int? totalPages;
   int? currentPage;
 
-  BaseListResponse({this.results, this.totalElements, this.totalPages, this.currentPage});
+  BaseListResponse(
+      {this.results, this.totalElements, this.totalPages, this.currentPage});
 
   BaseListResponse.fromJson(dynamic json, ResultBuilder<T> create) {
     if (json["results"] != null) {

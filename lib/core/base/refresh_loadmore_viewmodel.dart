@@ -74,4 +74,3 @@ abstract class RefreshLoadMoreViewModel<T> extends BaseViewModel {
   /// 上拉加载
   Future<List<T>> onLoadMore();
 }
-

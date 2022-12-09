@@ -6,11 +6,11 @@ abstract class BaseRefreshLoadMoreViewModel extends RefreshLoadMoreViewModel {
 
   String get requestUrl;
 
-  int perPageSizeOnCheck = ApiService.perPageSize;
+  int perPageSize = ApiService.perPageSize;
 
   /// 是否存在下一页数据，在 [loadData] 方法中调用
   void checkHasNextPage(List data) {
-    if (data.length >= perPageSizeOnCheck) {
+    if (data.length >= perPageSize) {
       nextPageUrl = requestUrl;
       page++;
     } else {

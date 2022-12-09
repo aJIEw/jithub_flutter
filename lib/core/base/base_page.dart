@@ -114,7 +114,8 @@ class BaseErrorPage extends StatelessWidget {
               ),
             const SizedBox(height: 20),
             if (onReload != null)
-              ElevatedButton(onPressed: onReload, child: Text('reload_button'.tr))
+              ElevatedButton(
+                  onPressed: onReload, child: Text('reload_button'.tr))
           ],
         ));
   }
@@ -134,7 +135,8 @@ class BaseStatusContainer extends StatelessWidget {
         appBar: actionBar,
         body: Container(
           alignment: Alignment.center,
-          padding: EdgeInsets.only(bottom: actionBar != null ? kToolbarHeight * 2 : 0),
+          padding: EdgeInsets.only(
+              bottom: actionBar != null ? kToolbarHeight * 2 : 0),
           child: child,
         ));
   }

@@ -211,10 +211,11 @@ class _CommonWebViewState extends State<CommonWebView> {
     param["client_secret"] = ApiService.clientSecret;
     param["code"] = code;
 
-    var response = await HttpClient.post(ApiService.githubUrl + ApiService.apiAccessToken,
+    var response = await HttpClient.post(
+        ApiService.githubUrl + ApiService.apiAccessToken,
         data: json.encode(param));
     if (response.ok) {
-      var url = ApiService.githubUrl + '/?' + response.data;
+      var url = '${ApiService.githubUrl}/?${response.data}';
       try {
         var accessToken = Uri.parse(url).queryParameters['access_token'];
         HttpClient.setAuthToken(accessToken!);

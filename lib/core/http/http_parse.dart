@@ -43,7 +43,8 @@ bool _isTokenTimeout(int? code) {
 
 /// 请求成功
 bool _isRequestSuccess(int? statusCode) {
-  return (statusCode != null && statusCode >= 200 && statusCode < 300 || statusCode == 304);
+  return (statusCode != null && statusCode >= 200 && statusCode < 300 ||
+      statusCode == 304);
 }
 
 HttpException _parseException(Exception error) {
