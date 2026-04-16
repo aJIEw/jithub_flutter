@@ -1,7 +1,7 @@
 import 'package:sprintf/sprintf.dart';
 
 extension IntExtension on int {
-  static const List<String> ZH_NUM = [
+  static const List<String> zhNum = [
     "",
     "一",
     "二",
@@ -12,18 +12,18 @@ extension IntExtension on int {
     "七",
     "八",
     "九",
-    "十"
+    "十",
   ];
 
   /// 将 100 以内的整数转换为中文数字
   String toChineseNumber() {
     if (this > 0) {
       if (this < 10) {
-        return ZH_NUM[this];
+        return zhNum[this];
       } else if (this > 9 && this < 100) {
         int tens = this ~/ 10;
         int ones = this % 10;
-        return '${tens > 1 ? ZH_NUM[tens] : ''}十${ZH_NUM[ones]}';
+        return '${tens > 1 ? zhNum[tens] : ''}十${zhNum[ones]}';
       } else {
         return '';
       }
@@ -56,6 +56,6 @@ extension IntExtension on int {
   }
 
   String autoPluralize(String single, String plural) {
-    return this == 1 ? single : (this.toString() + plural);
+    return this == 1 ? single : (toString() + plural);
   }
 }

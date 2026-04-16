@@ -13,7 +13,7 @@ import 'package:jithub_flutter/widget/network_image.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class StarredReposPage extends StatefulWidget {
-  const StarredReposPage({Key? key}) : super(key: key);
+  const StarredReposPage({super.key});
 
   @override
   State<StarredReposPage> createState() => _StarredReposPageState();
@@ -31,8 +31,7 @@ class _StarredReposPageState extends State<StarredReposPage> {
 
           // registerBusEvent(viewModel);
         },
-        builder: (BuildContext context, StarredReposViewModel viewModel,
-            Widget? child) {
+        builder: (context, viewModel, child) {
           return viewModel.dataList.isEmpty
               ? const Center(child: CircularProgressIndicator())
               : SmartRefresher(
@@ -58,22 +57,24 @@ class _StarredReposPageState extends State<StarredReposPage> {
     var userProfile = Store.value<UserProfile>(context);
 
     logger.d(
-        '_RepoListPageState - registerBusEvent: userProfile initialized: ${userProfile.user?.name}');
+      '_RepoListPageState - registerBusEvent: userProfile initialized: ${userProfile.user?.name}',
+    );
 
     viewModel.init(param: userProfile.user?.name);
   }
 
   Widget _buildListItem(
-      BuildContext context, StarredReposViewModel viewModel, int index) {
+    BuildContext context,
+    StarredReposViewModel viewModel,
+    int index,
+  ) {
     var cardRadius = const BorderRadius.all(Radius.circular(5.0));
 
     UserRepo item = viewModel.dataList[index];
 
     return Card(
       elevation: 1,
-      shape: RoundedRectangleBorder(
-        borderRadius: cardRadius,
-      ),
+      shape: RoundedRectangleBorder(borderRadius: cardRadius),
       margin: const EdgeInsets.all(8.0),
       child: InkWell(
         borderRadius: cardRadius,
@@ -96,26 +97,32 @@ class _StarredReposPageState extends State<StarredReposPage> {
                   ),
                 ),
                 title: Text(
-                    (item.owner?.login ?? '') + ' / ' + (item.name ?? ''),
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline6
-                        ?.copyWith(fontSize: 18)),
+                  '${item.owner?.login ?? ''} / ${item.name ?? ''}',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleLarge?.copyWith(fontSize: 18),
+                ),
               ),
               if (item.description != null) ...[
-                Text(item.description ?? '',
-                    style: Theme.of(context).textTheme.subtitle1),
+                Text(
+                  item.description ?? '',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
               ],
               const SizedBox(height: 12),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  buildIconText((item.stargazersCount ?? 0).toString(),
-                      const Icon(Icons.star, color: Colors.yellow, size: 12)),
+                  buildIconText(
+                    (item.stargazersCount ?? 0).toString(),
+                    const Icon(Icons.star, color: Colors.yellow, size: 12),
+                  ),
                   const SizedBox(width: 12),
                   if (item.language != null)
-                    buildIconText(item.language ?? '',
-                        Icon(Icons.circle, color: Colors.grey[850], size: 8)),
+                    buildIconText(
+                      item.language ?? '',
+                      Icon(Icons.circle, color: Colors.grey[850], size: 8),
+                    ),
                 ],
               ),
             ],

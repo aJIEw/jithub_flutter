@@ -1,16 +1,15 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class RoundButton extends StatelessWidget {
-  const RoundButton(
-      {Key? key,
-      this.size,
-      this.backgroundColor,
-      this.borderRadius = 5,
-      this.padding = const EdgeInsets.symmetric(horizontal: 10),
-      required this.onPressed,
-      required this.child})
-      : super(key: key);
+  const RoundButton({
+    super.key,
+    this.size,
+    this.backgroundColor,
+    this.borderRadius = 5,
+    this.padding = const EdgeInsets.symmetric(horizontal: 10),
+    required this.onPressed,
+    required this.child,
+  });
 
   final Size? size;
 
@@ -28,18 +27,24 @@ class RoundButton extends StatelessWidget {
   Widget build(BuildContext context) {
     var theme = Theme.of(context).buttonTheme;
     return ElevatedButton(
-        style: ButtonStyle(
-          minimumSize: MaterialStateProperty.all(
-              size ?? Size(theme.minWidth, theme.height)),
-          padding: MaterialStateProperty.all(padding),
-          backgroundColor: MaterialStateProperty.all(
-              backgroundColor ?? Theme.of(context).primaryColor),
-          elevation: MaterialStateProperty.all(0),
-          shape: MaterialStateProperty.all(RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(borderRadius))),
-          splashFactory: NoSplash.splashFactory,
+      style: ButtonStyle(
+        minimumSize: WidgetStateProperty.all(
+          size ?? Size(theme.minWidth, theme.height),
         ),
-        onPressed: onPressed,
-        child: child);
+        padding: WidgetStateProperty.all(padding),
+        backgroundColor: WidgetStateProperty.all(
+          backgroundColor ?? Theme.of(context).primaryColor,
+        ),
+        elevation: WidgetStateProperty.all(0),
+        shape: WidgetStateProperty.all(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(borderRadius),
+          ),
+        ),
+        splashFactory: NoSplash.splashFactory,
+      ),
+      onPressed: onPressed,
+      child: child,
+    );
   }
 }

@@ -14,7 +14,7 @@ import 'package:jithub_flutter/router/router.dart';
 import 'package:jithub_flutter/widget/network_image.dart';
 
 class ExplorePage extends BaseView<ExploreController> {
-  const ExplorePage({Key? key}) : super(key: key);
+  const ExplorePage({super.key});
 
   @override
   bool get hasActionBar => false;
@@ -25,136 +25,157 @@ class ExplorePage extends BaseView<ExploreController> {
       List<TrendingRepo> trendingRepos = controller.trendingRepos;
       return Scaffold(
         body: ListView.builder(
-            physics: const BouncingScrollPhysics(),
-            cacheExtent: 9999,
-            itemCount: trendingRepos.length,
-            itemBuilder: (_, index) {
-              TrendingRepo repo = trendingRepos[index];
-              return Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                child: ShadowContainer(
-                  offsetX: 1,
-                  offsetY: -3,
-                  color: Colors.grey[300],
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
+          physics: const BouncingScrollPhysics(),
+          cacheExtent: 9999,
+          itemCount: trendingRepos.length,
+          itemBuilder: (_, index) {
+            TrendingRepo repo = trendingRepos[index];
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              child: ShadowContainer(
+                offsetX: 1,
+                offsetY: -3,
+                color: Colors.grey[300] ?? Colors.grey,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
                       borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(8),
-                        onTap: () {
-                          _onPressRepo(context, repo);
-                        },
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            ListTile(
-                                leading: ClipRRect(
-                                  borderRadius: BorderRadius.circular(25),
-                                  child: DefaultNetworkImage(
-                                    repo.avatar ?? "",
-                                    width: 50,
-                                    height: 50,
+                      onTap: () {
+                        _onPressRepo(context, repo);
+                      },
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ListTile(
+                            leading: ClipRRect(
+                              borderRadius: BorderRadius.circular(25),
+                              child: DefaultNetworkImage(
+                                repo.avatar ?? "",
+                                width: 50,
+                                height: 50,
+                              ),
+                            ),
+                            title: Text(
+                              repo.name ?? "",
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            subtitle: Text(repo.author ?? ""),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                            child: Text(
+                              repo.description ?? '',
+                              style: const TextStyle(fontSize: 15),
+                              textAlign: TextAlign.left,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
+                            child: Row(
+                              children: [
+                                buildIconText(
+                                  '${repo.currentPeriodStars ?? 0} Today',
+                                  const Icon(
+                                    Icons.star,
+                                    color: Colors.yellow,
+                                    size: 12,
                                   ),
                                 ),
-                                title: Text(repo.name ?? "",
-                                    style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold)),
-                                subtitle: Text(repo.author ?? "")),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-                              child: Text(
-                                repo.description ?? '',
-                                style: const TextStyle(fontSize: 15),
-                                textAlign: TextAlign.left,
-                              ),
+                                const SizedBox(width: 12),
+                                buildIconText(
+                                  repo.language ?? '',
+                                  Icon(
+                                    Icons.circle,
+                                    color: Color(
+                                      repo.languageColor?.toHexValue() ??
+                                          0xffffff,
+                                    ),
+                                    size: 10,
+                                  ),
+                                ),
+                              ],
                             ),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
-                              child: Row(
-                                children: [
-                                  buildIconText(
-                                      (repo.currentPeriodStars ?? 0)
-                                              .toString() +
-                                          ' Today',
-                                      const Icon(Icons.star,
-                                          color: Colors.yellow, size: 12)),
-                                  const SizedBox(width: 12),
-                                  buildIconText(
-                                      repo.language ?? '',
-                                      Icon(Icons.circle,
-                                          color: Color(repo.languageColor
-                                                  ?.toHexValue() ??
-                                              0xffffff),
-                                          size: 10)),
-                                ],
-                              ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                            child: Row(
+                              children: [
+                                buildIconText(
+                                  (repo.stars ?? '0').toString(),
+                                  Icon(
+                                    Icons.star_border,
+                                    color: Colors.grey[850],
+                                    size: 12,
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                buildIconText(
+                                  (repo.forks ?? '0').toString(),
+                                  SvgPicture.asset(
+                                    'assets/images/ic_trending_fork.svg',
+                                    width: 10,
+                                    height: 10,
+                                  ),
+                                ),
+                              ],
                             ),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-                              child: Row(
-                                children: [
-                                  buildIconText(
-                                      (repo.stars ?? '0').toString(),
-                                      Icon(Icons.star_border,
-                                          color: Colors.grey[850], size: 12)),
-                                  const SizedBox(width: 12),
-                                  buildIconText(
-                                      (repo.forks ?? '0').toString(),
-                                      SvgPicture.asset(
-                                          'assets/images/ic_trending_fork.svg',
-                                          width: 10,
-                                          height: 10)),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-                              child: Row(
-                                children: [
-                                  buildIconText(
-                                      'Built By',
-                                      Icon(Icons.person,
-                                          color: Colors.grey[700], size: 14)),
-                                  const SizedBox(width: 12),
-                                  for (var i = 0;
-                                      i < (min(repo.builtBy?.length ?? 0, 7));
-                                      i++)
-                                    Padding(
-                                      padding: const EdgeInsets.only(right: 4),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(12),
-                                        child: DefaultNetworkImage(
-                                          repo.builtBy?[i].avatar ?? "",
-                                          width: 24,
-                                          height: 24,
-                                        ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                            child: Row(
+                              children: [
+                                buildIconText(
+                                  'Built By',
+                                  Icon(
+                                    Icons.person,
+                                    color: Colors.grey[700],
+                                    size: 14,
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                for (
+                                  var i = 0;
+                                  i < (min(repo.builtBy?.length ?? 0, 7));
+                                  i++
+                                )
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 4),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(12),
+                                      child: DefaultNetworkImage(
+                                        repo.builtBy?[i].avatar ?? "",
+                                        width: 24,
+                                        height: 24,
                                       ),
                                     ),
-                                ],
-                              ),
+                                  ),
+                              ],
                             ),
-                            ExploreStarButton(
-                                repo.author ?? '', repo.name ?? '')
-                          ],
-                        ),
+                          ),
+                          ExploreStarButton(repo.author ?? '', repo.name ?? ''),
+                        ],
                       ),
                     ),
                   ),
                 ),
-              );
-            }),
+              ),
+            );
+          },
+        ),
       );
     };
   }
 
   void _onPressRepo(BuildContext context, TrendingRepo repo) {
-    var name = (repo.author ?? "") + " / " + (repo.name ?? "");
+    var name = "${repo.author ?? ""} / ${repo.name ?? ""}";
     var url = repo.url;
     if (url != null) {
       XRouter.goWeb(context, url, name);

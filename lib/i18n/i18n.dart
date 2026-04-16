@@ -10,10 +10,7 @@ class I18n extends Translations {
 
   /// App 支持的语言列表，第一个是默认语言
   static List<Locale> get supportedLocales {
-    return const <Locale>[
-      fallbackLocale,
-      Locale("en", "US"),
-    ];
+    return const <Locale>[fallbackLocale, Locale("en", "US")];
   }
 
   static Locale? get locale => Get.deviceLocale;
@@ -31,16 +28,13 @@ class I18n extends Translations {
       SPUtils.saveLocale(localeString);
 
   static List<LocalizationsDelegate<dynamic>> get delegates => [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ];
+    GlobalMaterialLocalizations.delegate,
+    GlobalWidgetsLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate,
+  ];
 
   @override
-  Map<String, Map<String, String>> get keys => {
-        'zh_CN': zh_CN,
-        'en_US': en_US,
-      };
+  Map<String, Map<String, String>> get keys => {'zh_CN': zhCn, 'en_US': enUs};
 
   static Locale? isSupported(Locale? locale) {
     for (var i = 0; i < supportedLocales.length && locale != null; i++) {

@@ -18,7 +18,8 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.17.0 <3.0.0"
+  sdk: ">=3.11.1 <4.0.0"
+  flutter: ">=3.41.4"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -41,47 +42,46 @@ dependencies:
   # image & icons
   cached_network_image: ^3.2.1
   cupertino_icons: ^1.0.4
-  flutter_svg: ^1.0.3
+  flutter_svg: ^2.2.4
 
   # animations
   animations: ^2.0.2
-  shimmer: ^2.0.0
+  shimmer: ^3.0.0
 
   # network
-  dio: ^4.0.6
-  dio_cache_interceptor: ^3.2.7
-  dio_cookie_manager: ^2.0.0
-  cookie_jar: ^3.0.1
+  dio: ^5.9.2
+  dio_cache_interceptor: ^4.0.6
+  dio_cookie_manager: ^3.4.0
+  cookie_jar: ^4.0.9
   pretty_dio_logger: ^1.2.0-beta-1
 
   # dev utils
   after_layout: ^1.2.0
   collection: ^1.16.0
-  connectivity_plus: ^2.3.0
+  connectivity_plus: ^7.1.1
   date_format: ^2.0.6
-  device_info_plus: ^3.2.3
+  device_info_plus: ^13.0.0
   flutter_screenutil: ^5.5.3+2
-  jiffy: ^5.0.0
-  logger: ^1.1.0
+  jiffy: ^6.4.4
+  logger: ^2.7.0
   event_bus: ^2.0.0
   package_info: ^2.0.2
   path_provider: ^2.0.10
-  permission_handler: ^9.2.0
+  permission_handler: ^12.0.1
   provider: ^6.0.3
   share: ^2.0.4
   shared_preferences: ^2.0.15
-  sprintf: ^6.0.0
+  sprintf: ^7.0.0
   supercharged: ^2.1.1
   url_launcher: ^6.1.2
-  visibility_detector: ^0.3.3
+  visibility_detector: ^0.4.0+2
 
   # others
-  bruno: ^2.2.0
-  carousel_slider: ^4.1.1
+  carousel_slider: ^5.1.2
   oktoast: ^3.2.0
-  flutter_inappwebview: ^5.4.3+7
+  flutter_inappwebview: ^6.1.5
   flutter_spinkit: ^5.1.0
-  pin_code_fields: ^7.4.0
+  pin_code_fields: ^9.3.0
   pull_to_refresh: ^2.0.0
 
 dev_dependencies:
@@ -93,7 +93,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^2.0.1
+  flutter_lints: ^6.0.0
 
 dependency_overrides:
   # fix <Member not found: 'packageRoot'.> issue.

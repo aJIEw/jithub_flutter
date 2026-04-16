@@ -76,8 +76,9 @@ class ProfileController extends BaseController {
   @override
   Future loadData() async {
     var response = await HttpClient.get(
-        sprintf(ApiService.apiUserInfo, [_userName]),
-        options: _options);
+      sprintf(ApiService.apiUserInfo, [_userName]),
+      options: _options,
+    );
 
     if (response.ok) {
       var user = GithubUser.fromJson(response.data);
@@ -119,15 +120,18 @@ class ProfileController extends BaseController {
       var totalOffset = 6 - contributionPlaceholderDays;
       for (var i = 0; i <= totalOffset; i++) {
         var offset = totalOffset - i;
-        var date =
-            Jiffy().subtract(days: offset).format(Constants.dateDefaultFormat);
-        _contributionRecords
-            .add(ContributionRecord(index: i, date: date, number: 0));
+        var date = Jiffy.now()
+            .subtract(days: offset)
+            .format(pattern: Constants.dateDefaultFormat);
+        _contributionRecords.add(
+          ContributionRecord(index: i, date: date, number: 0),
+        );
       }
 
       for (var i = (7 - contributionPlaceholderDays); i < 7; i++) {
-        _contributionRecords
-            .add(ContributionRecord(index: i, date: "", number: -1));
+        _contributionRecords.add(
+          ContributionRecord(index: i, date: "", number: -1),
+        );
       }
     } else {
       startIndex = 0;
@@ -138,28 +142,28 @@ class ProfileController extends BaseController {
       var weekEndIndex = i + 6;
       var weekStartIndex = i;
       for (var offset = weekEndIndex; offset >= i; offset--) {
-        var date = Jiffy()
+        var date = Jiffy.now()
             .subtract(days: offset - contributionPlaceholderDays)
-            .format(Constants.dateDefaultFormat);
+            .format(pattern: Constants.dateDefaultFormat);
         _contributionRecords.add(
-            ContributionRecord(index: weekStartIndex, date: date, number: 0));
+          ContributionRecord(index: weekStartIndex, date: date, number: 0),
+        );
         weekStartIndex++;
       }
     }
 
     logger.d(
-        'ProfileController - _initContributionData: ${_contributionRecords.length}');
+      'ProfileController - _initContributionData: ${_contributionRecords.length}',
+    );
   }
 
   Future getUserEventsRequest() async {
-    var param = {
-      'page': _userEventsPage,
-      'per_page': 100,
-    };
+    var param = {'page': _userEventsPage, 'per_page': 100};
     var response = await HttpClient.get(
-        sprintf(ApiService.apiUserEvents, [_userName]),
-        queryParameters: param,
-        options: _options);
+      sprintf(ApiService.apiUserEvents, [_userName]),
+      queryParameters: param,
+      options: _options,
+    );
 
     if (response.ok) {
       var list = (response.data as List)
@@ -182,10 +186,13 @@ class ProfileController extends BaseController {
 
   void _filterPushEvent(List<EventTimeline> events) {
     var firstWeekDays = 7 - contributionPlaceholderDays;
-    var today = Jiffy().dayOfYear;
+    var today = Jiffy.now().dayOfYear;
     for (var event in events) {
-      if (event.type == GithubEvent.PushEvent.name) {
-        var date = Jiffy(event.createdAt).dayOfYear;
+      if (event.type == GithubEvent.pushEvent.name) {
+        if (event.createdAt == null || event.createdAt!.isEmpty) {
+          continue;
+        }
+        var date = Jiffy.parse(event.createdAt!).dayOfYear;
         var daysInBetween = today - date;
         if (daysInBetween >= 0 && daysInBetween < firstWeekDays) {
           var updateIndex = firstWeekDays - 1 - daysInBetween;
@@ -200,7 +207,9 @@ class ProfileController extends BaseController {
             updateIndex = mid + (mid - total);
           }
           _updateContributionNumber(
-              updateIndex.toInt(), event.payload?.commits);
+            updateIndex.toInt(),
+            event.payload?.commits,
+          );
         }
       }
     }
@@ -209,7 +218,8 @@ class ProfileController extends BaseController {
   void _updateContributionNumber(int updateIndex, List<Commit>? commits) {
     if (updateIndex < 0 || updateIndex >= _contributionRecords.length) {
       logger.e(
-          'ProfileController - updateContributionNumber: index out of range: $updateIndex');
+        'ProfileController - updateContributionNumber: index out of range: $updateIndex',
+      );
       return;
     }
 

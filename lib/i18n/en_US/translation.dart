@@ -1,4 +1,4 @@
-const Map<String, String> en_US = {
+const Map<String, String> enUs = {
   "app_title": "Jithub(Flutter)",
   "error_page_title": "Error",
   "reload_button": "Reload",

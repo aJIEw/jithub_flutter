@@ -5,11 +5,7 @@ class Clickable extends StatelessWidget {
 
   final VoidCallback onPressed;
 
-  const Clickable({
-    Key? key,
-    required this.onPressed,
-    required this.child,
-  }) : super(key: key);
+  const Clickable({super.key, required this.onPressed, required this.child});
 
   @override
   Widget build(BuildContext context) {

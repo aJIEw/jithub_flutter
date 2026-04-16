@@ -5,13 +5,12 @@ import '/core/util/logger.dart';
 import '/core/util/sputils.dart';
 import '/data/model/user.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 
 class UserProfile with ChangeNotifier {
   String? authToken;
   User? user;
 
-  init(String token, String userJson) {
+  void init(String token, String userJson) {
     authToken = token;
     HttpClient.setAuthToken(token);
 
@@ -22,14 +21,12 @@ class UserProfile with ChangeNotifier {
     }
   }
 
-  initWithLoginInfo(dynamic info) {
+  void initWithLoginInfo(dynamic info) {
     authToken = info['token'];
     HttpClient.setAuthToken(authToken!);
     SPUtils.saveAuthToken(authToken!);
 
-    user = User(
-      name: info['name'],
-    );
+    user = User(name: info['name']);
     SPUtils.saveUser(user!);
 
     if (kDebugMode) {
@@ -39,7 +36,7 @@ class UserProfile with ChangeNotifier {
     notifyListeners();
   }
 
-  clear() {
+  void clear() {
     authToken = null;
     user = null;
 

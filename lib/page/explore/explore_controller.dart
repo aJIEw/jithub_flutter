@@ -1,8 +1,6 @@
 import 'package:jithub_flutter/core/api_service.dart';
 import 'package:jithub_flutter/core/base/base_controller.dart';
 import 'package:jithub_flutter/core/http/http_client.dart';
-import 'package:jithub_flutter/core/http/http_exceptions.dart';
-import 'package:jithub_flutter/core/http/http_response.dart';
 import 'package:jithub_flutter/core/util/logger.dart';
 import 'package:jithub_flutter/data/response/trending_repo.dart';
 
@@ -12,7 +10,8 @@ class ExploreController extends BaseController {
   @override
   Future loadData() async {
     var response = await HttpClient.get(
-        ApiService.trendingUrl + ApiService.apiTrendingRepos);
+      ApiService.trendingUrl + ApiService.apiTrendingRepos,
+    );
 
     // var response = await Future.delayed(const Duration(seconds: 3)).then(
     //         (value) => HttpResponse.failureFromError(NetworkException(message: "Network Error")));

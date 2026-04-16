@@ -34,7 +34,7 @@ class AppTheme with ChangeNotifier {
     Colors.yellow,
     Colors.lightGreen,
     Colors.green,
-    Colors.lime
+    Colors.lime,
   ];
 
   static ThemeData getDefaultTheme(int index) {
@@ -49,9 +49,7 @@ class AppTheme with ChangeNotifier {
       );
     }
 
-    return ThemeData(
-      primarySwatch: color,
-    );
+    return ThemeData(primarySwatch: color);
   }
 
   static bool get isDarkMode => Get.isDarkMode;
@@ -78,5 +76,5 @@ class AppTheme with ChangeNotifier {
     notifyListeners();
   }
 
-  get themeColor => _themeColor;
+  MaterialColor get themeColor => _themeColor;
 }

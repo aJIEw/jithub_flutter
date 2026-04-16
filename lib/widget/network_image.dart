@@ -1,16 +1,16 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class DefaultNetworkImage extends StatelessWidget {
-  const DefaultNetworkImage(this.url,
-      {Key? key,
-      this.width,
-      this.height,
-      this.fit = BoxFit.cover,
-      this.errorWidget})
-      : super(key: key);
+  const DefaultNetworkImage(
+    this.url, {
+    super.key,
+    this.width,
+    this.height,
+    this.fit = BoxFit.cover,
+    this.errorWidget,
+  });
 
   final String url;
 
@@ -45,6 +45,7 @@ class DefaultNetworkImage extends StatelessWidget {
                   width: 50,
                   height: 50,
                 ),
-            placeholder: (context, url) => const CupertinoActivityIndicator());
+            placeholder: (context, url) => const CupertinoActivityIndicator(),
+          );
   }
 }

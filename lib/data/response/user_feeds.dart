@@ -32,12 +32,10 @@ class UserFeeds {
     String? securityAdvisoriesUrl,
     String? timelineUrl,
     String? userUrl,
-  }) =>
-      UserFeeds(
-        currentUserPublicUrl: currentUserPublicUrl ?? this.currentUserPublicUrl,
-        securityAdvisoriesUrl:
-            securityAdvisoriesUrl ?? this.securityAdvisoriesUrl,
-        timelineUrl: timelineUrl ?? this.timelineUrl,
-        userUrl: userUrl ?? this.userUrl,
-      );
+  }) => UserFeeds(
+    currentUserPublicUrl: currentUserPublicUrl ?? this.currentUserPublicUrl,
+    securityAdvisoriesUrl: securityAdvisoriesUrl ?? this.securityAdvisoriesUrl,
+    timelineUrl: timelineUrl ?? this.timelineUrl,
+    userUrl: userUrl ?? this.userUrl,
+  );
 }

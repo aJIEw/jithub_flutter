@@ -1,10 +1,10 @@
 enum GithubEvent {
-  WatchEvent,
-  ForkEvent,
-  ReleaseEvent,
-  CreateEvent,
-  PushEvent,
-  PublicEvent,
-  IssuesEvent,
-  IssueCommentEvent,
+  watchEvent,
+  forkEvent,
+  releaseEvent,
+  createEvent,
+  pushEvent,
+  publicEvent,
+  issuesEvent,
+  issueCommentEvent,
 }

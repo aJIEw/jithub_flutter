@@ -18,10 +18,10 @@ import '../../core/widget/button/countdown_button.dart';
 import 'login_viewmodel.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  const LoginPage({super.key});
 
   @override
-  _LoginPageState createState() => _LoginPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
@@ -33,9 +33,9 @@ class _LoginPageState extends State<LoginPage> {
     var topBgColor = Theme.of(context).primaryColor;
 
     return Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: BasePageWrapper(
-            child: Column(
+      resizeToAvoidBottomInset: false,
+      body: BasePageWrapper(
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Flexible(
@@ -49,15 +49,17 @@ class _LoginPageState extends State<LoginPage> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     const ClipRRect(
-                        borderRadius: BorderRadius.all(Radius.circular(20)),
-                        child: FlutterLogo(size: 50)),
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                      child: FlutterLogo(size: 50),
+                    ),
                     Padding(
                       padding: const EdgeInsets.all(12.0),
-                      child: Text('app_title'.tr,
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline6
-                              ?.apply(color: Colors.white)),
+                      child: Text(
+                        'app_title'.tr,
+                        style: Theme.of(
+                          context,
+                        ).textTheme.titleLarge?.apply(color: Colors.white),
+                      ),
                     ),
                   ],
                 ),
@@ -69,23 +71,25 @@ class _LoginPageState extends State<LoginPage> {
                 color: topBgColor,
                 child: ClipRRect(
                   borderRadius: const BorderRadius.only(
-                      topLeft: Radius.elliptical(20, 12),
-                      topRight: Radius.elliptical(20, 12)),
+                    topLeft: Radius.elliptical(20, 12),
+                    topRight: Radius.elliptical(20, 12),
+                  ),
                   child: PageTransitionSwitcher(
                     duration: const Duration(milliseconds: 600),
                     reverse: phoneNumber.isEmpty,
-                    transitionBuilder: (
-                      Widget child,
-                      Animation<double> animation,
-                      Animation<double> secondaryAnimation,
-                    ) {
-                      return SharedAxisTransition(
-                        child: child,
-                        animation: animation,
-                        secondaryAnimation: secondaryAnimation,
-                        transitionType: SharedAxisTransitionType.horizontal,
-                      );
-                    },
+                    transitionBuilder:
+                        (
+                          Widget child,
+                          Animation<double> animation,
+                          Animation<double> secondaryAnimation,
+                        ) {
+                          return SharedAxisTransition(
+                            animation: animation,
+                            secondaryAnimation: secondaryAnimation,
+                            transitionType: SharedAxisTransitionType.horizontal,
+                            child: child,
+                          );
+                        },
                     child: showInputCode
                         ? ContentInputCode(
                             phoneNumber: phoneNumber,
@@ -105,18 +109,19 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
           ],
-        )));
+        ),
+      ),
+    );
   }
 }
 
 class ContentInputPhoneNumber extends StatefulWidget {
-  const ContentInputPhoneNumber({Key? key, required this.onCodeSent})
-      : super(key: key);
+  const ContentInputPhoneNumber({super.key, required this.onCodeSent});
 
   final Function onCodeSent;
 
   @override
-  _ContentInputPhoneNumberState createState() =>
+  State<ContentInputPhoneNumber> createState() =>
       _ContentInputPhoneNumberState();
 }
 
@@ -140,16 +145,15 @@ class _ContentInputPhoneNumberState extends State<ContentInputPhoneNumber> {
           Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Icon(
-                Icons.phone_iphone,
-                color: Colors.grey[700],
-              ),
+              Icon(Icons.phone_iphone, color: Colors.grey[700]),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 child: Text(
                   'phone_number'.tr,
                   style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.w500),
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
             ],
@@ -161,18 +165,19 @@ class _ContentInputPhoneNumberState extends State<ContentInputPhoneNumber> {
               child: TextFormField(
                 controller: _controller,
                 textInputAction: TextInputAction.done,
-                keyboardType:
-                    const TextInputType.numberWithOptions(decimal: true),
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
+                ),
                 decoration: InputDecoration(
-                        enabledBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey[300]!),
-                        ),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey[300]!),
-                        ),
-                        hintStyle: TextStyle(color: Colors.grey[400]),
-                        hintText: 'input_phone_number'.tr)
-                    .addClearableIcon(phoneNumber, _clearText),
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey[300]!),
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: Colors.grey[300]!),
+                  ),
+                  hintStyle: TextStyle(color: Colors.grey[400]),
+                  hintText: 'input_phone_number'.tr,
+                ).addClearableIcon(phoneNumber, _clearText),
                 onChanged: (text) {
                   setState(() {
                     phoneNumber = text;
@@ -189,55 +194,69 @@ class _ContentInputPhoneNumberState extends State<ContentInputPhoneNumber> {
             margin: const EdgeInsets.only(top: 30),
             child: ProviderWidget<LoginViewModel>(
               viewModel: LoginViewModel(),
-              builder: (BuildContext context, LoginViewModel viewModel,
-                  Widget? child) {
-                return ElevatedButton(
-                  focusNode: _focusNextStep,
-                  style: ButtonStyle(
-                      elevation: MaterialStateProperty.all(0.2),
-                      backgroundColor: MaterialStateProperty.all(
+              builder:
+                  (
+                    BuildContext context,
+                    LoginViewModel viewModel,
+                    Widget? child,
+                  ) {
+                    return ElevatedButton(
+                      focusNode: _focusNextStep,
+                      style: ButtonStyle(
+                        elevation: WidgetStateProperty.all(0.2),
+                        backgroundColor: WidgetStateProperty.all(
                           phoneNumber.isNotEmpty
                               ? Theme.of(context).primaryColor
-                              : Colors.grey[300]),
-                      minimumSize: MaterialStateProperty.all(
-                          const Size(double.infinity, 50)),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                              : Colors.grey[300],
+                        ),
+                        minimumSize: WidgetStateProperty.all(
+                          const Size(double.infinity, 50),
+                        ),
+                        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(25),
-                      ))),
-                  onPressed: () {
-                    onClickNext(viewModel);
+                            borderRadius: BorderRadius.circular(25),
+                          ),
+                        ),
+                      ),
+                      onPressed: () {
+                        onClickNext(viewModel);
+                      },
+                      child: Text(
+                        'next_step'.tr,
+                        style: Theme.of(context).textTheme.bodyLarge?.merge(
+                          const TextStyle(color: Colors.white, fontSize: 18),
+                        ),
+                      ),
+                    );
                   },
-                  child: Text(
-                    'next_step'.tr,
-                    style: Theme.of(context).textTheme.bodyText1?.merge(
-                        const TextStyle(color: Colors.white, fontSize: 18)),
-                  ),
-                );
-              },
             ),
           ),
           Expanded(
             child: Container(
               alignment: Alignment.bottomCenter,
               margin: const EdgeInsets.only(bottom: 20),
-              child: Text.rich(TextSpan(
-                children: [
-                  TextSpan(
+              child: Text.rich(
+                TextSpan(
+                  children: [
+                    TextSpan(
                       text: _getPrivacyText(context),
                       style: const TextStyle(
-                          fontSize: 12,
-                          color: Colors.blue,
-                          decoration: TextDecoration.underline),
+                        fontSize: 12,
+                        color: Colors.blue,
+                        decoration: TextDecoration.underline,
+                      ),
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {
                           XRouter.goWeb(
-                              context,
-                              'http://your.domain.com/term_agreement',
-                              _getPrivacyText(context));
-                        }),
-                ],
-              )),
+                            context,
+                            'http://your.domain.com/term_agreement',
+                            _getPrivacyText(context),
+                          );
+                        },
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
         ],
@@ -259,7 +278,7 @@ class _ContentInputPhoneNumberState extends State<ContentInputPhoneNumber> {
     return null;
   }
 
-  _clearText() {
+  void _clearText() {
     setState(() {
       phoneNumber = '';
     });
@@ -278,6 +297,9 @@ class _ContentInputPhoneNumberState extends State<ContentInputPhoneNumber> {
       showLoadingDialog();
 
       viewModel.getSmsCodeRequest(phoneNumber).then((sendSuccess) {
+        if (!mounted) {
+          return;
+        }
         if (sendSuccess) {
           widget.onCodeSent(phoneNumber);
         } else {
@@ -291,15 +313,14 @@ class _ContentInputPhoneNumberState extends State<ContentInputPhoneNumber> {
 }
 
 class ContentInputCode extends StatefulWidget {
-  const ContentInputCode({Key? key, required this.phoneNumber, this.onGoBack})
-      : super(key: key);
+  const ContentInputCode({super.key, required this.phoneNumber, this.onGoBack});
 
   final String phoneNumber;
 
   final VoidCallback? onGoBack;
 
   @override
-  _ContentInputCodeState createState() => _ContentInputCodeState();
+  State<ContentInputCode> createState() => _ContentInputCodeState();
 }
 
 class _ContentInputCodeState extends State<ContentInputCode> {
@@ -316,47 +337,53 @@ class _ContentInputCodeState extends State<ContentInputCode> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text('input_sms_code'.tr,
-                  style: Theme.of(context).textTheme.headline6),
+              Text(
+                'input_sms_code'.tr,
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
               Padding(
                 padding: const EdgeInsets.all(20),
                 child: Text(
-                    'sms_has_sent_to'
-                        .trParams({"phone_number": widget.phoneNumber}),
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyText1
-                        ?.apply(color: Colors.grey)),
+                  'sms_has_sent_to'.trParams({
+                    "phone_number": widget.phoneNumber,
+                  }),
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyLarge?.apply(color: Colors.grey),
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 30),
-                child: PinCodeTextField(
-                  appContext: context,
+                child: MaterialPinField(
                   length: 6,
-                  textStyle: const TextStyle(
-                      color: Colors.black54, fontWeight: FontWeight.normal),
+                  keyboardType: TextInputType.number,
+                  theme: MaterialPinTheme(
+                    cellSize: const Size(45, 45),
+                    shape: MaterialPinShape.outlined,
+                    borderRadius: BorderRadius.circular(5),
+                    borderWidth: 1,
+                    textStyle: const TextStyle(
+                      color: Colors.black54,
+                      fontWeight: FontWeight.normal,
+                    ),
+                    borderColor: Colors.grey[300],
+                    focusedBorderColor: Colors.black54,
+                    filledBorderColor: Colors.black54,
+                    cursorColor: Colors.black54,
+                    entryAnimation: MaterialPinAnimation.fade,
+                  ),
                   onChanged: (String value) {
                     codeNumber = value;
                   },
-                  pinTheme: PinTheme(
-                    fieldWidth: 45,
-                    fieldHeight: 45,
-                    shape: PinCodeFieldShape.box,
-                    borderRadius: BorderRadius.circular(5),
-                    borderWidth: 1,
-                    inactiveColor: Colors.grey[300],
-                    activeColor: Colors.black54,
-                    selectedColor: Colors.black54,
-                  ),
-                  keyboardType: TextInputType.number,
-                  animationType: AnimationType.fade,
-                  cursorColor: Colors.black54,
                   onCompleted: (String code) {
                     showLoadingDialog();
 
-                    viewModel
-                        .loginRequest(widget.phoneNumber, code)
-                        .then((loginInfo) {
+                    viewModel.loginRequest(widget.phoneNumber, code).then((
+                      loginInfo,
+                    ) {
+                      if (!context.mounted) {
+                        return;
+                      }
                       dismissLoadingDialog();
 
                       if (loginInfo == null) {
@@ -369,7 +396,9 @@ class _ContentInputCodeState extends State<ContentInputCode> {
                       userProfile.initWithLoginInfo(loginInfo);
 
                       XRouter.navigate(
-                          XRouter.homePage, ModalRoute.withName('/'));
+                        XRouter.homePage,
+                        ModalRoute.withName('/'),
+                      );
                     });
                   },
                 ),
@@ -377,23 +406,27 @@ class _ContentInputCodeState extends State<ContentInputCode> {
               Padding(
                 padding: const EdgeInsets.only(top: 40),
                 child: CountdownButton(
-                    seconds: 59,
-                    finalText: 'sms_resend'.tr,
-                    onPressed: () {
-                      viewModel.getSmsCodeRequest(widget.phoneNumber);
-                    }),
+                  seconds: 59,
+                  finalText: 'sms_resend'.tr,
+                  onPressed: () {
+                    viewModel.getSmsCodeRequest(widget.phoneNumber);
+                  },
+                ),
               ),
               TextButton(
-                  onPressed: () {
-                    if (kDebugMode && widget.onGoBack != null) {
-                      widget.onGoBack!();
-                    }
-                  },
-                  child: Text('sms_not_received'.tr,
-                      style: TextStyle(
-                        color: Theme.of(context).primaryColor,
-                        fontWeight: FontWeight.w300,
-                      )))
+                onPressed: () {
+                  if (kDebugMode && widget.onGoBack != null) {
+                    widget.onGoBack!();
+                  }
+                },
+                child: Text(
+                  'sms_not_received'.tr,
+                  style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontWeight: FontWeight.w300,
+                  ),
+                ),
+              ),
             ],
           ),
         );

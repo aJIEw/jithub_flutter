@@ -9,8 +9,10 @@ class ClickUtils {
   static DateTime? _lastPressedAt;
 
   // 双击返回
-  static Future<bool> exitBy2Click(
-      {int duration = 1000, ScaffoldState? status}) async {
+  static Future<bool> exitBy2Click({
+    int duration = 1000,
+    ScaffoldState? status,
+  }) async {
     if (status != null && status.isDrawerOpen) {
       return Future.value(true);
     }

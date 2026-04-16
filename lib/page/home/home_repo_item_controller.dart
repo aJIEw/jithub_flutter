@@ -30,7 +30,8 @@ class HomeRepoItemController extends GetxController {
       repo.value = result;
     } else {
       logger.e(
-          'HomeRepoItemController - getRepoDetail: ${response.error}: $repoUrl');
+        'HomeRepoItemController - getRepoDetail: ${response.error}: $repoUrl',
+      );
     }
 
     loading.value = false;

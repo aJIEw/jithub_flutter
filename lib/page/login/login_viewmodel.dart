@@ -9,8 +9,9 @@ class LoginViewModel extends BaseViewModel {
     param["phone"] = phone;
 
     // Todo: change to real request later
-    HttpResponse response = await Future.delayed(1.seconds)
-        .then((value) => HttpResponse.success("", 200));
+    HttpResponse response = await Future.delayed(
+      1.seconds,
+    ).then((value) => HttpResponse.success("", 200));
     if (response.ok) {
       return true;
     } else {
@@ -20,15 +21,19 @@ class LoginViewModel extends BaseViewModel {
     return false;
   }
 
-  Future<Object?> loginRequest(String phone, String smsCode,
-      {bool isUpdatePhone = false}) async {
+  Future<Object?> loginRequest(
+    String phone,
+    String smsCode, {
+    bool isUpdatePhone = false,
+  }) async {
     var param = <String, dynamic>{};
     param["phone"] = phone;
     param["code"] = smsCode;
 
     // Todo: change to real request later
-    HttpResponse response = await Future.delayed(1.seconds)
-        .then((value) => HttpResponse.success("", 200));
+    HttpResponse response = await Future.delayed(
+      1.seconds,
+    ).then((value) => HttpResponse.success("", 200));
 
     dynamic loginInfo;
     if (response.ok) {

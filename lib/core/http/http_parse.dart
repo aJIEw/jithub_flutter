@@ -7,8 +7,10 @@ import 'http_exceptions.dart';
 import 'http_response.dart';
 import 'http_transformer.dart';
 
-HttpResponse handleResponse(Response? response,
-    {HttpTransformer? httpTransformer}) {
+HttpResponse handleResponse(
+  Response? response, {
+  HttpTransformer? httpTransformer,
+}) {
   httpTransformer ??= DefaultHttpTransformer.getInstance();
 
   // 返回值异常
@@ -19,7 +21,9 @@ HttpResponse handleResponse(Response? response,
   // token失效
   if (_isTokenTimeout(response.statusCode)) {
     return HttpResponse.failureFromError(
-        UnauthorisedException(message: "没有权限", code: response.statusCode), 401);
+      UnauthorisedException(message: "没有权限", code: response.statusCode),
+      401,
+    );
   }
   // 接口调用成功
   if (_isRequestSuccess(response.statusCode)) {
@@ -27,7 +31,9 @@ HttpResponse handleResponse(Response? response,
   } else {
     // 接口调用失败
     return HttpResponse.failure(
-        errorMsg: response.statusMessage, errorCode: response.statusCode);
+      errorMsg: response.statusMessage,
+      errorCode: response.statusCode,
+    );
   }
 }
 
@@ -48,15 +54,15 @@ bool _isRequestSuccess(int? statusCode) {
 }
 
 HttpException _parseException(Exception error) {
-  if (error is DioError) {
+  if (error is DioException) {
     switch (error.type) {
-      case DioErrorType.connectTimeout:
-      case DioErrorType.receiveTimeout:
-      case DioErrorType.sendTimeout:
+      case DioExceptionType.connectionTimeout:
+      case DioExceptionType.receiveTimeout:
+      case DioExceptionType.sendTimeout:
         return NetworkException(message: '请求超时');
-      case DioErrorType.cancel:
+      case DioExceptionType.cancel:
         return CancelException('请求已取消');
-      case DioErrorType.response:
+      case DioExceptionType.badResponse:
         try {
           int? errCode = error.response?.statusCode;
           switch (errCode) {
@@ -67,10 +73,14 @@ HttpException _parseException(Exception error) {
             case 403:
               return BadRequestException(message: "服务器拒绝执行", code: errCode);
             case 404:
-              var data =
-                  BaseErrorResponse.fromJson(error.response?.data, (t) => null);
+              var data = BaseErrorResponse.fromJson(
+                error.response?.data,
+                (t) => null,
+              );
               return BadRequestException(
-                  message: data.message ?? "无法连接服务器", code: errCode);
+                message: data.message ?? "无法连接服务器",
+                code: errCode,
+              );
             case 405:
               return BadRequestException(message: "请求方法被禁止", code: errCode);
             case 500:
@@ -88,14 +98,15 @@ HttpException _parseException(Exception error) {
           return UnknownException('出现未知错误');
         }
 
-      case DioErrorType.other:
+      case DioExceptionType.connectionError:
+      case DioExceptionType.unknown:
         if (error.error is SocketException) {
           return NetworkException(message: error.message);
         } else {
           return UnknownException(error.message);
         }
-      default:
-        return UnknownException(error.message);
+      case DioExceptionType.badCertificate:
+        return BadRequestException(message: '证书校验失败');
     }
   } else {
     return UnknownException(error.toString());

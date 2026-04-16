@@ -23,7 +23,7 @@ class SettingsBinding extends Bindings {
 }
 
 class SettingsPage extends BaseView<SettingsController> {
-  const SettingsPage({Key? key}) : super(key: key);
+  const SettingsPage({super.key});
 
   @override
   NotifierBuilder buildContent(BuildContext context) {
@@ -34,12 +34,20 @@ class SettingsPage extends BaseView<SettingsController> {
           padding: const EdgeInsets.only(top: 20),
           child: Column(
             children: [
-              _buildListItem('choose_language'.tr, '', onPress: () {
-                XRouter.push(XRouter.languagePage);
-              }),
-              _buildListItem('choose_theme'.tr, '', onPress: () {
-                XRouter.push(XRouter.themePage);
-              }),
+              _buildListItem(
+                'choose_language'.tr,
+                '',
+                onPress: () {
+                  XRouter.push(XRouter.languagePage);
+                },
+              ),
+              _buildListItem(
+                'choose_theme'.tr,
+                '',
+                onPress: () {
+                  XRouter.push(XRouter.themePage);
+                },
+              ),
               /*_buildListItem('privacy_policy'.tr, '', onPress: () {
                     XRouter.goWeb(
                         context,
@@ -51,22 +59,27 @@ class SettingsPage extends BaseView<SettingsController> {
                 padding: const EdgeInsets.fromLTRB(40, 0, 40, 60),
                 child: ElevatedButton(
                   style: ButtonStyle(
-                      elevation: MaterialStateProperty.all(0.2),
-                      backgroundColor: MaterialStateProperty.all(
-                          Theme.of(context).primaryColor),
-                      minimumSize: MaterialStateProperty.all(
-                          const Size(double.infinity, 50)),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
+                    elevation: WidgetStateProperty.all(0.2),
+                    backgroundColor: WidgetStateProperty.all(
+                      Theme.of(context).primaryColor,
+                    ),
+                    minimumSize: WidgetStateProperty.all(
+                      const Size(double.infinity, 50),
+                    ),
+                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(25),
-                      ))),
+                      ),
+                    ),
+                  ),
                   onPressed: () {
                     onPressLogout(context);
                   },
                   child: Text(
                     'btn_logout'.tr,
-                    style: Theme.of(context).textTheme.bodyText1?.merge(
-                        const TextStyle(color: Colors.white, fontSize: 18)),
+                    style: Theme.of(context).textTheme.bodyLarge?.merge(
+                      const TextStyle(color: Colors.white, fontSize: 18),
+                    ),
                   ),
                 ),
               ),
@@ -77,10 +90,13 @@ class SettingsPage extends BaseView<SettingsController> {
     };
   }
 
-  Widget _buildListItem(String title, String rightText,
-      {bool hasRightArrow = true,
-      VoidCallback? onPress,
-      bool hasDividerLine = true}) {
+  Widget _buildListItem(
+    String title,
+    String rightText, {
+    bool hasRightArrow = true,
+    VoidCallback? onPress,
+    bool hasDividerLine = true,
+  }) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -94,14 +110,19 @@ class SettingsPage extends BaseView<SettingsController> {
                 children: [
                   Text(title),
                   Expanded(
-                      child: Text(rightText,
-                          textAlign: TextAlign.end,
-                          style: const TextStyle(color: Colors.grey))),
-                  Icon(Icons.chevron_right,
-                      size: 24,
-                      color: hasRightArrow
-                          ? Colors.grey[350]
-                          : Colors.transparent),
+                    child: Text(
+                      rightText,
+                      textAlign: TextAlign.end,
+                      style: const TextStyle(color: Colors.grey),
+                    ),
+                  ),
+                  Icon(
+                    Icons.chevron_right,
+                    size: 24,
+                    color: hasRightArrow
+                        ? Colors.grey[350]
+                        : Colors.transparent,
+                  ),
                 ],
               ),
             ),
@@ -113,11 +134,14 @@ class SettingsPage extends BaseView<SettingsController> {
   }
 
   void onPressLogout(BuildContext context) {
-    showAlertDialog('logout_confirm_title'.tr,
-        confirmText: 'dialog_confirm_text'.tr,
-        cancelText: 'dialog_cancel_text'.tr, onConfirm: () {
-      AppUtils.logout(context);
-      XRouter.pop();
-    });
+    showAlertDialog(
+      'logout_confirm_title'.tr,
+      confirmText: 'dialog_confirm_text'.tr,
+      cancelText: 'dialog_cancel_text'.tr,
+      onConfirm: () {
+        AppUtils.logout(context);
+        XRouter.pop();
+      },
+    );
   }
 }

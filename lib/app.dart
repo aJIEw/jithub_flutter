@@ -13,7 +13,7 @@ import '/router/router.dart';
 const bool showDebugBanner = false;
 
 class AppEntrance extends StatelessWidget with WidgetsBindingObserver {
-  const AppEntrance({Key? key}) : super(key: key);
+  const AppEntrance({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -7,13 +7,16 @@ Future? _loadingDialog;
 void showLoadingDialog({bool barrierDismissible = false}) async {
   if (_loadingDialog == null) {
     _loadingDialog = Get.dialog(
-        LoadingDialog(
-          content: Text('message_handling'.tr,
-              style: const TextStyle(color: Colors.white)),
-          backgroundColor: Colors.black38,
-          loadingView: const SpinKitCircle(color: Colors.white),
+      LoadingDialog(
+        content: Text(
+          'message_handling'.tr,
+          style: const TextStyle(color: Colors.white),
         ),
-        barrierDismissible: barrierDismissible);
+        dialogBackgroundColor: Colors.black38,
+        loadingView: const SpinKitCircle(color: Colors.white),
+      ),
+      barrierDismissible: barrierDismissible,
+    );
     await _loadingDialog;
     _loadingDialog = null;
   }
@@ -40,16 +43,16 @@ class LoadingDialog extends Dialog {
   final double radius;
 
   // 背景颜色
-  final Color backgroundColor;
+  final Color dialogBackgroundColor;
 
-  const LoadingDialog(
-      {Key? key,
-      this.loadingView,
-      this.content = const Text("加载中..."),
-      this.showContent = true,
-      this.radius = 10,
-      this.backgroundColor = Colors.white})
-      : super(key: key);
+  const LoadingDialog({
+    super.key,
+    this.loadingView,
+    this.content = const Text("加载中..."),
+    this.showContent = true,
+    this.radius = 10,
+    this.dialogBackgroundColor = Colors.white,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -61,11 +64,9 @@ class LoadingDialog extends Dialog {
           height: showContent ? 120 : 80,
           child: Container(
             decoration: ShapeDecoration(
-              color: backgroundColor,
+              color: dialogBackgroundColor,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(radius),
-                ),
+                borderRadius: BorderRadius.all(Radius.circular(radius)),
               ),
             ),
             child: Column(
@@ -77,9 +78,7 @@ class LoadingDialog extends Dialog {
                     : loadingView!,
                 showContent
                     ? Padding(
-                        padding: const EdgeInsets.only(
-                          top: 16,
-                        ),
+                        padding: const EdgeInsets.only(top: 16),
                         child: content,
                       )
                     : const SizedBox(),

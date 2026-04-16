@@ -10,19 +10,23 @@ class Utils {
   Utils._internal();
 
   static void hideStatusBarAndNavBar() {
-    SystemChrome.setEnabledSystemUIOverlays([]);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
   }
 
   static void showStatusBarAndNavBar() {
-    SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+    SystemChrome.setEnabledSystemUIMode(
+      SystemUiMode.manual,
+      overlays: SystemUiOverlay.values,
+    );
   }
 
   //=============url_launcher==================//
 
   /// 处理链接
-  static void launchURL(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
+  static void launchUrlString(String url) async {
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
     } else {
       ToastUtils.toast("暂时无法处理请求: $url");
     }

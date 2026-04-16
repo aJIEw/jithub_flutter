@@ -1,9 +1,8 @@
 import 'dart:async';
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-enum ButtonState { Busy, Idle }
+enum ButtonState { busy, idle }
 
 /// Modified from https://github.com/iamyogik/argon_buttons_flutter/blob/master/lib/argon_buttons_flutter.dart
 class TimerButton extends StatefulWidget {
@@ -20,7 +19,7 @@ class TimerButton extends StatefulWidget {
   final Widget child;
 
   const TimerButton({
-    Key? key,
+    super.key,
     this.style,
     this.loader,
     this.onTap,
@@ -32,10 +31,10 @@ class TimerButton extends StatefulWidget {
     this.clipBehavior = Clip.none,
     this.focusNode,
     required this.child,
-  }) : super(key: key);
+  });
 
   @override
-  _TimerButtonState createState() => _TimerButtonState();
+  State<TimerButton> createState() => _TimerButtonState();
 }
 
 class _TimerButtonState extends State<TimerButton>
@@ -51,27 +50,32 @@ class _TimerButtonState extends State<TimerButton>
   void initState() {
     super.initState();
 
-    _controller =
-        AnimationController(vsync: this, duration: widget.animationDuration);
+    _controller = AnimationController(
+      vsync: this,
+      duration: widget.animationDuration,
+    );
 
-    _animation = Tween(begin: 0.0, end: 1.0).animate(CurvedAnimation(
+    _animation = Tween(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
         parent: _controller,
         curve: widget.curve,
-        reverseCurve: widget.reverseCurve));
+        reverseCurve: widget.reverseCurve,
+      ),
+    );
 
     _animation.addStatusListener((status) {
       if (status == AnimationStatus.dismissed) {
         setState(() {
-          btn = ButtonState.Idle;
+          btn = ButtonState.idle;
         });
       }
     });
 
     if (widget.initialTimer == 0) {
-      btn = ButtonState.Idle;
+      btn = ButtonState.idle;
     } else {
       startTimer(widget.initialTimer);
-      btn = ButtonState.Busy;
+      btn = ButtonState.busy;
     }
   }
 
@@ -84,7 +88,7 @@ class _TimerButtonState extends State<TimerButton>
 
   void animateForward() {
     setState(() {
-      btn = ButtonState.Busy;
+      btn = ButtonState.busy;
     });
     _controller.forward();
   }
@@ -111,16 +115,14 @@ class _TimerButtonState extends State<TimerButton>
     var oneSec = const Duration(seconds: 1);
     _timer = Timer.periodic(
       oneSec,
-      (Timer timer) => setState(
-        () {
-          if (secondsLeft < 1) {
-            timer.cancel();
-            widget.onCountdownFinished?.call();
-          } else {
-            secondsLeft = secondsLeft - 1;
-          }
-        },
-      ),
+      (Timer timer) => setState(() {
+        if (secondsLeft < 1) {
+          timer.cancel();
+          widget.onCountdownFinished?.call();
+        } else {
+          secondsLeft = secondsLeft - 1;
+        }
+      }),
     );
   }
 
@@ -136,35 +138,37 @@ class _TimerButtonState extends State<TimerButton>
 
   Widget buttonBody() {
     return ElevatedButton(
-        style: widget.style,
-        clipBehavior: widget.clipBehavior,
-        focusNode: widget.focusNode,
-        onPressed: () {
-          if (widget.onTap != null) {
-            widget.onTap!((newCounter) => startTimer(newCounter), btn);
-          }
-        },
-        child: btn == ButtonState.Idle
-            ? widget.child
-            : StreamBuilder(
-                stream: emptyStream,
-                builder: (context, snapshot) {
-                  if (secondsLeft == 0) {
-                    animateReverse();
-                  }
-                  return widget.loader!(secondsLeft);
-                }));
+      style: widget.style,
+      clipBehavior: widget.clipBehavior,
+      focusNode: widget.focusNode,
+      onPressed: () {
+        if (widget.onTap != null) {
+          widget.onTap!((newCounter) => startTimer(newCounter), btn);
+        }
+      },
+      child: btn == ButtonState.idle
+          ? widget.child
+          : StreamBuilder(
+              stream: emptyStream,
+              builder: (context, snapshot) {
+                if (secondsLeft == 0) {
+                  animateReverse();
+                }
+                return widget.loader!(secondsLeft);
+              },
+            ),
+    );
   }
 }
 
 class CountdownButton extends StatefulWidget {
-  const CountdownButton(
-      {Key? key,
-      required this.seconds,
-      required this.finalText,
-      this.onPressed,
-      this.startOnInitial = true})
-      : super(key: key);
+  const CountdownButton({
+    super.key,
+    required this.seconds,
+    required this.finalText,
+    this.onPressed,
+    this.startOnInitial = true,
+  });
 
   final String finalText;
   final int seconds;
@@ -173,7 +177,7 @@ class CountdownButton extends StatefulWidget {
   final bool startOnInitial;
 
   @override
-  _CountdownButtonState createState() => _CountdownButtonState();
+  State<CountdownButton> createState() => _CountdownButtonState();
 }
 
 class _CountdownButtonState extends State<CountdownButton> {
@@ -183,14 +187,15 @@ class _CountdownButtonState extends State<CountdownButton> {
   Widget build(BuildContext context) {
     return TimerButton(
       style: ButtonStyle(
-          elevation: MaterialStateProperty.all(0.2),
-          backgroundColor: MaterialStateProperty.all(
-              canResentCode ? Colors.blue : Colors.grey[300]),
-          minimumSize: MaterialStateProperty.all(const Size(100, 50)),
-          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-              RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(25),
-          ))),
+        elevation: WidgetStateProperty.all(0.2),
+        backgroundColor: WidgetStateProperty.all(
+          canResentCode ? Colors.blue : Colors.grey[300],
+        ),
+        minimumSize: WidgetStateProperty.all(const Size(100, 50)),
+        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+        ),
+      ),
       initialTimer: widget.startOnInitial ? widget.seconds - 1 : 0,
       onTap: canResentCode ? _onTab : null,
       loader: _countdownLoader,
@@ -204,7 +209,7 @@ class _CountdownButtonState extends State<CountdownButton> {
   }
 
   void _onTab(Function startTimer, ButtonState? btnState) {
-    if (btnState == ButtonState.Idle) {
+    if (btnState == ButtonState.idle) {
       setState(() {
         canResentCode = false;
       });
@@ -223,10 +228,9 @@ class _CountdownButtonState extends State<CountdownButton> {
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Text(
         text,
-        style: Theme.of(context)
-            .textTheme
-            .bodyText1
-            ?.merge(const TextStyle(color: Colors.white, fontSize: 18)),
+        style: Theme.of(context).textTheme.bodyLarge?.merge(
+          const TextStyle(color: Colors.white, fontSize: 18),
+        ),
       ),
     );
   }

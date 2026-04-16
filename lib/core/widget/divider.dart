@@ -10,9 +10,12 @@ class DefaultDivider extends StatelessWidget {
 
   final Color color;
 
-  const DefaultDivider(this.thickness,
-      {Key? key, this.height = 1, this.color = defaultColor})
-      : super(key: key);
+  const DefaultDivider(
+    this.thickness, {
+    super.key,
+    this.height = 1,
+    this.color = defaultColor,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -32,9 +35,12 @@ class DefaultVerticalDivider extends StatelessWidget {
 
   final Color color;
 
-  const DefaultVerticalDivider(this.thickness,
-      {Key? key, this.width = 1, this.color = defaultColor})
-      : super(key: key);
+  const DefaultVerticalDivider(
+    this.thickness, {
+    super.key,
+    this.width = 1,
+    this.color = defaultColor,
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -26,11 +26,11 @@ class BadServiceException extends HttpException {
 }
 
 class UnknownException extends HttpException {
-  UnknownException([String? message]) : super(message);
+  UnknownException([super.message]);
 }
 
 class CancelException extends HttpException {
-  CancelException([String? message]) : super(message);
+  CancelException([super.message]);
 }
 
 class NetworkException extends HttpException {
@@ -40,7 +40,7 @@ class NetworkException extends HttpException {
 /// 401
 class UnauthorisedException extends HttpException {
   UnauthorisedException({String? message, int? code = 401})
-      : super(message, code);
+    : super(message, code);
 }
 
 class BadResponseException extends HttpException {
