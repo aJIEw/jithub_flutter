@@ -47,6 +47,26 @@ const Map<String, String> enUs = {
   "click_twice_to_exit": "Click again to exit the app",
   "message_handling": "Processing...",
   "message_data_error": "Something wrong with the data",
+  "github_device_login_title": "Continue with GitHub",
+  "github_device_login_desc":
+      "Open GitHub in your browser, then enter the device code below to finish signing in.",
+  "github_device_open_browser": "Open GitHub",
+  "github_device_copy_code": "Copy Code",
+  "github_device_login_hint":
+      "This code expires in @minutes minutes. The app will continue automatically after authorization.",
+  "github_device_code_copied": "Device code copied",
+  "github_open_browser_failed": "Unable to open the system browser",
+  "github_login_start_failed": "Unable to start GitHub sign-in",
+  "github_login_poll_failed": "GitHub sign-in failed. Please try again.",
+  "github_login_slow_down":
+      "GitHub sign-in is still processing. Please wait a moment.",
+  "github_device_code_expired":
+      "The device code has expired. Please sign in again.",
+  "github_login_access_denied": "GitHub sign-in was cancelled",
+  "github_device_flow_disabled":
+      "This GitHub OAuth app does not have Device Flow enabled yet. Please enable it in GitHub settings first.",
+  "github_login_client_config_error":
+      "GitHub OAuth configuration is invalid. Please check the Client ID.",
   "list_pull_down_to_refresh": "Pull to refresh",
   "list_release_to_refresh": "Release to refresh",
   "list_refreshing": "Refreshing",

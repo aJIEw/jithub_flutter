@@ -2,6 +2,7 @@ import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:jithub_flutter/core/auth/github_auth_service.dart';
 import 'package:jithub_flutter/core/base/base_controller.dart';
 import 'package:jithub_flutter/core/http/http_client.dart';
 import 'package:jithub_flutter/core/util/event.dart';
@@ -22,8 +23,6 @@ import '/core/util/logger.dart';
 import '/core/util/sputils.dart';
 import '/provider/state/app_status.dart';
 import '/provider/state/user_profile.dart';
-import '/router/router.dart';
-import '../core/api_service.dart';
 import '../core/base/base_page.dart';
 
 /// This page is built with [ProviderWidget], just to show you how to use it.
@@ -175,7 +174,7 @@ class _MainPageState extends State<MainPage> with AfterLayoutMixin<MainPage> {
   }
 
   void goToLogin({int? targetTabIndex}) async {
-    String? result = await XRouter.goWeb(context, ApiService.githubAuthUrl, "");
+    String? result = await GitHubAuthService.authenticate();
     if (!mounted) {
       return;
     }
@@ -187,6 +186,7 @@ class _MainPageState extends State<MainPage> with AfterLayoutMixin<MainPage> {
   }
 
   void initLoginInfo(String accessToken, {int? targetTabIndex}) async {
+    HttpClient.setAuthToken(accessToken);
     var feeds = await requestUserFeeds();
     if (!mounted) {
       return;
