@@ -65,11 +65,10 @@ dependencies:
   jiffy: ^6.4.4
   logger: ^2.7.0
   event_bus: ^2.0.0
-  package_info: ^2.0.2
+  package_info_plus: ^10.0.0
   path_provider: ^2.0.10
   permission_handler: ^12.0.1
   provider: ^6.0.3
-  share: ^2.0.4
   shared_preferences: ^2.0.15
   sprintf: ^7.0.0
   supercharged: ^2.1.1
@@ -94,10 +93,6 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
-
-dependency_overrides:
-  # fix <Member not found: 'packageRoot'.> issue.
-  platform: ^3.1.0
 
 
 # For information on the generic Dart part of this file, see the

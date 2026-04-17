@@ -1,6 +1,6 @@
 import 'package:date_format/date_format.dart';
 import 'package:flutter/services.dart';
-import 'package:package_info/package_info.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'toast.dart';
