@@ -1,15 +1,7 @@
-import 'dart:convert';
 import 'dart:io' hide HttpClient;
 
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:jithub_flutter/core/api_service.dart';
-import 'package:jithub_flutter/core/http/http_client.dart';
-import 'package:jithub_flutter/core/http/http_response.dart';
-import 'package:jithub_flutter/router/router.dart';
-
-import '/core/util/logger.dart';
 import '../../base/base_app_bar.dart';
 
 class CommonWebView extends StatefulWidget {
@@ -26,7 +18,6 @@ class _CommonWebViewState extends State<CommonWebView> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   InAppWebViewController? webViewController;
-  final CookieManager cookieManager = CookieManager.instance();
   final InAppWebViewSettings options = InAppWebViewSettings(
     useShouldInterceptAjaxRequest: true,
     useShouldInterceptFetchRequest: true,
@@ -77,11 +68,7 @@ class _CommonWebViewState extends State<CommonWebView> {
             onWebViewCreated: (controller) {
               webViewController = controller;
             },
-            onLoadStart: (controller, url) {
-              handleCallback(url);
-            },
             onReceivedError: (controller, request, error) {
-              handleCallback(request.url);
               pullToRefreshController.endRefreshing();
             },
             onProgressChanged: (controller, progress) {
@@ -161,12 +148,6 @@ class _CommonWebViewState extends State<CommonWebView> {
     NavigationAction shouldOverrideUrlLoadingRequest,
   ) async {
     var url = shouldOverrideUrlLoadingRequest.request.url;
-    logger.d('URL: $url');
-
-    if (url.toString().startsWith(ApiService.githubRedirectUrl)) {
-      handleLoginCallback(url);
-      return NavigationActionPolicy.CANCEL;
-    }
 
     if (Platform.isAndroid ||
         shouldOverrideUrlLoadingRequest.navigationType ==
@@ -189,52 +170,5 @@ class _CommonWebViewState extends State<CommonWebView> {
   Future<void> addHeader(Map<String, dynamic> header, WebUri url) async {
     // var csrfToken = await filterCookieName(url, 'CSRF-TOKEN');
     // header['CSRF-TOKEN'] = csrfToken;
-  }
-
-  Future<String?> filterCookieName(WebUri url, String name) async {
-    List<Cookie> cookies = await cookieManager.getCookies(url: url);
-
-    return cookies.firstWhereOrNull((c) => c.name == name)?.value;
-  }
-
-  void handleCallback(WebUri? url) {}
-
-  void handleLoginCallback(WebUri? url) {
-    if (url.toString().startsWith(ApiService.githubRedirectUrl)) {
-      var code = url?.queryParameters["code"];
-      requestAccessToken(code);
-    }
-  }
-
-  void requestAccessToken(String? code) async {
-    if (code == null) {
-      return;
-    }
-
-    var param = <String, String>{};
-    param["client_id"] = ApiService.clientId;
-    param["client_secret"] = ApiService.clientSecret;
-    param["code"] = code;
-
-    var response = await HttpClient.post(
-      ApiService.githubUrl + ApiService.apiAccessToken,
-      data: json.encode(param),
-    );
-    if (response.ok) {
-      var url = '${ApiService.githubUrl}/?${response.data}';
-      try {
-        var accessToken = Uri.parse(url).queryParameters['access_token'];
-        HttpClient.setAuthToken(accessToken!);
-        XRouter.pop(result: accessToken);
-      } catch (e) {
-        logger.e(e);
-      }
-    } else {
-      onRequestError(response);
-    }
-  }
-
-  void onRequestError(HttpResponse response) {
-    logger.d('_CommonWebViewState - onRequestError: ${response.error}');
   }
 }
