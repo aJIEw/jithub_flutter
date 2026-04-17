@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:jithub_flutter/core/constants.dart';
 import 'package:jithub_flutter/core/util/event.dart';
+import 'package:jithub_flutter/core/widget/anchored_popup.dart';
 import 'package:jithub_flutter/core/widget/clickable.dart';
 import 'package:jithub_flutter/data/event/bus_event.dart';
 import 'package:jithub_flutter/data/model/contribution_record.dart';
@@ -135,12 +136,7 @@ class ContributionGraphView extends GetView<ProfileController> {
                     return Clickable(
                       key: popupKey,
                       onPressed: () {
-                        _showPopupWindow(
-                          context,
-                          num.toString(),
-                          popupKey,
-                          messageText,
-                        );
+                        _showPopupWindow(context, popupKey, messageText);
                       },
                       child: Container(
                         decoration: BoxDecoration(
@@ -169,23 +165,22 @@ class ContributionGraphView extends GetView<ProfileController> {
 
   void _showPopupWindow(
     BuildContext context,
-    String num,
     GlobalKey popupKey,
     Widget message,
   ) {
-    /*BrnPopupWindow.showPopWindow(
-      context,
-      num.toString(),
-      popupKey,
-      widget: message,
-      popDirection: BrnPopupDirection.top,
+    showAnchoredPopup<void>(
+      context: context,
+      anchorKey: popupKey,
+      child: message,
+      preferredDirection: AnchoredPopupDirection.auto,
       backgroundColor: const Color(0xFF383D3B),
       borderRadius: 6,
       offset: 6,
       spaceMargin: -6,
+      screenPadding: 10,
       arrowHeight: 8,
-      paddingInsets: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-    );*/
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+    );
   }
 
   void registerBusEvent(BuildContext context) {
@@ -193,8 +188,7 @@ class ContributionGraphView extends GetView<ProfileController> {
       if (_todayKey.value != null &&
           _todayMessage.value != null &&
           controller.canShowPopup) {
-        final num = event.number.toString();
-        _showPopupWindow(context, num, _todayKey.value!, _todayMessage.value!);
+        _showPopupWindow(context, _todayKey.value!, _todayMessage.value!);
         controller.popupShown = true;
       }
     });
