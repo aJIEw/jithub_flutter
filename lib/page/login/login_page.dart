@@ -7,12 +7,16 @@ import 'package:pin_code_fields/pin_code_fields.dart';
 
 import '/core/base/provider_widget.dart';
 import '/core/extension/input_decoration.dart';
+import '/core/util/event.dart';
 import '/core/util/logger.dart';
 import '/core/util/toast.dart';
 import '/core/widget/loading/loading_dialog.dart';
+import '/data/event/bus_event.dart';
 import '/provider/provider.dart';
+import '/provider/state/app_status.dart';
 import '/provider/state/user_profile.dart';
 import '/router/router.dart';
+import '/util/app_utils.dart';
 import '../../core/base/base_page.dart';
 import '../../core/widget/button/countdown_button.dart';
 import 'login_viewmodel.dart';
@@ -393,7 +397,15 @@ class _ContentInputCodeState extends State<ContentInputCode> {
                       }
 
                       var userProfile = Store.value<UserProfile>(context);
+                      var appStatus = Store.value<AppStatus>(context);
                       userProfile.initWithLoginInfo(loginInfo);
+                      var targetTabIndex = appStatus.consumePendingTabIndex();
+                      if (targetTabIndex != null) {
+                        appStatus.tabIndex = targetTabIndex;
+                      } else {
+                        AppUtils.clearPendingTab(context);
+                      }
+                      XEvent.post(BusEvent.userLoggedIn, true);
 
                       XRouter.navigate(
                         XRouter.homePage,

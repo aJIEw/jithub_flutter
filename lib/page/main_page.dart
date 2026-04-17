@@ -13,6 +13,7 @@ import 'package:jithub_flutter/page/home/home_page.dart';
 import 'package:jithub_flutter/page/profile/profile_page.dart';
 import 'package:jithub_flutter/page/viewmodel/main_viewmodel.dart';
 import 'package:jithub_flutter/provider/provider.dart';
+import 'package:jithub_flutter/util/app_utils.dart';
 import 'package:provider/provider.dart';
 
 import '/core/base/provider_widget.dart';
@@ -107,10 +108,15 @@ class _MainPageState extends State<MainPage> with AfterLayoutMixin<MainPage> {
                             selectedFontSize: 12,
                             unselectedFontSize: 12,
                             onTap: (index) {
-                              if (SPUtils.isLoggedIn()) {
+                              if (index == tabIndexExplore ||
+                                  SPUtils.isLoggedIn()) {
                                 status.tabIndex = index;
                               } else {
-                                goToLogin();
+                                AppUtils.redirectToLoginSafeTab(
+                                  context,
+                                  pendingTabIndex: index,
+                                );
+                                goToLogin(targetTabIndex: index);
                               }
                             },
                           ),
@@ -168,17 +174,19 @@ class _MainPageState extends State<MainPage> with AfterLayoutMixin<MainPage> {
     }
   }
 
-  void goToLogin() async {
+  void goToLogin({int? targetTabIndex}) async {
     String? result = await XRouter.goWeb(context, ApiService.githubAuthUrl, "");
     if (!mounted) {
       return;
     }
     if (result != null && result.isNotEmpty) {
-      initLoginInfo(result);
+      initLoginInfo(result, targetTabIndex: targetTabIndex);
+    } else {
+      AppUtils.clearPendingTab(context);
     }
   }
 
-  void initLoginInfo(String accessToken) async {
+  void initLoginInfo(String accessToken, {int? targetTabIndex}) async {
     var feeds = await requestUserFeeds();
     if (!mounted) {
       return;
@@ -193,6 +201,14 @@ class _MainPageState extends State<MainPage> with AfterLayoutMixin<MainPage> {
       ToastUtils.toast('login_success'.tr);
 
       XEvent.post(BusEvent.userLoggedIn, true);
+
+      if (targetTabIndex != null) {
+        AppUtils.restorePendingTabAfterLogin(context);
+      } else {
+        AppUtils.clearPendingTab(context);
+      }
+    } else {
+      AppUtils.clearPendingTab(context);
     }
   }
 

@@ -6,6 +6,7 @@ import '/core/base/base_controller.dart';
 import '/core/util/event.dart';
 import '/core/widget/loading/loading_dialog.dart';
 import '/router/router.dart';
+import '/util/app_utils.dart';
 import 'base_app_bar.dart';
 
 class BasePageWrapper extends StatefulWidget {
@@ -27,6 +28,7 @@ class _BasePageWrapperState extends State<BasePageWrapper> {
 
   void registerRequestEvent() {
     XEvent.on<String>('RequestTokenExpired', (message) {
+      AppUtils.redirectToLoginSafeTab(context, clearUserProfile: true);
       XRouter.push(XRouter.loginPage);
       // ToastUtils.toast('身份已过期，请重新登录！');
     });
