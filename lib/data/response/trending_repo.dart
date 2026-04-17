@@ -41,8 +41,7 @@ class TrendingRepo {
     url = json['url'];
     language = json['language'];
     languageColor =
-        json['languageColor'] ??
-        TrendingRepoLanguageColors.resolve(language);
+        json['languageColor'] ?? TrendingRepoLanguageColors.resolve(language);
     stars = json['stars'];
     forks = json['forks'];
     currentPeriodStars = json['currentPeriodStars'];

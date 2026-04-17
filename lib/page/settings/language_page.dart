@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import '/core/util/sputils.dart';
-import '../../core/base/base_app_bar.dart';
-import '/i18n/i18n.dart';
+import 'package:jithub_flutter/core/base/base_app_bar.dart';
+import 'package:jithub_flutter/core/util/sputils.dart';
+import 'package:jithub_flutter/i18n/i18n.dart';
 
 class LanguagePage extends StatelessWidget {
   const LanguagePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    Color color = Theme.of(context).primaryColor;
-    String localeString = SPUtils.getLocale();
+    final Color color = Theme.of(context).primaryColor;
+    final String localeString = SPUtils.getLocale();
 
     Widget buildLanguageItem(String lan, String locale) {
       return ListTile(
@@ -33,9 +32,9 @@ class LanguagePage extends StatelessWidget {
       appBar: BaseAppBar(title: 'choose_language'.tr),
       body: ListView(
         children: <Widget>[
-          buildLanguageItem('auto_language'.tr, "auto"),
-          buildLanguageItem('中文', "zh_CN"),
-          buildLanguageItem('English', "en_US"),
+          buildLanguageItem('auto_language'.tr, 'auto'),
+          buildLanguageItem('中文', 'zh_CN'),
+          buildLanguageItem('English', 'en_US'),
         ],
       ),
     );

@@ -10,13 +10,13 @@ import 'package:jiffy/jiffy.dart';
 
 void main() {
   test('Jiffy days diff', () {
-    var date1 = Jiffy.parse('2022-04-21T03:53:30Z').dayOfYear;
-    var today = Jiffy.parse('2022-04-21T08:55:05Z').dayOfYear;
-    var daysInBetween1 = today - date1;
+    final date1 = Jiffy.parse('2022-04-21T03:53:30Z').dayOfYear;
+    final today = Jiffy.parse('2022-04-21T08:55:05Z').dayOfYear;
+    final daysInBetween1 = today - date1;
     expect(daysInBetween1, 0);
 
-    var date2 = Jiffy.parse('2022-04-17T06:53:30Z').dayOfYear;
-    var daysInBetween2 = today - date2;
+    final date2 = Jiffy.parse('2022-04-17T06:53:30Z').dayOfYear;
+    final daysInBetween2 = today - date2;
     expect(daysInBetween2, 4);
   });
 
@@ -45,12 +45,12 @@ void main() {
     * }
     * */
 
-    var daysInBetween = 15;
-    var contributionPlaceholderDays = 3;
+    final daysInBetween = 15;
+    final contributionPlaceholderDays = 3;
 
-    var total = daysInBetween + contributionPlaceholderDays;
+    final total = daysInBetween + contributionPlaceholderDays;
 
-    var mid = (total / 7.0).floor() * 7 + 3;
+    final mid = (total / 7.0).floor() * 7 + 3;
     var updateIndex = mid;
     if (total > mid) {
       updateIndex = mid - (total - mid);

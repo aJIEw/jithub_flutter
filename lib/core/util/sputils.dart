@@ -1,8 +1,7 @@
 import 'dart:convert';
 
+import 'package:jithub_flutter/data/model/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '/data/model/user.dart';
 
 class SPUtils {
   /// 创建一个内部构造方法，防止被外部实例化

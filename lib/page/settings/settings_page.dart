@@ -10,7 +10,7 @@ import 'package:jithub_flutter/util/app_utils.dart';
 
 class SettingsController extends BaseController {
   @override
-  Future loadData() {
+  Future<void> loadData() {
     return Future.delayed(200.milliseconds);
   }
 }

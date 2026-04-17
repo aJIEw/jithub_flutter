@@ -22,14 +22,14 @@ class ExplorePage extends BaseView<ExploreController> {
   @override
   NotifierBuilder buildContent(BuildContext context) {
     return (state) {
-      List<TrendingRepo> trendingRepos = controller.trendingRepos;
+      final List<TrendingRepo> trendingRepos = controller.trendingRepos;
       return Scaffold(
         body: ListView.builder(
           physics: const BouncingScrollPhysics(),
           cacheExtent: 9999,
           itemCount: trendingRepos.length,
           itemBuilder: (_, index) {
-            TrendingRepo repo = trendingRepos[index];
+            final TrendingRepo repo = trendingRepos[index];
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               child: ShadowContainer(
@@ -46,7 +46,7 @@ class ExplorePage extends BaseView<ExploreController> {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(8),
                       onTap: () {
-                        _onPressRepo(context, repo);
+                        _onPressRepo(repo);
                       },
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -55,19 +55,19 @@ class ExplorePage extends BaseView<ExploreController> {
                             leading: ClipRRect(
                               borderRadius: BorderRadius.circular(25),
                               child: DefaultNetworkImage(
-                                repo.avatar ?? "",
+                                repo.avatar ?? '',
                                 width: 50,
                                 height: 50,
                               ),
                             ),
                             title: Text(
-                              repo.name ?? "",
+                              repo.name ?? '',
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            subtitle: Text(repo.author ?? ""),
+                            subtitle: Text(repo.author ?? ''),
                           ),
                           Padding(
                             padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
@@ -151,7 +151,7 @@ class ExplorePage extends BaseView<ExploreController> {
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(12),
                                       child: DefaultNetworkImage(
-                                        repo.builtBy?[i].avatar ?? "",
+                                        repo.builtBy?[i].avatar ?? '',
                                         width: 24,
                                         height: 24,
                                       ),
@@ -174,11 +174,11 @@ class ExplorePage extends BaseView<ExploreController> {
     };
   }
 
-  void _onPressRepo(BuildContext context, TrendingRepo repo) {
-    var name = "${repo.author ?? ""} / ${repo.name ?? ""}";
-    var url = repo.url;
+  void _onPressRepo(TrendingRepo repo) {
+    final name = '${repo.author ?? ''} / ${repo.name ?? ''}';
+    final url = repo.url;
     if (url != null) {
-      XRouter.goWeb(context, url, name);
+      XRouter.goWeb(url, name);
     }
   }
 }

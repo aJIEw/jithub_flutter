@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:jithub_flutter/page/main_page.dart';
+import 'package:jithub_flutter/core/widget/webview/common_webview.dart';
 import 'package:jithub_flutter/page/login/login_page.dart';
+import 'package:jithub_flutter/page/main_page.dart';
 import 'package:jithub_flutter/page/repo/repo_list_page.dart';
+import 'package:jithub_flutter/page/repo/starred_repos_page.dart';
 import 'package:jithub_flutter/page/settings/language_page.dart';
 import 'package:jithub_flutter/page/settings/settings_page.dart';
 import 'package:jithub_flutter/page/settings/theme_page.dart';
 import 'package:jithub_flutter/page/splash_page.dart';
-
-import '../page/repo/starred_repos_page.dart';
-import '/core/widget/webview/common_webview.dart';
 
 /// Router manager
 class XRouter {
@@ -45,11 +44,7 @@ class XRouter {
     GetPage(name: themePage, page: () => const ThemePage()),
   ];
 
-  static Future<dynamic>? goWeb(
-    BuildContext context,
-    String url,
-    String title,
-  ) {
+  static Future<dynamic>? goWeb(String url, String title) {
     return Get.to(
       () => CommonWebView(url, title),
       transition: Transition.cupertino,

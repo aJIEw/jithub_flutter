@@ -54,7 +54,7 @@ class _StarredReposPageState extends State<StarredReposPage> {
   }
 
   void initUserProfile(StarredReposViewModel viewModel) {
-    var userProfile = Store.value<UserProfile>(context);
+    final userProfile = Store.value<UserProfile>(context);
 
     logger.d(
       '_RepoListPageState - registerBusEvent: userProfile initialized: ${userProfile.user?.name}',
@@ -68,9 +68,9 @@ class _StarredReposPageState extends State<StarredReposPage> {
     StarredReposViewModel viewModel,
     int index,
   ) {
-    var cardRadius = const BorderRadius.all(Radius.circular(5.0));
+    final cardRadius = const BorderRadius.all(Radius.circular(5.0));
 
-    UserRepo item = viewModel.dataList[index];
+    final UserRepo item = viewModel.dataList[index];
 
     return Card(
       elevation: 1,
@@ -79,7 +79,7 @@ class _StarredReposPageState extends State<StarredReposPage> {
       child: InkWell(
         borderRadius: cardRadius,
         onTap: () {
-          onPressRepo(context, item);
+          onPressRepo(item);
         },
         child: Padding(
           padding: const EdgeInsets.fromLTRB(12, 4, 12, 8),
@@ -91,7 +91,7 @@ class _StarredReposPageState extends State<StarredReposPage> {
                 leading: ClipRRect(
                   borderRadius: BorderRadius.circular(18),
                   child: DefaultNetworkImage(
-                    item.owner?.avatarUrl ?? "",
+                    item.owner?.avatarUrl ?? '',
                     width: 36,
                     height: 36,
                   ),

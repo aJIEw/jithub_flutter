@@ -14,12 +14,12 @@ class StarButtonController extends GetxController {
   late String _authToken;
   Options? _options;
 
-  String author;
-  String repoName;
+  final String author;
+  final String repoName;
 
-  var notLoggedIn = true.obs;
-  var loading = false.obs;
-  var hasStarred = false.obs;
+  final notLoggedIn = true.obs;
+  final loading = false.obs;
+  final hasStarred = false.obs;
 
   @override
   void onInit() {
@@ -44,8 +44,8 @@ class StarButtonController extends GetxController {
 
     loading.value = true;
 
-    var url = sprintf.call(ApiService.apiStarRepo, [author, repoName]);
-    var response = await HttpClient.get(url, options: _options);
+    final url = sprintf.call(ApiService.apiStarRepo, [author, repoName]);
+    final response = await HttpClient.get(url, options: _options);
     if (response.ok) {
       hasStarred.value = response.code == 204;
     } else if (response.code == 404) {
@@ -69,8 +69,8 @@ class StarButtonController extends GetxController {
 
     loading.value = true;
 
-    var url = sprintf.call(ApiService.apiStarRepo, [author, repoName]);
-    var response = await HttpClient.put(url, options: _options);
+    final url = sprintf.call(ApiService.apiStarRepo, [author, repoName]);
+    final response = await HttpClient.put(url, options: _options);
     if (response.ok) {
       hasStarred.value = response.code == 204;
     } else {
@@ -90,8 +90,8 @@ class StarButtonController extends GetxController {
 
     loading.value = true;
 
-    var url = sprintf.call(ApiService.apiStarRepo, [author, repoName]);
-    var response = await HttpClient.delete(url, options: _options);
+    final url = sprintf.call(ApiService.apiStarRepo, [author, repoName]);
+    final response = await HttpClient.delete(url, options: _options);
     if (response.ok) {
       hasStarred.value = !(response.code == 204);
     } else {

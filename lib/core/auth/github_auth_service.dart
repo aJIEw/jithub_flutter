@@ -4,11 +4,10 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:jithub_flutter/core/api_service.dart';
+import 'package:jithub_flutter/core/http/http_client.dart';
+import 'package:jithub_flutter/core/util/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-import '/core/api_service.dart';
-import '/core/http/http_client.dart';
-import '/core/util/toast.dart';
 
 class GitHubAuthService {
   static const String _deviceCodeGrantType =

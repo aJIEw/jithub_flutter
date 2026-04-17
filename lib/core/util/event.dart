@@ -30,7 +30,7 @@ class XEvent {
     void Function()? onDone,
     bool? cancelOnError,
   }) {
-    StreamSubscription<T> stream = getEvent(eventName, isSync: isSync)
+    final StreamSubscription<T> stream = getEvent(eventName, isSync: isSync)
         .on<T>()
         .listen(
           onData,
@@ -52,14 +52,14 @@ class XEvent {
 
   /// 发送事件
   static void post(String eventName, event) {
-    EventBus eventBus = getEvent(eventName);
+    final EventBus eventBus = getEvent(eventName);
     eventBus.fire(event);
   }
 
   /// 取消订阅
   static void cancel(String eventName, StreamSubscription? subscription) {
     if (subscription == null) return;
-    List<StreamSubscription>? streams = sStreamPool[eventName];
+    final List<StreamSubscription>? streams = sStreamPool[eventName];
     if (streams != null) {
       subscription.cancel();
       streams.remove(subscription);
@@ -68,9 +68,9 @@ class XEvent {
 
   /// 取消全部订阅
   static void cancelAll(String eventName) {
-    List<StreamSubscription>? streams = sStreamPool[eventName];
+    final List<StreamSubscription>? streams = sStreamPool[eventName];
     if (streams != null) {
-      for (StreamSubscription item in streams) {
+      for (final StreamSubscription item in streams) {
         item.cancel();
       }
       streams.clear();

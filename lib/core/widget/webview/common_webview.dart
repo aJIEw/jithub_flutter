@@ -2,7 +2,7 @@ import 'dart:io' hide HttpClient;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import '../../base/base_app_bar.dart';
+import 'package:jithub_flutter/core/base/base_app_bar.dart';
 
 class CommonWebView extends StatefulWidget {
   const CommonWebView(this.url, this.title, {super.key});
@@ -116,7 +116,7 @@ class _CommonWebViewState extends State<CommonWebView> {
   }
 
   Future<AjaxRequest> addHeaderForAjaxRequest(AjaxRequest ajaxRequest) async {
-    var header = <String, dynamic>{};
+    final header = <String, dynamic>{};
 
     addHeader(header, ajaxRequest.url!);
 
@@ -131,7 +131,7 @@ class _CommonWebViewState extends State<CommonWebView> {
   Future<FetchRequest> addHeaderForFetchRequest(
     FetchRequest fetchRequest,
   ) async {
-    var header = <String, dynamic>{};
+    final header = <String, dynamic>{};
 
     addHeader(header, fetchRequest.url!);
 
@@ -147,12 +147,12 @@ class _CommonWebViewState extends State<CommonWebView> {
     InAppWebViewController controller,
     NavigationAction shouldOverrideUrlLoadingRequest,
   ) async {
-    var url = shouldOverrideUrlLoadingRequest.request.url;
+    final url = shouldOverrideUrlLoadingRequest.request.url;
 
     if (Platform.isAndroid ||
         shouldOverrideUrlLoadingRequest.navigationType ==
             NavigationType.LINK_ACTIVATED) {
-      var header = <String, String>{};
+      final header = <String, String>{};
 
       addHeader(header, url!);
 

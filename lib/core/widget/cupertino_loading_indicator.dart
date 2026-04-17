@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'container/translucent_container.dart';
+import 'package:jithub_flutter/core/widget/container/translucent_container.dart';
 
 class CupertinoLoadingIndicator extends StatelessWidget {
   const CupertinoLoadingIndicator({

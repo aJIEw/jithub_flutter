@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
-
-import '/core/base/base_controller.dart';
-import '/core/util/event.dart';
-import '/core/widget/loading/loading_dialog.dart';
-import '/router/router.dart';
-import '/util/app_utils.dart';
-import 'base_app_bar.dart';
+import 'package:jithub_flutter/core/base/base_app_bar.dart';
+import 'package:jithub_flutter/core/base/base_controller.dart';
+import 'package:jithub_flutter/core/util/event.dart';
+import 'package:jithub_flutter/core/widget/loading/loading_dialog.dart';
+import 'package:jithub_flutter/router/router.dart';
+import 'package:jithub_flutter/util/app_utils.dart';
 
 class BasePageWrapper extends StatefulWidget {
   final Widget? child;
@@ -112,7 +111,7 @@ class BaseErrorPage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Image.asset('assets/images/ic_img_error.png', width: 50, height: 50),
-          if (errorMessage != null && errorMessage != '')
+          if (errorMessage?.isNotEmpty ?? false)
             Padding(
               padding: const EdgeInsets.only(top: 20),
               child: Text('$errorMessage'),

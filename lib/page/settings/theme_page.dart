@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../core/app_theme.dart';
+import 'package:jithub_flutter/core/app_theme.dart';
 
 class ThemePage extends StatefulWidget {
   const ThemePage({super.key});
@@ -67,10 +67,10 @@ class _ThemePageState extends State<ThemePage> {
                 BuildContext context,
                 int index,
               ) {
-                var themeColor = AppTheme.materialColors[index];
+                final themeColor = AppTheme.materialColors[index];
                 return GestureDetector(
                   onTap: () {
-                    var theme = AppTheme.getDefaultTheme(index);
+                    final theme = AppTheme.getDefaultTheme(index);
                     AppTheme.changeTheme(theme);
                   },
                   child: Container(color: themeColor),

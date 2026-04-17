@@ -1,7 +1,6 @@
+import 'package:jithub_flutter/core/base/base_viewmodel.dart';
+import 'package:jithub_flutter/core/util/logger.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-
-import '/core/util/logger.dart';
-import '/core/base/base_viewmodel.dart';
 
 /// 带下拉刷新、上拉加载页的 ViewModel
 abstract class RefreshLoadMoreViewModel<T> extends BaseViewModel {
@@ -32,7 +31,7 @@ abstract class RefreshLoadMoreViewModel<T> extends BaseViewModel {
 
   Future<List<T>> loadRemoteData() async {
     try {
-      var response = await loadData();
+      final response = await loadData();
 
       if (isLoading) {
         isLoading = false;

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 typedef OnViewModelCreated<T> = void Function(T t);
+typedef OnViewModelsCreated<A, B> = void Function(A first, B second);
 
 /// Stateful widgets that listen for state change based on Provider
 class ProviderWidget<T extends ChangeNotifier> extends StatefulWidget {
@@ -57,7 +58,7 @@ class ProviderWidget2<A extends ChangeNotifier, B extends ChangeNotifier>
     Widget? child,
   )
   builder;
-  final Function(A, B)? onViewModelCreated;
+  final OnViewModelsCreated<A, B>? onViewModelCreated;
   final Widget? child;
 
   const ProviderWidget2({

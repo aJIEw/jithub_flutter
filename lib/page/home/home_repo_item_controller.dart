@@ -8,10 +8,10 @@ class HomeRepoItemController extends GetxController {
     onInit();
   }
 
-  var repoUrl = '';
+  final String repoUrl;
 
-  var loading = false.obs;
-  var repo = Rx<UserRepo>(UserRepo());
+  final loading = false.obs;
+  final repo = Rx<UserRepo>(UserRepo());
 
   @override
   void onInit() {
@@ -23,9 +23,9 @@ class HomeRepoItemController extends GetxController {
   void getRepoDetail(String repoUrl) async {
     loading.value = true;
 
-    var response = await HttpClient.get(repoUrl);
+    final response = await HttpClient.get(repoUrl);
     if (response.ok) {
-      var result = UserRepo.fromJson(response.data);
+      final result = UserRepo.fromJson(response.data);
 
       repo.value = result;
     } else {

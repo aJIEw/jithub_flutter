@@ -3,23 +3,22 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:jithub_flutter/core/base/base_page.dart';
+import 'package:jithub_flutter/core/base/provider_widget.dart';
+import 'package:jithub_flutter/core/extension/input_decoration.dart';
+import 'package:jithub_flutter/core/util/event.dart';
+import 'package:jithub_flutter/core/util/logger.dart';
+import 'package:jithub_flutter/core/util/toast.dart';
+import 'package:jithub_flutter/core/widget/button/countdown_button.dart';
+import 'package:jithub_flutter/core/widget/loading/loading_dialog.dart';
+import 'package:jithub_flutter/data/event/bus_event.dart';
+import 'package:jithub_flutter/page/login/login_viewmodel.dart';
+import 'package:jithub_flutter/provider/provider.dart';
+import 'package:jithub_flutter/provider/state/app_status.dart';
+import 'package:jithub_flutter/provider/state/user_profile.dart';
+import 'package:jithub_flutter/router/router.dart';
+import 'package:jithub_flutter/util/app_utils.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
-
-import '/core/base/provider_widget.dart';
-import '/core/extension/input_decoration.dart';
-import '/core/util/event.dart';
-import '/core/util/logger.dart';
-import '/core/util/toast.dart';
-import '/core/widget/loading/loading_dialog.dart';
-import '/data/event/bus_event.dart';
-import '/provider/provider.dart';
-import '/provider/state/app_status.dart';
-import '/provider/state/user_profile.dart';
-import '/router/router.dart';
-import '/util/app_utils.dart';
-import '../../core/base/base_page.dart';
-import '../../core/widget/button/countdown_button.dart';
-import 'login_viewmodel.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -34,7 +33,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    var topBgColor = Theme.of(context).primaryColor;
+    final topBgColor = Theme.of(context).primaryColor;
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -122,7 +121,7 @@ class _LoginPageState extends State<LoginPage> {
 class ContentInputPhoneNumber extends StatefulWidget {
   const ContentInputPhoneNumber({super.key, required this.onCodeSent});
 
-  final Function onCodeSent;
+  final ValueChanged<String> onCodeSent;
 
   @override
   State<ContentInputPhoneNumber> createState() =>
@@ -252,7 +251,6 @@ class _ContentInputPhoneNumberState extends State<ContentInputPhoneNumber> {
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {
                           XRouter.goWeb(
-                            context,
                             'http://your.domain.com/term_agreement',
                             _getPrivacyText(context),
                           );
@@ -273,7 +271,7 @@ class _ContentInputPhoneNumberState extends State<ContentInputPhoneNumber> {
       return 'text_form_warning_input_phone_number'.tr;
     }
 
-    var input = int.parse(value);
+    final input = int.parse(value);
     if (input.toString().length < 8) {
       return 'text_form_warning_input_correct_number'.tr;
     }
@@ -349,7 +347,7 @@ class _ContentInputCodeState extends State<ContentInputCode> {
                 padding: const EdgeInsets.all(20),
                 child: Text(
                   'sms_has_sent_to'.trParams({
-                    "phone_number": widget.phoneNumber,
+                    'phone_number': widget.phoneNumber,
                   }),
                   style: Theme.of(
                     context,
@@ -396,10 +394,10 @@ class _ContentInputCodeState extends State<ContentInputCode> {
                         return;
                       }
 
-                      var userProfile = Store.value<UserProfile>(context);
-                      var appStatus = Store.value<AppStatus>(context);
+                      final userProfile = Store.value<UserProfile>(context);
+                      final appStatus = Store.value<AppStatus>(context);
                       userProfile.initWithLoginInfo(loginInfo);
-                      var targetTabIndex = appStatus.consumePendingTabIndex();
+                      final targetTabIndex = appStatus.consumePendingTabIndex();
                       if (targetTabIndex != null) {
                         appStatus.tabIndex = targetTabIndex;
                       } else {

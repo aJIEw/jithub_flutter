@@ -1,12 +1,10 @@
-import 'http_exceptions.dart';
+import 'package:jithub_flutter/core/http/http_exceptions.dart';
 
 class HttpResponse {
-  late bool ok;
+  bool ok = false;
   dynamic data;
   int code = -1;
   HttpException? error;
-
-  HttpResponse._internal({this.ok = false});
 
   HttpResponse.success(this.data, this.code) {
     ok = true;

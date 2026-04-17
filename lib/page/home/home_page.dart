@@ -24,7 +24,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  ScrollController scrollController = ScrollController();
+  final scrollController = ScrollController();
 
   void registerBusEvent(HomeViewModel viewModel) {
     XEvent.on(BusEvent.userLoggedIn, (value) async {
@@ -33,7 +33,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void initUserProfile(HomeViewModel viewModel) {
-    var userProfile = Store.value<UserProfile>(context);
+    final userProfile = Store.value<UserProfile>(context);
 
     logger.d(
       '_HomePageState - registerBusEvent: userProfile initialized: ${userProfile.user?.name}',
@@ -70,7 +70,7 @@ class _HomePageState extends State<HomePage> {
                         cacheExtent: 9999,
                         itemCount: viewModel.dataList.length,
                         itemBuilder: (context, index) {
-                          EventTimeline item = viewModel.dataList[index];
+                          final EventTimeline item = viewModel.dataList[index];
 
                           return _buildItem(item, item.repo?.url);
                         },
@@ -91,7 +91,7 @@ class _HomePageState extends State<HomePage> {
             leading: ClipRRect(
               borderRadius: BorderRadius.circular(20),
               child: DefaultNetworkImage(
-                item.actor?.avatarUrl ?? "",
+                item.actor?.avatarUrl ?? '',
                 width: 40,
                 height: 40,
               ),
@@ -114,17 +114,17 @@ class _HomePageState extends State<HomePage> {
   Widget _buildEventTitle(EventTimeline item) {
     TextSpan? actionText;
 
-    var normalStyle = TextStyle(color: Colors.grey[850], fontSize: 14);
+    final normalStyle = TextStyle(color: Colors.grey[850], fontSize: 14);
 
-    var boldStyle = TextStyle(
+    final boldStyle = TextStyle(
       fontWeight: FontWeight.bold,
       color: Colors.grey[850],
       fontSize: 14,
     );
 
-    var repo = TextSpan(text: item.repo?.name ?? '', style: boldStyle);
+    final repo = TextSpan(text: item.repo?.name ?? '', style: boldStyle);
 
-    var type = item.type;
+    final type = item.type;
     if (type == GithubEvent.watchEvent.name) {
       actionText = TextSpan(
         children: [
@@ -185,11 +185,11 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-void onPressRepo(BuildContext context, UserRepo repo) {
-  var name = "${repo.owner?.login ?? ""} / ${repo.name ?? ""}";
-  var url = repo.htmlUrl;
+void onPressRepo(UserRepo repo) {
+  final name = '${repo.owner?.login ?? ''} / ${repo.name ?? ''}';
+  final url = repo.htmlUrl;
   if (url != null) {
-    XRouter.goWeb(context, url, name);
+    XRouter.goWeb(url, name);
   }
 }
 

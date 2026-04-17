@@ -48,7 +48,7 @@ class LoadingDialog extends Dialog {
   const LoadingDialog({
     super.key,
     this.loadingView,
-    this.content = const Text("加载中..."),
+    this.content = const Text('加载中...'),
     this.showContent = true,
     this.radius = 10,
     this.dialogBackgroundColor = Colors.white,

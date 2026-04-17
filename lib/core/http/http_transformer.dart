@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 
-import 'http_response.dart';
+import 'package:jithub_flutter/core/http/http_response.dart';
 
 /// Response 解析
 abstract class HttpTransformer {

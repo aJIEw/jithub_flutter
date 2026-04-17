@@ -80,12 +80,12 @@ class ContributionGraphView extends GetView<ProfileController> {
                   ),
                   itemBuilder: (_, index) {
                     // contribution item
-                    ContributionRecord contribution =
+                    final ContributionRecord contribution =
                         controller.contributionList[index];
 
                     // popup window 的内容
-                    var num = contribution.number;
-                    var messageText = Text.rich(
+                    final num = contribution.number;
+                    final messageText = Text.rich(
                       TextSpan(
                         style: const TextStyle(
                           fontSize: 12,
@@ -100,7 +100,7 @@ class ContributionGraphView extends GetView<ProfileController> {
                         ],
                       ),
                     );
-                    var popupKey = GlobalKey();
+                    final popupKey = GlobalKey();
 
                     // 保存当日的 key 和 message，用于初次点击到 profile 时显示 popup
                     if (_todayKey.value == null &&
@@ -114,12 +114,12 @@ class ContributionGraphView extends GetView<ProfileController> {
                     }
 
                     // 根据当日最多和最少 commit 数显示不同深度的颜色
-                    var maxNum = controller.maxDailyContribution.value;
-                    var minNum = controller.minDailyContribution.value;
-                    var step = (maxNum - minNum) / 3;
-                    var minLevel = minNum + step;
-                    var midLevel = minNum + step * 2;
-                    var maxLevel = minNum + step * 3;
+                    final maxNum = controller.maxDailyContribution.value;
+                    final minNum = controller.minDailyContribution.value;
+                    final step = (maxNum - minNum) / 3;
+                    final minLevel = minNum + step;
+                    final midLevel = minNum + step * 2;
+                    final maxLevel = minNum + step * 3;
                     Color? contributionColor = Colors.transparent;
                     if (contribution.number >= maxLevel) {
                       contributionColor = Colors.green[800];
@@ -193,7 +193,7 @@ class ContributionGraphView extends GetView<ProfileController> {
       if (_todayKey.value != null &&
           _todayMessage.value != null &&
           controller.canShowPopup) {
-        var num = event.number.toString();
+        final num = event.number.toString();
         _showPopupWindow(context, num, _todayKey.value!, _todayMessage.value!);
         controller.popupShown = true;
       }

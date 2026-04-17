@@ -1,10 +1,10 @@
 import 'dart:convert';
 
-import '/core/http/http_client.dart';
-import '/core/util/logger.dart';
-import '/core/util/sputils.dart';
-import '/data/model/user.dart';
 import 'package:flutter/foundation.dart';
+import 'package:jithub_flutter/core/http/http_client.dart';
+import 'package:jithub_flutter/core/util/logger.dart';
+import 'package:jithub_flutter/core/util/sputils.dart';
+import 'package:jithub_flutter/data/model/user.dart';
 
 class UserProfile with ChangeNotifier {
   String? authToken;

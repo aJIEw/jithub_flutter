@@ -1,16 +1,16 @@
-import 'package:jithub_flutter/core/util/sputils.dart';
-import 'package:jithub_flutter/i18n/en_US/translation.dart';
-import 'package:jithub_flutter/i18n/zh_CN/translation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
+import 'package:jithub_flutter/core/util/sputils.dart';
+import 'package:jithub_flutter/i18n/en_US/translation.dart';
+import 'package:jithub_flutter/i18n/zh_CN/translation.dart';
 
 class I18n extends Translations {
   static const fallbackLocale = Locale('zh', 'CN');
 
   /// App 支持的语言列表，第一个是默认语言
   static List<Locale> get supportedLocales {
-    return const <Locale>[fallbackLocale, Locale("en", "US")];
+    return const <Locale>[fallbackLocale, Locale('en', 'US')];
   }
 
   static Locale? get locale => Get.deviceLocale;
@@ -18,7 +18,7 @@ class I18n extends Translations {
   static Locale? get appLocale {
     if (appLocaleString.isEmpty || !appLocaleString.contains('_')) return null;
 
-    var s = appLocaleString.split("_");
+    final s = appLocaleString.split('_');
     return Locale(s[0], s[1]);
   }
 
