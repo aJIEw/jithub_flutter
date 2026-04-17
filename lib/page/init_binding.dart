@@ -6,7 +6,7 @@ import 'profile/profile_controller.dart';
 class InitialBinding extends Bindings {
   @override
   void dependencies() {
-    Get.put<ExploreController>(ExploreController());
-    Get.put<ProfileController>(ProfileController());
+    Get.lazyPut<ExploreController>(() => ExploreController());
+    Get.lazyPut<ProfileController>(() => ProfileController());
   }
 }

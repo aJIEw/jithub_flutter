@@ -13,6 +13,7 @@ import 'package:jithub_flutter/page/home/home_page.dart';
 import 'package:jithub_flutter/page/profile/profile_page.dart';
 import 'package:jithub_flutter/page/viewmodel/main_viewmodel.dart';
 import 'package:jithub_flutter/provider/provider.dart';
+import 'package:jithub_flutter/util/app_utils.dart';
 import 'package:provider/provider.dart';
 
 import '/core/base/provider_widget.dart';
@@ -36,6 +37,7 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> with AfterLayoutMixin<MainPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final List<Widget?> _tabPages = List<Widget?>.filled(tabCount, null);
 
   @override
   void afterFirstLayout(BuildContext context) {
@@ -88,11 +90,15 @@ class _MainPageState extends State<MainPage> with AfterLayoutMixin<MainPage> {
                         MainViewModel viewModel,
                         Widget? child,
                       ) {
+                        _tabPages[status.tabIndex] ??= _createTabPage(
+                          status.tabIndex,
+                        );
+
                         return Scaffold(
                           key: _scaffoldKey,
                           body: IndexedStack(
                             index: status.tabIndex,
-                            children: getTabWidget(context),
+                            children: _getTabWidgets(),
                           ),
                           bottomNavigationBar: BottomNavigationBar(
                             items: getTabs(),
@@ -102,10 +108,15 @@ class _MainPageState extends State<MainPage> with AfterLayoutMixin<MainPage> {
                             selectedFontSize: 12,
                             unselectedFontSize: 12,
                             onTap: (index) {
-                              if (SPUtils.isLoggedIn()) {
+                              if (index == tabIndexExplore ||
+                                  SPUtils.isLoggedIn()) {
                                 status.tabIndex = index;
                               } else {
-                                goToLogin();
+                                AppUtils.redirectToLoginSafeTab(
+                                  context,
+                                  pendingTabIndex: index,
+                                );
+                                goToLogin(targetTabIndex: index);
                               }
                             },
                           ),
@@ -116,6 +127,12 @@ class _MainPageState extends State<MainPage> with AfterLayoutMixin<MainPage> {
             );
           },
     );
+  }
+
+  List<Widget> _getTabWidgets() {
+    return _tabPages
+        .map((page) => page ?? const SizedBox.shrink())
+        .toList(growable: false);
   }
 
   List<BottomNavigationBarItem> getTabs() => [
@@ -144,23 +161,32 @@ class _MainPageState extends State<MainPage> with AfterLayoutMixin<MainPage> {
     );
   }
 
-  List<Widget> getTabWidget(BuildContext context) => [
-    const HomePage(),
-    const ExplorePage(),
-    const ProfilePage(),
-  ];
+  Widget _createTabPage(int index) {
+    switch (index) {
+      case tabIndexHome:
+        return const HomePage();
+      case tabIndexExplore:
+        return const ExplorePage();
+      case tabIndexProfile:
+        return const ProfilePage();
+      default:
+        return const SizedBox.shrink();
+    }
+  }
 
-  void goToLogin() async {
+  void goToLogin({int? targetTabIndex}) async {
     String? result = await XRouter.goWeb(context, ApiService.githubAuthUrl, "");
     if (!mounted) {
       return;
     }
     if (result != null && result.isNotEmpty) {
-      initLoginInfo(result);
+      initLoginInfo(result, targetTabIndex: targetTabIndex);
+    } else {
+      AppUtils.clearPendingTab(context);
     }
   }
 
-  void initLoginInfo(String accessToken) async {
+  void initLoginInfo(String accessToken, {int? targetTabIndex}) async {
     var feeds = await requestUserFeeds();
     if (!mounted) {
       return;
@@ -175,6 +201,14 @@ class _MainPageState extends State<MainPage> with AfterLayoutMixin<MainPage> {
       ToastUtils.toast('login_success'.tr);
 
       XEvent.post(BusEvent.userLoggedIn, true);
+
+      if (targetTabIndex != null) {
+        AppUtils.restorePendingTabAfterLogin(context);
+      } else {
+        AppUtils.clearPendingTab(context);
+      }
+    } else {
+      AppUtils.clearPendingTab(context);
     }
   }
 
@@ -195,3 +229,5 @@ const int tabIndexHome = 0;
 const int tabIndexExplore = 1;
 
 const int tabIndexProfile = 2;
+
+const int tabCount = 3;
