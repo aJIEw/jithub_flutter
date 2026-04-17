@@ -29,6 +29,11 @@ abstract class BaseController extends SuperController with RequestErrorHandler {
 
   Future<dynamic> loadData();
 
+  void reloadData() {
+    change(null, status: RxStatus.loading());
+    append(() => loadData);
+  }
+
   @override
   void onResumed() {
     logger.d('${toString()} - onResumed: ');
@@ -47,6 +52,11 @@ abstract class BaseController extends SuperController with RequestErrorHandler {
   @override
   void onDetached() {
     logger.d('${toString()} - onDetached: ');
+  }
+
+  @override
+  void onHidden() {
+    logger.d('${toString()} - onHidden: ');
   }
 
   /// Controller 被销毁时的回调，释放资源

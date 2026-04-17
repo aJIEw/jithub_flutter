@@ -17,7 +17,7 @@ import 'package:jithub_flutter/widget/network_image.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 class ProfilePage extends BaseView<ProfileController> {
-  const ProfilePage({Key? key}) : super(key: key);
+  const ProfilePage({super.key});
 
   @override
   bool get hasActionBar => false;
@@ -50,7 +50,9 @@ class ProfilePage extends BaseView<ProfileController> {
                     child: Container(
                       color: Colors.white,
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 24, vertical: 12),
+                        horizontal: 24,
+                        vertical: 12,
+                      ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -71,26 +73,31 @@ class ProfilePage extends BaseView<ProfileController> {
                                 child: Text(
                                   user.login ?? '',
                                   style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.grey[850]),
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.grey[850],
+                                  ),
                                 ),
                               ),
                               Expanded(
-                                  child: Container(
-                                // color: Colors.cyan[100],
-                                alignment: Alignment.centerRight,
-                                child: Clickable(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(4),
-                                    child: Icon(Icons.settings,
-                                        color: Colors.grey[850], size: 22),
+                                child: Container(
+                                  // color: Colors.cyan[100],
+                                  alignment: Alignment.centerRight,
+                                  child: Clickable(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(4),
+                                      child: Icon(
+                                        Icons.settings,
+                                        color: Colors.grey[850],
+                                        size: 22,
+                                      ),
+                                    ),
+                                    onPressed: () {
+                                      XRouter.push(XRouter.settingsPage);
+                                    },
                                   ),
-                                  onPressed: () {
-                                    XRouter.push(XRouter.settingsPage);
-                                  },
                                 ),
-                              )),
+                              ),
                             ],
                           ),
                           const SizedBox(height: 10),
@@ -98,53 +105,43 @@ class ProfilePage extends BaseView<ProfileController> {
                             Text(
                               user.bio ?? "",
                               style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.grey[850]),
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.grey[850],
+                              ),
                             ),
                           ..._getNonNullPropertyWidget(
-                              user.location,
-                              const Icon(
-                                Icons.pin_drop_outlined,
-                                size: 14,
-                              )),
+                            user.location,
+                            const Icon(Icons.pin_drop_outlined, size: 14),
+                          ),
                           ..._getNonNullPropertyWidget(
-                              user.company,
-                              const Icon(
-                                Icons.apartment_sharp,
-                                size: 14,
-                              )),
+                            user.company,
+                            const Icon(Icons.apartment_sharp, size: 14),
+                          ),
                           ..._getNonNullPropertyWidget(
-                              user.blog,
-                              const Icon(
-                                Icons.language,
-                                size: 14,
-                              )),
+                            user.blog,
+                            const Icon(Icons.language, size: 14),
+                          ),
                           ..._getNonNullPropertyWidget(
-                              user.twitterUsername,
-                              const Icon(
-                                Icons.email,
-                                size: 14,
-                              )),
+                            user.twitterUsername,
+                            const Icon(Icons.email, size: 14),
+                          ),
                           const SizedBox(height: 8),
                           Row(
                             mainAxisSize: MainAxisSize.min,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              const Icon(
-                                Icons.people_alt_outlined,
-                                size: 14,
-                              ),
+                              const Icon(Icons.people_alt_outlined, size: 14),
                               const SizedBox(width: 4),
                               Text(
                                 (user.followers ?? '0').toString(),
                                 style: const TextStyle(
-                                    fontSize: 12, fontWeight: FontWeight.bold),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                               const SizedBox(width: 4),
-                              const Text(
-                                'followers',
-                              ),
+                              const Text('followers'),
                               const SizedBox(width: 8),
                               Icon(
                                 Icons.circle,
@@ -155,96 +152,112 @@ class ProfilePage extends BaseView<ProfileController> {
                               Text(
                                 (user.following ?? '0').toString(),
                                 style: const TextStyle(
-                                    fontSize: 12, fontWeight: FontWeight.bold),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                               const SizedBox(width: 4),
-                              const Text(
-                                'following',
-                              ),
+                              const Text('following'),
                             ],
-                          )
+                          ),
                         ],
                       ),
                     ),
                   ),
                   const SizedBox(height: 20),
                   ShadowContainer(
-                      child: Container(
-                    color: Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 12),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Icon(
-                              Icons.book,
-                              size: 16,
-                              color: Colors.grey[700],
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              "Contribution",
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.grey[850],
+                    child: Container(
+                      color: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Icon(
+                                Icons.book,
+                                size: 16,
+                                color: Colors.grey[700],
                               ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                        Row(
-                          children: [
-                            Obx(
-                              () => Text.rich(TextSpan(
-                                  style: TextStyle(
-                                      fontSize: 14, color: Colors.grey[850]),
-                                  children: [
-                                    TextSpan(
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                      children: [
-                                        TextSpan(
-                                          text: controller
-                                              .totalContribution.value
-                                              .toString(),
-                                          style: const TextStyle(fontSize: 16),
-                                        ),
-                                        const TextSpan(text: ' contributions')
-                                      ],
+                              const SizedBox(width: 8),
+                              Text(
+                                "Contribution",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.grey[850],
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          Row(
+                            children: [
+                              Obx(
+                                () => Text.rich(
+                                  TextSpan(
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.grey[850],
                                     ),
-                                    const TextSpan(
-                                        text: ' in the last 90 days'),
-                                  ])),
-                            ),
-                            Clickable(
-                              onPressed: () {
-                                showAlertDialog(
-                                  'contribution_explain'.tr,
-                                  confirmText: 'dialog_confirm_text'.tr,
-                                  hideCancel: true,
-                                );
-                              },
-                              child: Container(
-                                margin: const EdgeInsets.only(top: 2),
-                                padding: const EdgeInsets.all(4),
-                                child: SvgPicture.asset(
+                                    children: [
+                                      TextSpan(
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        children: [
+                                          TextSpan(
+                                            text: controller
+                                                .totalContribution
+                                                .value
+                                                .toString(),
+                                            style: const TextStyle(
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                          const TextSpan(
+                                            text: ' contributions',
+                                          ),
+                                        ],
+                                      ),
+                                      const TextSpan(
+                                        text: ' in the last 90 days',
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Clickable(
+                                onPressed: () {
+                                  showAlertDialog(
+                                    'contribution_explain'.tr,
+                                    confirmText: 'dialog_confirm_text'.tr,
+                                    hideCancel: true,
+                                  );
+                                },
+                                child: Container(
+                                  margin: const EdgeInsets.only(top: 2),
+                                  padding: const EdgeInsets.all(4),
+                                  child: SvgPicture.asset(
                                     'assets/images/ic_question.svg',
                                     width: 16,
-                                    height: 16),
+                                    height: 16,
+                                  ),
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                        // graph
-                        ContributionGraphView(),
-                      ],
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          // graph
+                          ContributionGraphView(),
+                        ],
+                      ),
                     ),
-                  )),
+                  ),
                   const SizedBox(height: 20),
                   ShadowContainer(
                     child: Container(
@@ -253,17 +266,21 @@ class ProfilePage extends BaseView<ProfileController> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           _buildListItem(
-                              'assets/images/ic_option_repo.png',
-                              Color('0xFF3E444D'.toHexValue()),
-                              'repositories'.tr, () {
-                            XRouter.push(XRouter.repoListPage);
-                          }),
+                            'assets/images/ic_option_repo.png',
+                            Color('0xFF3E444D'.toHexValue()),
+                            'repositories'.tr,
+                            () {
+                              XRouter.push(XRouter.repoListPage);
+                            },
+                          ),
                           _buildListItem(
-                              'assets/images/ic_option_starred.png',
-                              Color('0xFFFFC600'.toHexValue()),
-                              'starred_repos'.tr, () {
-                            XRouter.push(XRouter.starredReposPage);
-                          }),
+                            'assets/images/ic_option_starred.png',
+                            Color('0xFFFFC600'.toHexValue()),
+                            'starred_repos'.tr,
+                            () {
+                              XRouter.push(XRouter.starredReposPage);
+                            },
+                          ),
                           /*_buildListItem('assets/images/ic_option_settings.png',
                               Color('0xFF707070'.toHexValue()), 'Settings', () {
                             ToastUtils.toast('Clicked Settings');
@@ -281,12 +298,15 @@ class ProfilePage extends BaseView<ProfileController> {
     };
   }
 
-  List<Widget> _getNonNullPropertyWidget(String? property, Widget icon,
-      {double marginTop = 8}) {
+  List<Widget> _getNonNullPropertyWidget(
+    String? property,
+    Widget icon, {
+    double marginTop = 8,
+  }) {
     if (property?.isNotEmpty ?? false) {
       return [
         SizedBox(height: marginTop),
-        buildIconText('@' + (property ?? ''), icon),
+        buildIconText('@${property ?? ''}', icon),
       ];
     }
 
@@ -294,7 +314,11 @@ class ProfilePage extends BaseView<ProfileController> {
   }
 
   Widget _buildListItem(
-      String iconPath, Color iconBg, String title, VoidCallback onTab) {
+    String iconPath,
+    Color iconBg,
+    String title,
+    VoidCallback onTab,
+  ) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -304,24 +328,30 @@ class ProfilePage extends BaseView<ProfileController> {
           child: Row(
             children: [
               Container(
-                  width: 35,
-                  height: 35,
-                  padding: const EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5),
-                    color: iconBg,
-                  ),
-                  child: Image.asset(iconPath, width: 20, height: 20)),
+                width: 35,
+                height: 35,
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+                  color: iconBg,
+                ),
+                child: Image.asset(iconPath, width: 20, height: 20),
+              ),
               Padding(
                 padding: const EdgeInsets.only(left: 20),
                 child: Text(title, style: const TextStyle(fontSize: 16)),
               ),
               Expanded(
-                  child: Container(
-                      alignment: Alignment.centerRight,
-                      padding: const EdgeInsets.only(right: 12),
-                      child: Icon(Icons.arrow_forward_ios,
-                          size: 20, color: Colors.grey[400]))),
+                child: Container(
+                  alignment: Alignment.centerRight,
+                  padding: const EdgeInsets.only(right: 12),
+                  child: Icon(
+                    Icons.arrow_forward_ios,
+                    size: 20,
+                    color: Colors.grey[400],
+                  ),
+                ),
+              ),
             ],
           ),
         ),

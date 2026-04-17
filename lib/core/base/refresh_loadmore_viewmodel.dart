@@ -24,7 +24,7 @@ abstract class RefreshLoadMoreViewModel<T> extends BaseViewModel {
   /// 请求结果
   List<T> dataList = [];
 
-  init({dynamic param}) async {
+  Future<void> init({dynamic param}) async {
     isLoading = true;
     params = param;
     await loadRemoteData();
@@ -59,7 +59,7 @@ abstract class RefreshLoadMoreViewModel<T> extends BaseViewModel {
 
       return dataList;
     } catch (error, stackTrace) {
-      logger.e('load failed', error, stackTrace);
+      logger.e('load failed', error: error, stackTrace: stackTrace);
       refreshController.loadFailed();
       return [];
     }

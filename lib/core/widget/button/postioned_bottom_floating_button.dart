@@ -7,9 +7,12 @@ import '/core/widget/container/shadow_container.dart';
 import '../../app_theme.dart';
 
 class PositionedBottomFloatingButton extends StatelessWidget {
-  const PositionedBottomFloatingButton(this.text,
-      {Key? key, this.onPressed, this.containerDecoration})
-      : super(key: key);
+  const PositionedBottomFloatingButton(
+    this.text, {
+    super.key,
+    this.onPressed,
+    this.containerDecoration,
+  });
 
   final String text;
 
@@ -25,7 +28,7 @@ class PositionedBottomFloatingButton extends StatelessWidget {
       right: 30,
       bottom: paddingBottom + (Platform.isAndroid ? 10 : 0),
       child: ShadowContainer(
-        color: appColor[50],
+        color: appColor[50] ?? appColor,
         child: Clickable(
           onPressed: () {
             onPressed?.call();
@@ -33,7 +36,8 @@ class PositionedBottomFloatingButton extends StatelessWidget {
           child: Container(
             height: 50,
             alignment: Alignment.center,
-            decoration: containerDecoration ??
+            decoration:
+                containerDecoration ??
                 BoxDecoration(
                   color: appColor,
                   borderRadius: BorderRadius.circular(8),

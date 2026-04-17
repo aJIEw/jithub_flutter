@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
 class TranslucentContainer extends StatelessWidget {
-  const TranslucentContainer(
-      {Key? key,
-      this.padding = const EdgeInsets.all(8),
-      this.translucentColor = Colors.black38,
-      this.borderRadius = 5,
-      required this.child})
-      : super(key: key);
+  const TranslucentContainer({
+    super.key,
+    this.padding = const EdgeInsets.all(8),
+    this.translucentColor = Colors.black38,
+    this.borderRadius = 5,
+    required this.child,
+  });
 
   final EdgeInsetsGeometry padding;
 

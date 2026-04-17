@@ -3,11 +3,7 @@ class AuthToken {
   String? scope;
   String? tokenType;
 
-  AuthToken({
-    this.accessToken,
-    this.scope,
-    this.tokenType,
-  });
+  AuthToken({this.accessToken, this.scope, this.tokenType});
 
   AuthToken.fromJson(dynamic json) {
     accessToken = json['access_token'];
@@ -23,11 +19,7 @@ class AuthToken {
     return map;
   }
 
-  AuthToken copyWith({
-    String? accessToken,
-    String? scope,
-    String? tokenType,
-  }) =>
+  AuthToken copyWith({String? accessToken, String? scope, String? tokenType}) =>
       AuthToken(
         accessToken: accessToken ?? this.accessToken,
         scope: scope ?? this.scope,

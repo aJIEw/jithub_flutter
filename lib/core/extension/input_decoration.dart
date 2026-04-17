@@ -13,10 +13,11 @@ extension InputDecorationExtension on InputDecoration {
               onPressed: () => clearText(),
               icon: ClipRRect(
                 borderRadius: const BorderRadius.only(
-                    bottomLeft: Radius.circular(10),
-                    bottomRight: Radius.circular(10),
-                    topLeft: Radius.circular(10),
-                    topRight: Radius.circular(10)),
+                  bottomLeft: Radius.circular(10),
+                  bottomRight: Radius.circular(10),
+                  topLeft: Radius.circular(10),
+                  topRight: Radius.circular(10),
+                ),
                 child: Container(
                   color: Colors.grey,
                   width: 20,

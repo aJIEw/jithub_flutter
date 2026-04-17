@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 
 class BaseContainer extends StatelessWidget {
-  const BaseContainer(
-      {Key? key, this.color = Colors.white, required this.child})
-      : super(key: key);
+  const BaseContainer({
+    super.key,
+    this.color = Colors.white,
+    required this.child,
+  });
 
   final Color? color;
 
-  final child;
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {

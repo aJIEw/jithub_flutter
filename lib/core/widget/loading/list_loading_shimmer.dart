@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
 class ListLoadingShimmer extends StatelessWidget {
-  const ListLoadingShimmer({Key? key}) : super(key: key);
+  const ListLoadingShimmer({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -20,23 +20,25 @@ class ListLoadingShimmer extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
-              children:
-                  List.generate(10, (index) => renderChildWidget(context)),
+              children: List.generate(
+                10,
+                (index) => renderChildWidget(context),
+              ),
             ),
           ),
         ),
       ),
     );
 
-//    return Center(
-//      child: CircularProgressIndicator(
-//        strokeWidth: 2.5,
-//        backgroundColor: Colors.deepPurple[600],
-//      ),
-//    );
+    //    return Center(
+    //      child: CircularProgressIndicator(
+    //        strokeWidth: 2.5,
+    //        backgroundColor: Colors.deepPurple[600],
+    //      ),
+    //    );
   }
 
-  Widget renderChildWidget(context) {
+  Widget renderChildWidget(BuildContext context) {
     return Container(
       padding: const EdgeInsets.only(bottom: 10, top: 10),
       decoration: BoxDecoration(
@@ -107,9 +109,7 @@ class ListLoadingShimmer extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(
-              top: 10,
-            ),
+            padding: const EdgeInsets.only(top: 10),
             child: Row(
               children: <Widget>[
                 Container(
@@ -132,9 +132,7 @@ class ListLoadingShimmer extends StatelessWidget {
                           shape: BoxShape.rectangle,
                         ),
                       ),
-                      const SizedBox(
-                        height: 5,
-                      ),
+                      const SizedBox(height: 5),
                       Container(
                         margin: const EdgeInsets.only(left: 10, right: 10),
                         height: 6,

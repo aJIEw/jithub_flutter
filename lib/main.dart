@@ -17,7 +17,8 @@ class AppInit {
     handleError(() {
       WidgetsFlutterBinding.ensureInitialized();
       SPUtils.init().then(
-          (value) => runApp(Store.init(ToastUtils.init(const AppEntrance()))));
+        (value) => runApp(Store.init(ToastUtils.init(const AppEntrance()))),
+      );
 
       HttpClient.init();
     });

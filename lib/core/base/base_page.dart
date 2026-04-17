@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 
@@ -12,10 +11,10 @@ import 'base_app_bar.dart';
 class BasePageWrapper extends StatefulWidget {
   final Widget? child;
 
-  const BasePageWrapper({Key? key, this.child}) : super(key: key);
+  const BasePageWrapper({super.key, this.child});
 
   @override
-  _BasePageWrapperState createState() => _BasePageWrapperState();
+  State<BasePageWrapper> createState() => _BasePageWrapperState();
 }
 
 class _BasePageWrapperState extends State<BasePageWrapper> {
@@ -39,14 +38,12 @@ class _BasePageWrapperState extends State<BasePageWrapper> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: widget.child,
-    );
+    return widget.child ?? const SizedBox.shrink();
   }
 }
 
 abstract class BaseView<T extends BaseController> extends GetView<T> {
-  const BaseView({Key? key, this.hasActionBar = true}) : super(key: key);
+  const BaseView({super.key, this.hasActionBar = true});
 
   final bool hasActionBar;
 
@@ -55,10 +52,13 @@ abstract class BaseView<T extends BaseController> extends GetView<T> {
     return controller.obx(
       buildContent(context),
       onLoading: BaseLoadingPage(hasActionBar: hasActionBar),
-      onError: (message) => BaseErrorPage(message, onReload: () {
-        controller.change(null, status: RxStatus.loading());
-        controller.append(() => controller.loadData);
-      }, hasActionBar: hasActionBar),
+      onError: (message) => BaseErrorPage(
+        message,
+        onReload: () {
+          controller.reloadData();
+        },
+        hasActionBar: hasActionBar,
+      ),
     );
   }
 
@@ -66,32 +66,37 @@ abstract class BaseView<T extends BaseController> extends GetView<T> {
 }
 
 class BaseLoadingPage extends StatelessWidget {
-  const BaseLoadingPage({Key? key, this.hasActionBar = true}) : super(key: key);
+  const BaseLoadingPage({super.key, this.hasActionBar = true});
 
   final bool hasActionBar;
 
   @override
   Widget build(BuildContext context) {
     return BaseStatusContainer(
-        actionBar: hasActionBar ? const BaseAppBar() : null,
-        child: LoadingDialog(
-          content: Text('message_handling'.tr,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyText1
-                  ?.apply(color: Colors.white)),
-          backgroundColor: Colors.black38,
-          loadingView: const SpinKitCircle(color: Colors.white),
-        ));
+      actionBar: hasActionBar ? const BaseAppBar() : null,
+      child: LoadingDialog(
+        content: Text(
+          'message_handling'.tr,
+          style: Theme.of(
+            context,
+          ).textTheme.bodyLarge?.apply(color: Colors.white),
+        ),
+        dialogBackgroundColor: Colors.black38,
+        loadingView: const SpinKitCircle(color: Colors.white),
+      ),
+    );
   }
 }
 
 class BaseErrorPage extends StatelessWidget {
-  const BaseErrorPage(this.errorMessage,
-      {Key? key, this.onReload, this.hasActionBar = true})
-      : super(key: key);
+  const BaseErrorPage(
+    this.errorMessage, {
+    super.key,
+    this.onReload,
+    this.hasActionBar = true,
+  });
 
-  final errorMessage;
+  final String? errorMessage;
 
   final VoidCallback? onReload;
 
@@ -100,30 +105,30 @@ class BaseErrorPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BaseStatusContainer(
-        actionBar:
-            hasActionBar ? BaseAppBar(title: 'error_page_title'.tr) : null,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset('assets/images/ic_img_error.png',
-                width: 50, height: 50),
-            if (errorMessage != null && errorMessage != '')
-              Padding(
-                padding: const EdgeInsets.only(top: 20),
-                child: Text('$errorMessage'),
-              ),
-            const SizedBox(height: 20),
-            if (onReload != null)
-              ElevatedButton(
-                  onPressed: onReload, child: Text('reload_button'.tr))
-          ],
-        ));
+      actionBar: hasActionBar ? BaseAppBar(title: 'error_page_title'.tr) : null,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.asset('assets/images/ic_img_error.png', width: 50, height: 50),
+          if (errorMessage != null && errorMessage != '')
+            Padding(
+              padding: const EdgeInsets.only(top: 20),
+              child: Text('$errorMessage'),
+            ),
+          const SizedBox(height: 20),
+          if (onReload != null)
+            ElevatedButton(
+              onPressed: onReload,
+              child: Text('reload_button'.tr),
+            ),
+        ],
+      ),
+    );
   }
 }
 
 class BaseStatusContainer extends StatelessWidget {
-  const BaseStatusContainer({Key? key, required this.child, this.actionBar})
-      : super(key: key);
+  const BaseStatusContainer({super.key, required this.child, this.actionBar});
 
   final Widget child;
 
@@ -132,12 +137,14 @@ class BaseStatusContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: actionBar,
-        body: Container(
-          alignment: Alignment.center,
-          padding: EdgeInsets.only(
-              bottom: actionBar != null ? kToolbarHeight * 2 : 0),
-          child: child,
-        ));
+      appBar: actionBar,
+      body: Container(
+        alignment: Alignment.center,
+        padding: EdgeInsets.only(
+          bottom: actionBar != null ? kToolbarHeight * 2 : 0,
+        ),
+        child: child,
+      ),
+    );
   }
 }

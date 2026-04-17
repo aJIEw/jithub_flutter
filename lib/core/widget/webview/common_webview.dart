@@ -13,33 +13,28 @@ import '/core/util/logger.dart';
 import '../../base/base_app_bar.dart';
 
 class CommonWebView extends StatefulWidget {
-  const CommonWebView(this.url, this.title, {Key? key}) : super(key: key);
+  const CommonWebView(this.url, this.title, {super.key});
 
   final String url;
   final String title;
 
   @override
-  _CommonWebViewState createState() => _CommonWebViewState();
+  State<CommonWebView> createState() => _CommonWebViewState();
 }
 
 class _CommonWebViewState extends State<CommonWebView> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   InAppWebViewController? webViewController;
-  CookieManager cookieManager = CookieManager.instance();
-  InAppWebViewGroupOptions options = InAppWebViewGroupOptions(
-      crossPlatform: InAppWebViewOptions(
-        useShouldInterceptAjaxRequest: true,
-        useShouldInterceptFetchRequest: true,
-        useShouldOverrideUrlLoading: true,
-        mediaPlaybackRequiresUserGesture: false,
-      ),
-      android: AndroidInAppWebViewOptions(
-        useHybridComposition: true,
-      ),
-      ios: IOSInAppWebViewOptions(
-        allowsInlineMediaPlayback: true,
-      ));
+  final CookieManager cookieManager = CookieManager.instance();
+  final InAppWebViewSettings options = InAppWebViewSettings(
+    useShouldInterceptAjaxRequest: true,
+    useShouldInterceptFetchRequest: true,
+    useShouldOverrideUrlLoading: true,
+    mediaPlaybackRequiresUserGesture: false,
+    useHybridComposition: true,
+    allowsInlineMediaPlayback: true,
+  );
 
   late PullToRefreshController pullToRefreshController;
 
@@ -50,15 +45,14 @@ class _CommonWebViewState extends State<CommonWebView> {
     super.initState();
 
     pullToRefreshController = PullToRefreshController(
-      options: PullToRefreshOptions(
-        color: Colors.lightBlue,
-      ),
+      settings: PullToRefreshSettings(color: Colors.lightBlue),
       onRefresh: () async {
         if (Platform.isAndroid) {
           webViewController?.reload();
         } else if (Platform.isIOS) {
           webViewController?.loadUrl(
-              urlRequest: URLRequest(url: await webViewController?.getUrl()));
+            urlRequest: URLRequest(url: await webViewController?.getUrl()),
+          );
         }
       },
     );
@@ -77,8 +71,8 @@ class _CommonWebViewState extends State<CommonWebView> {
       body: Stack(
         children: [
           InAppWebView(
-            initialUrlRequest: URLRequest(url: Uri.parse(widget.url)),
-            initialOptions: options,
+            initialUrlRequest: URLRequest(url: WebUri(widget.url)),
+            initialSettings: options,
             pullToRefreshController: pullToRefreshController,
             onWebViewCreated: (controller) {
               webViewController = controller;
@@ -86,8 +80,8 @@ class _CommonWebViewState extends State<CommonWebView> {
             onLoadStart: (controller, url) {
               handleCallback(url);
             },
-            onLoadError: (controller, url, code, message) {
-              handleCallback(url);
+            onReceivedError: (controller, request, error) {
+              handleCallback(request.url);
               pullToRefreshController.endRefreshing();
             },
             onProgressChanged: (controller, progress) {
@@ -98,23 +92,32 @@ class _CommonWebViewState extends State<CommonWebView> {
                 this.progress = progress / 100;
               });
             },
-            shouldInterceptAjaxRequest: (InAppWebViewController controller,
-                AjaxRequest ajaxRequest) async {
-              return addHeaderForAjaxRequest(ajaxRequest);
-            },
-            shouldInterceptFetchRequest: (InAppWebViewController controller,
-                FetchRequest fetchRequest) async {
-              return addHeaderForFetchRequest(fetchRequest);
-            },
+            shouldInterceptAjaxRequest:
+                (
+                  InAppWebViewController controller,
+                  AjaxRequest ajaxRequest,
+                ) async {
+                  return addHeaderForAjaxRequest(ajaxRequest);
+                },
+            shouldInterceptFetchRequest:
+                (
+                  InAppWebViewController controller,
+                  FetchRequest fetchRequest,
+                ) async {
+                  return addHeaderForFetchRequest(fetchRequest);
+                },
             shouldOverrideUrlLoading:
                 (controller, shouldOverrideUrlLoadingRequest) async {
-              return addHeaderForOverrideUrlLoading(
-                  controller, shouldOverrideUrlLoadingRequest);
-            },
-            androidOnPermissionRequest: (controller, origin, resources) async {
-              return PermissionRequestResponse(
-                  resources: resources,
-                  action: PermissionRequestResponseAction.GRANT);
+                  return addHeaderForOverrideUrlLoading(
+                    controller,
+                    shouldOverrideUrlLoadingRequest,
+                  );
+                },
+            onPermissionRequest: (controller, permissionRequest) async {
+              return PermissionResponse(
+                resources: permissionRequest.resources,
+                action: PermissionResponseAction.GRANT,
+              );
             },
           ),
           progress < 1.0
@@ -139,7 +142,8 @@ class _CommonWebViewState extends State<CommonWebView> {
   }
 
   Future<FetchRequest> addHeaderForFetchRequest(
-      FetchRequest fetchRequest) async {
+    FetchRequest fetchRequest,
+  ) async {
     var header = <String, dynamic>{};
 
     addHeader(header, fetchRequest.url!);
@@ -153,8 +157,9 @@ class _CommonWebViewState extends State<CommonWebView> {
   }
 
   Future<NavigationActionPolicy> addHeaderForOverrideUrlLoading(
-      InAppWebViewController controller,
-      NavigationAction shouldOverrideUrlLoadingRequest) async {
+    InAppWebViewController controller,
+    NavigationAction shouldOverrideUrlLoadingRequest,
+  ) async {
     var url = shouldOverrideUrlLoadingRequest.request.url;
     logger.d('URL: $url');
 
@@ -164,8 +169,8 @@ class _CommonWebViewState extends State<CommonWebView> {
     }
 
     if (Platform.isAndroid ||
-        shouldOverrideUrlLoadingRequest.iosWKNavigationType ==
-            IOSWKNavigationType.LINK_ACTIVATED) {
+        shouldOverrideUrlLoadingRequest.navigationType ==
+            NavigationType.LINK_ACTIVATED) {
       var header = <String, String>{};
 
       addHeader(header, url!);
@@ -181,20 +186,20 @@ class _CommonWebViewState extends State<CommonWebView> {
     return NavigationActionPolicy.ALLOW;
   }
 
-  Future addHeader(Map<String, dynamic> header, Uri url) async {
+  Future<void> addHeader(Map<String, dynamic> header, WebUri url) async {
     // var csrfToken = await filterCookieName(url, 'CSRF-TOKEN');
     // header['CSRF-TOKEN'] = csrfToken;
   }
 
-  Future<String?> filterCookieName(Uri url, String name) async {
+  Future<String?> filterCookieName(WebUri url, String name) async {
     List<Cookie> cookies = await cookieManager.getCookies(url: url);
 
     return cookies.firstWhereOrNull((c) => c.name == name)?.value;
   }
 
-  void handleCallback(Uri? url) {}
+  void handleCallback(WebUri? url) {}
 
-  void handleLoginCallback(Uri? url) {
+  void handleLoginCallback(WebUri? url) {
     if (url.toString().startsWith(ApiService.githubRedirectUrl)) {
       var code = url?.queryParameters["code"];
       requestAccessToken(code);
@@ -212,8 +217,9 @@ class _CommonWebViewState extends State<CommonWebView> {
     param["code"] = code;
 
     var response = await HttpClient.post(
-        ApiService.githubUrl + ApiService.apiAccessToken,
-        data: json.encode(param));
+      ApiService.githubUrl + ApiService.apiAccessToken,
+      data: json.encode(param),
+    );
     if (response.ok) {
       var url = '${ApiService.githubUrl}/?${response.data}';
       try {

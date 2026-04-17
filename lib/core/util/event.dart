@@ -15,22 +15,29 @@ class XEvent {
   static EventBus getEvent(String eventName, {bool isSync = false}) {
     EventBus? event = sEventPool[eventName];
     if (event == null) {
-      event = new EventBus(sync: isSync);
+      event = EventBus(sync: isSync);
       sEventPool[eventName] = event;
     }
     return event;
   }
 
   /// 订阅信息，默认是异步的
-  static StreamSubscription<T> on<T>(String eventName, void onData(T event),
-      {bool isSync = false,
-      Function? onError,
-      void onDone()?,
-      bool? cancelOnError}) {
+  static StreamSubscription<T> on<T>(
+    String eventName,
+    void Function(T event) onData, {
+    bool isSync = false,
+    Function? onError,
+    void Function()? onDone,
+    bool? cancelOnError,
+  }) {
     StreamSubscription<T> stream = getEvent(eventName, isSync: isSync)
         .on<T>()
-        .listen(onData,
-            onError: onError, onDone: onDone, cancelOnError: cancelOnError);
+        .listen(
+          onData,
+          onError: onError,
+          onDone: onDone,
+          cancelOnError: cancelOnError,
+        );
 
     List<StreamSubscription>? streams = sStreamPool[eventName];
     if (streams == null) {

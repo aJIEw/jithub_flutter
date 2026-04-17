@@ -24,8 +24,9 @@ class EventTimeline {
     type = json['type'];
     actor = json['actor'] != null ? Actor.fromJson(json['actor']) : null;
     repo = json['repo'] != null ? Repo.fromJson(json['repo']) : null;
-    payload =
-        json['payload'] != null ? Payload.fromJson(json['payload']) : null;
+    payload = json['payload'] != null
+        ? Payload.fromJson(json['payload'])
+        : null;
     public = json['public'];
     createdAt = json['created_at'];
   }
@@ -38,16 +39,15 @@ class EventTimeline {
     Payload? payload,
     bool? public,
     String? createdAt,
-  }) =>
-      EventTimeline(
-        id: id ?? this.id,
-        type: type ?? this.type,
-        actor: actor ?? this.actor,
-        repo: repo ?? this.repo,
-        payload: payload ?? this.payload,
-        public: public ?? this.public,
-        createdAt: createdAt ?? this.createdAt,
-      );
+  }) => EventTimeline(
+    id: id ?? this.id,
+    type: type ?? this.type,
+    actor: actor ?? this.actor,
+    repo: repo ?? this.repo,
+    payload: payload ?? this.payload,
+    public: public ?? this.public,
+    createdAt: createdAt ?? this.createdAt,
+  );
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -101,15 +101,14 @@ class Actor {
     String? gravatarId,
     String? url,
     String? avatarUrl,
-  }) =>
-      Actor(
-        id: id ?? this.id,
-        login: login ?? this.login,
-        displayLogin: displayLogin ?? this.displayLogin,
-        gravatarId: gravatarId ?? this.gravatarId,
-        url: url ?? this.url,
-        avatarUrl: avatarUrl ?? this.avatarUrl,
-      );
+  }) => Actor(
+    id: id ?? this.id,
+    login: login ?? this.login,
+    displayLogin: displayLogin ?? this.displayLogin,
+    gravatarId: gravatarId ?? this.gravatarId,
+    url: url ?? this.url,
+    avatarUrl: avatarUrl ?? this.avatarUrl,
+  );
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -126,7 +125,7 @@ class Actor {
 class Payload {
   String? action; // watch event
   GithubUser? forkee; // fork event
-  String? ref_type; // create event
+  String? refType; // create event
   ReleaseRepo? release; // release event
   List<Commit>? commits; // push event
   int? size; // commits number
@@ -134,7 +133,7 @@ class Payload {
   Payload({
     this.action,
     this.forkee,
-    this.ref_type,
+    this.refType,
     this.release,
     this.commits,
     this.size,
@@ -142,11 +141,13 @@ class Payload {
 
   Payload.fromJson(dynamic json) {
     action = json['action'];
-    forkee =
-        json['forkee'] != null ? GithubUser.fromJson(json['forkee']) : null;
-    ref_type = json['ref_type'];
-    release =
-        json['release'] != null ? ReleaseRepo.fromJson(json['release']) : null;
+    forkee = json['forkee'] != null
+        ? GithubUser.fromJson(json['forkee'])
+        : null;
+    refType = json['ref_type'];
+    release = json['release'] != null
+        ? ReleaseRepo.fromJson(json['release'])
+        : null;
     if (json['commits'] != null) {
       commits = [];
       for (dynamic item in json['commits']) {
@@ -159,27 +160,26 @@ class Payload {
   Payload copyWith({
     String? action,
     GithubUser? forkee,
-    String? ref_type,
+    String? refType,
     ReleaseRepo? release,
     List<Commit>? commits,
     int? size,
-  }) =>
-      Payload(
-        action: action ?? this.action,
-        forkee: forkee ?? this.forkee,
-        ref_type: ref_type ?? this.ref_type,
-        release: release ?? this.release,
-        commits: commits ?? this.commits,
-        size: size ?? this.size,
-      );
+  }) => Payload(
+    action: action ?? this.action,
+    forkee: forkee ?? this.forkee,
+    refType: refType ?? this.refType,
+    release: release ?? this.release,
+    commits: commits ?? this.commits,
+    size: size ?? this.size,
+  );
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['action'] = action;
     map['forkee'] = forkee;
-    map['ref_type'] = ref_type;
+    map['ref_type'] = refType;
     map['release'] = release;
-    map['commits'] = commits?.map((dynamic item) => item?.toJson())?.toList();
+    map['commits'] = commits?.map((dynamic item) => item.toJson()).toList();
     map['size'] = size;
     return map;
   }
@@ -192,13 +192,7 @@ class Commit {
   String? sha;
   String? url;
 
-  Commit({
-    this.author,
-    this.distinct,
-    this.message,
-    this.sha,
-    this.url,
-  });
+  Commit({this.author, this.distinct, this.message, this.sha, this.url});
 
   Commit.fromJson(dynamic json) {
     author = json['author'] != null ? Author.fromJson(json['author']) : null;
@@ -214,14 +208,13 @@ class Commit {
     String? message,
     String? sha,
     String? url,
-  }) =>
-      Commit(
-        author: author ?? this.author,
-        distinct: distinct ?? this.distinct,
-        message: message ?? this.message,
-        sha: sha ?? this.sha,
-        url: url ?? this.url,
-      );
+  }) => Commit(
+    author: author ?? this.author,
+    distinct: distinct ?? this.distinct,
+    message: message ?? this.message,
+    sha: sha ?? this.sha,
+    url: url ?? this.url,
+  );
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -235,10 +228,7 @@ class Commit {
 }
 
 class Author {
-  Author({
-    this.email,
-    this.name,
-  });
+  Author({this.email, this.name});
 
   Author.fromJson(dynamic json) {
     email = json['email'];
@@ -246,14 +236,8 @@ class Author {
   }
   String? email;
   String? name;
-  Author copyWith({
-    String? email,
-    String? name,
-  }) =>
-      Author(
-        email: email ?? this.email,
-        name: name ?? this.name,
-      );
+  Author copyWith({String? email, String? name}) =>
+      Author(email: email ?? this.email, name: name ?? this.name);
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['email'] = email;
@@ -267,11 +251,7 @@ class Repo {
   String? name;
   String? url;
 
-  Repo({
-    this.id,
-    this.name,
-    this.url,
-  });
+  Repo({this.id, this.name, this.url});
 
   Repo.fromJson(dynamic json) {
     id = json['id'];
@@ -279,16 +259,8 @@ class Repo {
     url = json['url'];
   }
 
-  Repo copyWith({
-    int? id,
-    String? name,
-    String? url,
-  }) =>
-      Repo(
-        id: id ?? this.id,
-        name: name ?? this.name,
-        url: url ?? this.url,
-      );
+  Repo copyWith({int? id, String? name, String? url}) =>
+      Repo(id: id ?? this.id, name: name ?? this.name, url: url ?? this.url);
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -306,13 +278,7 @@ class ReleaseRepo {
   String? tagName;
   String? url;
 
-  ReleaseRepo({
-    this.body,
-    this.id,
-    this.name,
-    this.tagName,
-    this.url,
-  });
+  ReleaseRepo({this.body, this.id, this.name, this.tagName, this.url});
 
   ReleaseRepo.fromJson(dynamic json) {
     body = json['body'];
@@ -328,14 +294,13 @@ class ReleaseRepo {
     String? name,
     String? tagName,
     String? url,
-  }) =>
-      ReleaseRepo(
-        body: body ?? this.body,
-        id: id ?? this.id,
-        name: name ?? this.name,
-        tagName: tagName ?? this.tagName,
-        url: url ?? this.url,
-      );
+  }) => ReleaseRepo(
+    body: body ?? this.body,
+    id: id ?? this.id,
+    name: name ?? this.name,
+    tagName: tagName ?? this.tagName,
+    url: url ?? this.url,
+  );
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};

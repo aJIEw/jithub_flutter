@@ -15,11 +15,7 @@ class StarredReposViewModel extends RepoListViewModel {
       return List.empty();
     }
 
-    var param = {
-      'page': page,
-      'per_page': perPageSize,
-      'sort': 'pushed',
-    };
+    var param = {'page': page, 'per_page': perPageSize, 'sort': 'pushed'};
     var url = sprintf.call(requestUrl, [params]);
     var response = await HttpClient.get(url, queryParameters: param);
 

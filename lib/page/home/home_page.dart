@@ -17,7 +17,7 @@ import 'package:jithub_flutter/widget/network_image.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -36,7 +36,8 @@ class _HomePageState extends State<HomePage> {
     var userProfile = Store.value<UserProfile>(context);
 
     logger.d(
-        '_HomePageState - registerBusEvent: userProfile initialized: ${userProfile.user?.name}');
+      '_HomePageState - registerBusEvent: userProfile initialized: ${userProfile.user?.name}',
+    );
 
     viewModel.init(param: userProfile.user);
   }
@@ -44,39 +45,41 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: SafeArea(
-      child: ProviderWidget<HomeViewModel>(
-        viewModel: HomeViewModel(),
-        onViewModelCreated: (HomeViewModel viewModel) async {
-          initUserProfile(viewModel);
+      body: SafeArea(
+        child: ProviderWidget<HomeViewModel>(
+          viewModel: HomeViewModel(),
+          onViewModelCreated: (HomeViewModel viewModel) async {
+            initUserProfile(viewModel);
 
-          registerBusEvent(viewModel);
-        },
-        builder:
-            (BuildContext context, HomeViewModel viewModel, Widget? child) =>
-                RefreshConfiguration(
-          enableLoadingWhenNoData: false,
-          child: SmartRefresher(
-            header: PullToRefreshHelper.getClassicI18nHeader(context),
-            footer: PullToRefreshHelper.getClassicI18nFooter(context),
-            enablePullUp: true,
-            controller: viewModel.refreshController,
-            onRefresh: viewModel.onRefresh,
-            onLoading: viewModel.onLoadMore,
-            child: ListView.builder(
-                physics: const RangeMaintainingScrollPhysics(),
-                controller: scrollController,
-                cacheExtent: 9999,
-                itemCount: viewModel.dataList.length,
-                itemBuilder: (context, index) {
-                  EventTimeline item = viewModel.dataList[index];
+            registerBusEvent(viewModel);
+          },
+          builder:
+              (BuildContext context, HomeViewModel viewModel, Widget? child) =>
+                  RefreshConfiguration(
+                    enableLoadingWhenNoData: false,
+                    child: SmartRefresher(
+                      header: PullToRefreshHelper.getClassicI18nHeader(context),
+                      footer: PullToRefreshHelper.getClassicI18nFooter(context),
+                      enablePullUp: true,
+                      controller: viewModel.refreshController,
+                      onRefresh: viewModel.onRefresh,
+                      onLoading: viewModel.onLoadMore,
+                      child: ListView.builder(
+                        physics: const RangeMaintainingScrollPhysics(),
+                        controller: scrollController,
+                        cacheExtent: 9999,
+                        itemCount: viewModel.dataList.length,
+                        itemBuilder: (context, index) {
+                          EventTimeline item = viewModel.dataList[index];
 
-                  return _buildItem(item, item.repo?.url);
-                }),
-          ),
+                          return _buildItem(item, item.repo?.url);
+                        },
+                      ),
+                    ),
+                  ),
         ),
       ),
-    ));
+    );
   }
 
   Widget _buildItem(EventTimeline item, String? repoName) {
@@ -111,10 +114,7 @@ class _HomePageState extends State<HomePage> {
   Widget _buildEventTitle(EventTimeline item) {
     TextSpan? actionText;
 
-    var normalStyle = TextStyle(
-      color: Colors.grey[850],
-      fontSize: 14,
-    );
+    var normalStyle = TextStyle(color: Colors.grey[850], fontSize: 14);
 
     var boldStyle = TextStyle(
       fontWeight: FontWeight.bold,
@@ -122,27 +122,24 @@ class _HomePageState extends State<HomePage> {
       fontSize: 14,
     );
 
-    var repo = TextSpan(
-      text: item.repo?.name ?? '',
-      style: boldStyle,
-    );
+    var repo = TextSpan(text: item.repo?.name ?? '', style: boldStyle);
 
     var type = item.type;
-    if (type == GithubEvent.WatchEvent.name) {
+    if (type == GithubEvent.watchEvent.name) {
       actionText = TextSpan(
         children: [
           const TextSpan(text: ' starred '),
           repo,
         ],
       );
-    } else if (type == GithubEvent.ForkEvent.name) {
+    } else if (type == GithubEvent.forkEvent.name) {
       actionText = TextSpan(
         children: [
           const TextSpan(text: ' forked '),
           repo,
         ],
       );
-    } else if (type == GithubEvent.ReleaseEvent.name) {
+    } else if (type == GithubEvent.releaseEvent.name) {
       if (item.payload?.action == 'published' &&
           item.payload?.release != null) {
         actionText = TextSpan(
@@ -157,8 +154,8 @@ class _HomePageState extends State<HomePage> {
           ],
         );
       }
-    } else if (type == GithubEvent.CreateEvent.name) {
-      if (item.payload?.ref_type == 'repository') {
+    } else if (type == GithubEvent.createEvent.name) {
+      if (item.payload?.refType == 'repository') {
         actionText = TextSpan(
           children: [
             const TextSpan(text: '  created a repository '),
@@ -166,7 +163,7 @@ class _HomePageState extends State<HomePage> {
           ],
         );
       }
-    } else if (type == GithubEvent.PublicEvent.name) {
+    } else if (type == GithubEvent.publicEvent.name) {
       actionText = TextSpan(
         children: [
           const TextSpan(text: ' made '),
@@ -177,15 +174,19 @@ class _HomePageState extends State<HomePage> {
     }
 
     return RichText(
-        text: TextSpan(style: normalStyle, children: [
-      TextSpan(text: item.actor?.login ?? '', style: boldStyle),
-      actionText ?? const TextSpan(text: ''),
-    ]));
+      text: TextSpan(
+        style: normalStyle,
+        children: [
+          TextSpan(text: item.actor?.login ?? '', style: boldStyle),
+          actionText ?? const TextSpan(text: ''),
+        ],
+      ),
+    );
   }
 }
 
 void onPressRepo(BuildContext context, UserRepo repo) {
-  var name = (repo.owner?.login ?? "") + " / " + (repo.name ?? "");
+  var name = "${repo.owner?.login ?? ""} / ${repo.name ?? ""}";
   var url = repo.htmlUrl;
   if (url != null) {
     XRouter.goWeb(context, url, name);
@@ -195,10 +196,6 @@ void onPressRepo(BuildContext context, UserRepo repo) {
 Widget buildIconText(String text, Widget icon) {
   return Row(
     crossAxisAlignment: CrossAxisAlignment.center,
-    children: [
-      icon,
-      const SizedBox(width: 4),
-      Text(text),
-    ],
+    children: [icon, const SizedBox(width: 4), Text(text)],
   );
 }

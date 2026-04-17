@@ -24,55 +24,85 @@ class XRouter {
   static List<GetPage> getPages = [
     GetPage(name: '/', page: () => const SplashPage()),
     GetPage(
-        name: loginPage,
-        page: () => const LoginPage(),
-        transition: Transition.rightToLeft,
-        transitionDuration: 200.milliseconds),
+      name: loginPage,
+      page: () => const LoginPage(),
+      transition: Transition.rightToLeft,
+      transitionDuration: 200.milliseconds,
+    ),
     GetPage(
-        name: homePage,
-        page: () => const MainPage(),
-        transition: Transition.fadeIn),
+      name: homePage,
+      page: () => const MainPage(),
+      transition: Transition.fadeIn,
+    ),
     GetPage(name: repoListPage, page: () => const RepoListPage()),
     GetPage(name: starredReposPage, page: () => const StarredReposPage()),
     GetPage(
-        name: settingsPage,
-        page: () => const SettingsPage(),
-        binding: SettingsBinding()),
+      name: settingsPage,
+      page: () => const SettingsPage(),
+      binding: SettingsBinding(),
+    ),
     GetPage(name: languagePage, page: () => const LanguagePage()),
     GetPage(name: themePage, page: () => const ThemePage()),
   ];
 
   static Future<dynamic>? goWeb(
-      BuildContext context, String url, String title) {
-    return Get.to(() => CommonWebView(url, title),
-        transition: Transition.cupertino);
+    BuildContext context,
+    String url,
+    String title,
+  ) {
+    return Get.to(
+      () => CommonWebView(url, title),
+      transition: Transition.cupertino,
+    );
   }
 
   /// go to a new page
-  static Future<T?>? to<T>(dynamic page,
-      {Bindings? binding, dynamic arguments, bool popGesture = true}) {
-    return Get.to(page,
-        binding: binding, arguments: arguments, popGesture: popGesture);
+  static Future<T?>? to<T>(
+    dynamic page, {
+    Bindings? binding,
+    dynamic arguments,
+    bool popGesture = true,
+  }) {
+    return Get.to(
+      page,
+      binding: binding,
+      arguments: arguments,
+      popGesture: popGesture,
+    );
   }
 
   /// push a new named page
-  static Future<T?>? push<T>(String page,
-      {Map<String, String>? parameters, dynamic arguments}) {
+  static Future<T?>? push<T>(
+    String page, {
+    Map<String, String>? parameters,
+    dynamic arguments,
+  }) {
     return Get.toNamed(page, parameters: parameters, arguments: arguments);
   }
 
   /// replaces last entry in stack, throws an error if stack is empty
-  static Future<T?>? replace<T>(String page,
-      {Map<String, String>? parameters, dynamic arguments}) {
+  static Future<T?>? replace<T>(
+    String page, {
+    Map<String, String>? parameters,
+    dynamic arguments,
+  }) {
     return Get.offNamed(page, parameters: parameters, arguments: arguments);
   }
 
   /// pops until provided route, if it already exists in stack
   /// else adds it to the stack (good for web Apps).
-  static Future<T?>? navigate<T>(String page, RoutePredicate predicate,
-      {Map<String, String>? parameters, dynamic arguments}) {
-    return Get.offNamedUntil(page, predicate,
-        parameters: parameters, arguments: arguments);
+  static Future<T?>? navigate<T>(
+    String page,
+    RoutePredicate predicate, {
+    Map<String, String>? parameters,
+    dynamic arguments,
+  }) {
+    return Get.offNamedUntil(
+      page,
+      predicate,
+      parameters: parameters,
+      arguments: arguments,
+    );
   }
 
   /// pops the last page unless stack has 1 entry

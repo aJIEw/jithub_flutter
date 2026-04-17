@@ -56,20 +56,19 @@ class TrendingRepo {
     int? forks,
     int? currentPeriodStars,
     List<BuiltBy>? builtBy,
-  }) =>
-      TrendingRepo(
-        author: author ?? this.author,
-        name: name ?? this.name,
-        avatar: avatar ?? this.avatar,
-        description: description ?? this.description,
-        url: url ?? this.url,
-        language: language ?? this.language,
-        languageColor: languageColor ?? this.languageColor,
-        stars: stars ?? this.stars,
-        forks: forks ?? this.forks,
-        currentPeriodStars: currentPeriodStars ?? this.currentPeriodStars,
-        builtBy: builtBy ?? this.builtBy,
-      );
+  }) => TrendingRepo(
+    author: author ?? this.author,
+    name: name ?? this.name,
+    avatar: avatar ?? this.avatar,
+    description: description ?? this.description,
+    url: url ?? this.url,
+    language: language ?? this.language,
+    languageColor: languageColor ?? this.languageColor,
+    stars: stars ?? this.stars,
+    forks: forks ?? this.forks,
+    currentPeriodStars: currentPeriodStars ?? this.currentPeriodStars,
+    builtBy: builtBy ?? this.builtBy,
+  );
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -91,11 +90,7 @@ class TrendingRepo {
 }
 
 class BuiltBy {
-  BuiltBy({
-    this.username,
-    this.href,
-    this.avatar,
-  });
+  BuiltBy({this.username, this.href, this.avatar});
 
   BuiltBy.fromJson(dynamic json) {
     username = json['username'];
@@ -107,16 +102,11 @@ class BuiltBy {
   String? href;
   String? avatar;
 
-  BuiltBy copyWith({
-    String? username,
-    String? href,
-    String? avatar,
-  }) =>
-      BuiltBy(
-        username: username ?? this.username,
-        href: href ?? this.href,
-        avatar: avatar ?? this.avatar,
-      );
+  BuiltBy copyWith({String? username, String? href, String? avatar}) => BuiltBy(
+    username: username ?? this.username,
+    href: href ?? this.href,
+    avatar: avatar ?? this.avatar,
+  );
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};

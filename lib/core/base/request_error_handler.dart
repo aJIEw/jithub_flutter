@@ -5,7 +5,7 @@ import '/core/util/logger.dart';
 mixin RequestErrorHandler {
   void onRequestError(HttpResponse response) {
     if (response.error?.message.isNotEmpty ?? false) {
-      logger.e(response.error?.message, response.error);
+      logger.e(response.error?.message, error: response.error);
 
       if (response.error!.code == 401) {
         handleTokenExpiration(response.error!.message);

@@ -5,19 +5,19 @@ class HttpConfig {
   final String? proxy;
   final String? cookiesPath;
   final List<Interceptor>? interceptors;
-  final int connectTimeout;
-  final int sendTimeout;
-  final int receiveTimeout;
+  final Duration connectTimeout;
+  final Duration sendTimeout;
+  final Duration receiveTimeout;
 
   HttpConfig({
     this.baseUrl,
     this.proxy,
     this.cookiesPath,
     this.interceptors,
-    this.connectTimeout = Duration.millisecondsPerMinute,
-    this.sendTimeout = Duration.millisecondsPerMinute,
-    this.receiveTimeout = Duration.millisecondsPerMinute,
+    this.connectTimeout = const Duration(minutes: 1),
+    this.sendTimeout = const Duration(minutes: 1),
+    this.receiveTimeout = const Duration(minutes: 1),
   });
 
-// static DioConfig of() => Get.find<DioConfig>();
+  // static DioConfig of() => Get.find<DioConfig>();
 }

@@ -28,10 +28,10 @@ import '../core/base/base_page.dart';
 /// This page is built with [ProviderWidget], just to show you how to use it.
 /// In most cases, you should use [BaseController] instead.
 class MainPage extends StatefulWidget {
-  const MainPage({Key? key}) : super(key: key);
+  const MainPage({super.key});
 
   @override
-  _MainPageState createState() => _MainPageState();
+  State<MainPage> createState() => _MainPageState();
 }
 
 class _MainPageState extends State<MainPage> with AfterLayoutMixin<MainPage> {
@@ -52,56 +52,79 @@ class _MainPageState extends State<MainPage> with AfterLayoutMixin<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2(builder: (BuildContext context, AppStatus status,
-        UserProfile userProfile, Widget? child) {
-      return BasePageWrapper(
-        child: WillPopScope(
-            child: ProviderWidget<MainViewModel>(
-                viewModel: MainViewModel(),
-                onViewModelCreated: (viewModel) {
-                  if (userProfile.authToken == null &&
-                      SPUtils.getAuthToken().isNotEmpty) {
-                    userProfile.init(SPUtils.getAuthToken(), SPUtils.getUser());
+    return Consumer2(
+      builder:
+          (
+            BuildContext context,
+            AppStatus status,
+            UserProfile userProfile,
+            Widget? child,
+          ) {
+            return BasePageWrapper(
+              child: PopScope(
+                canPop: false,
+                onPopInvokedWithResult: (didPop, result) async {
+                  if (didPop) {
+                    return;
                   }
-                },
-                builder: (BuildContext context, MainViewModel viewModel,
-                    Widget? child) {
-                  return Scaffold(
-                    key: _scaffoldKey,
-                    body: IndexedStack(
-                      index: status.tabIndex,
-                      children: getTabWidget(context),
-                    ),
-                    bottomNavigationBar: BottomNavigationBar(
-                      items: getTabs(),
-                      currentIndex: status.tabIndex,
-                      type: BottomNavigationBarType.fixed,
-                      fixedColor: Theme.of(context).primaryColor,
-                      selectedFontSize: 12,
-                      unselectedFontSize: 12,
-                      onTap: (index) {
-                        if (SPUtils.isLoggedIn()) {
-                          status.tabIndex = index;
-                        } else {
-                          goToLogin();
-                        }
-                      },
-                    ),
+                  await ClickUtils.exitBy2Click(
+                    status: _scaffoldKey.currentState,
                   );
-                }),
-            onWillPop: () =>
-                ClickUtils.exitBy2Click(status: _scaffoldKey.currentState)),
-      );
-    });
+                },
+                child: ProviderWidget<MainViewModel>(
+                  viewModel: MainViewModel(),
+                  onViewModelCreated: (viewModel) {
+                    if (userProfile.authToken == null &&
+                        SPUtils.getAuthToken().isNotEmpty) {
+                      userProfile.init(
+                        SPUtils.getAuthToken(),
+                        SPUtils.getUser(),
+                      );
+                    }
+                  },
+                  builder:
+                      (
+                        BuildContext context,
+                        MainViewModel viewModel,
+                        Widget? child,
+                      ) {
+                        return Scaffold(
+                          key: _scaffoldKey,
+                          body: IndexedStack(
+                            index: status.tabIndex,
+                            children: getTabWidget(context),
+                          ),
+                          bottomNavigationBar: BottomNavigationBar(
+                            items: getTabs(),
+                            currentIndex: status.tabIndex,
+                            type: BottomNavigationBarType.fixed,
+                            fixedColor: Theme.of(context).primaryColor,
+                            selectedFontSize: 12,
+                            unselectedFontSize: 12,
+                            onTap: (index) {
+                              if (SPUtils.isLoggedIn()) {
+                                status.tabIndex = index;
+                              } else {
+                                goToLogin();
+                              }
+                            },
+                          ),
+                        );
+                      },
+                ),
+              ),
+            );
+          },
+    );
   }
 
   List<BottomNavigationBarItem> getTabs() => [
-        _getBottomTabBarItem('home'),
-        _getBottomTabBarItem('explore'),
-        _getBottomTabBarItem('profile'),
-      ];
+    _getBottomTabBarItem('home'),
+    _getBottomTabBarItem('explore'),
+    _getBottomTabBarItem('profile'),
+  ];
 
-  _getBottomTabBarItem(String type) {
+  BottomNavigationBarItem _getBottomTabBarItem(String type) {
     return BottomNavigationBarItem(
       label: 'tab_$type'.tr,
       icon: SvgPicture.asset(
@@ -109,19 +132,29 @@ class _MainPageState extends State<MainPage> with AfterLayoutMixin<MainPage> {
         width: 20,
         height: 20,
       ),
-      activeIcon: SvgPicture.asset('assets/images/ic_tab_${type}.svg',
-          width: 20, height: 20, color: Theme.of(context).primaryColor),
+      activeIcon: SvgPicture.asset(
+        'assets/images/ic_tab_$type.svg',
+        width: 20,
+        height: 20,
+        colorFilter: ColorFilter.mode(
+          Theme.of(context).primaryColor,
+          BlendMode.srcIn,
+        ),
+      ),
     );
   }
 
   List<Widget> getTabWidget(BuildContext context) => [
-        const HomePage(),
-        const ExplorePage(),
-        const ProfilePage(),
-      ];
+    const HomePage(),
+    const ExplorePage(),
+    const ProfilePage(),
+  ];
 
   void goToLogin() async {
     String? result = await XRouter.goWeb(context, ApiService.githubAuthUrl, "");
+    if (!mounted) {
+      return;
+    }
     if (result != null && result.isNotEmpty) {
       initLoginInfo(result);
     }
@@ -129,13 +162,13 @@ class _MainPageState extends State<MainPage> with AfterLayoutMixin<MainPage> {
 
   void initLoginInfo(String accessToken) async {
     var feeds = await requestUserFeeds();
+    if (!mounted) {
+      return;
+    }
     var userUrl = feeds?.currentUserPublicUrl;
     if (userUrl != null) {
       var name = userUrl.substring(userUrl.lastIndexOf("/") + 1);
-      var info = {
-        'token': accessToken,
-        'name': name,
-      };
+      var info = {'token': accessToken, 'name': name};
       var userProfile = Store.value<UserProfile>(context);
       userProfile.initWithLoginInfo(info);
 

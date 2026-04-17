@@ -7,17 +7,17 @@ typedef OnViewModelCreated<T> = void Function(T t);
 class ProviderWidget<T extends ChangeNotifier> extends StatefulWidget {
   final T viewModel;
   final Widget Function(BuildContext context, T viewModel, Widget? child)
-      builder;
+  builder;
   final OnViewModelCreated<T>? onViewModelCreated;
   final Widget? child;
 
   const ProviderWidget({
-    Key? key,
+    super.key,
     required this.viewModel,
     required this.builder,
     this.onViewModelCreated,
     this.child,
-  }) : super(key: key);
+  });
 
   @override
   ProviderWidgetState<T> createState() => ProviderWidgetState<T>();
@@ -41,10 +41,7 @@ class ProviderWidgetState<T extends ChangeNotifier>
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (_) => viewModel,
-      child: Consumer<T>(
-        builder: widget.builder,
-        child: widget.child,
-      ),
+      child: Consumer<T>(builder: widget.builder, child: widget.child),
     );
   }
 }
@@ -54,21 +51,26 @@ class ProviderWidget2<A extends ChangeNotifier, B extends ChangeNotifier>
   final A viewModelA;
   final B viewModelB;
   final Widget Function(
-      BuildContext context, A viewModelA, B viewModelB, Widget? child) builder;
+    BuildContext context,
+    A viewModelA,
+    B viewModelB,
+    Widget? child,
+  )
+  builder;
   final Function(A, B)? onViewModelCreated;
   final Widget? child;
 
   const ProviderWidget2({
-    Key? key,
+    super.key,
     required this.viewModelA,
     required this.viewModelB,
     required this.builder,
     this.onViewModelCreated,
     this.child,
-  }) : super(key: key);
+  });
 
   @override
-  _ProviderWidgetState2<A, B> createState() => _ProviderWidgetState2<A, B>();
+  State<ProviderWidget2<A, B>> createState() => _ProviderWidgetState2<A, B>();
 }
 
 class _ProviderWidgetState2<A extends ChangeNotifier, B extends ChangeNotifier>
@@ -91,17 +93,11 @@ class _ProviderWidgetState2<A extends ChangeNotifier, B extends ChangeNotifier>
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-        providers: [
-          ChangeNotifierProvider<A>(
-            create: (context) => viewModelA,
-          ),
-          ChangeNotifierProvider<B>(
-            create: (context) => viewModelB,
-          )
-        ],
-        child: Consumer2<A, B>(
-          builder: widget.builder,
-          child: widget.child,
-        ));
+      providers: [
+        ChangeNotifierProvider<A>(create: (context) => viewModelA),
+        ChangeNotifierProvider<B>(create: (context) => viewModelB),
+      ],
+      child: Consumer2<A, B>(builder: widget.builder, child: widget.child),
+    );
   }
 }

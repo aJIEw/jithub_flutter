@@ -1,4 +1,4 @@
-const Map<String, String> zh_CN = {
+const Map<String, String> zhCn = {
   "app_title": "Jithub(Flutter)",
   "error_page_title": "页面出错",
   "reload_button": "重新加载",

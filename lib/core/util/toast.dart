@@ -8,7 +8,7 @@ class ToastUtils {
   ToastUtils._internal();
 
   /// 全局初始化 Toast 配置
-  static init(Widget child) {
+  static OKToast init(Widget child) {
     return OKToast(
       /// 字体大小
       textStyle: const TextStyle(fontSize: 16, color: Colors.white),
@@ -16,14 +16,16 @@ class ToastUtils {
       radius: 10,
       dismissOtherOnShow: true,
       textPadding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-      child: child,
       duration: defaultToastDuration,
+      child: child,
     );
   }
 
-  static void toast(String msg,
-      {Duration duration = defaultToastDuration,
-      Color color = defaultToastColor}) {
+  static void toast(
+    String msg, {
+    Duration duration = defaultToastDuration,
+    Color color = defaultToastColor,
+  }) {
     showToast(msg, duration: duration, backgroundColor: color);
   }
 

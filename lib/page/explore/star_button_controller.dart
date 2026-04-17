@@ -37,7 +37,8 @@ class StarButtonController extends GetxController {
   void checkIsRepoStarred() async {
     if (author.isEmpty || repoName.isEmpty) {
       logger.e(
-          'StarButtonController - checkIsRepoStarred: param empty: author = $author, repoName = $repoName');
+        'StarButtonController - checkIsRepoStarred: param empty: author = $author, repoName = $repoName',
+      );
       return;
     }
 
@@ -51,7 +52,8 @@ class StarButtonController extends GetxController {
       hasStarred.value = false;
     } else {
       logger.e(
-          'StarButtonController - checkIsRepoStarred: response.code = ${response.code}');
+        'StarButtonController - checkIsRepoStarred: response.code = ${response.code}',
+      );
     }
 
     loading.value = false;
@@ -60,7 +62,8 @@ class StarButtonController extends GetxController {
   void requestStarRepo() async {
     if (author.isEmpty || repoName.isEmpty) {
       logger.e(
-          'StarButtonController - requestStarRepo: param empty: author = $author, repoName = $repoName');
+        'StarButtonController - requestStarRepo: param empty: author = $author, repoName = $repoName',
+      );
       return;
     }
 
@@ -80,7 +83,8 @@ class StarButtonController extends GetxController {
   void requestUnstarRepo() async {
     if (author.isEmpty || repoName.isEmpty) {
       logger.e(
-          'StarButtonController - requestUnstarRepo: param empty: author = $author, repoName = $repoName');
+        'StarButtonController - requestUnstarRepo: param empty: author = $author, repoName = $repoName',
+      );
       return;
     }
 

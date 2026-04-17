@@ -10,12 +10,12 @@ abstract class BaseViewModel extends ChangeNotifier with RequestErrorHandler {
   /// 数据加载中
   bool get isLoading => _isLoading;
 
-  set isLoading(isLoading) {
+  set isLoading(bool isLoading) {
     _isLoading = isLoading;
     notifyListeners();
   }
 
-  var _disposed = false;
+  bool _disposed = false;
 
   @override
   void dispose() {
