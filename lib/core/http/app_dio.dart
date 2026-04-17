@@ -7,12 +7,12 @@ import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:flutter/foundation.dart';
 
-import 'http_config.dart';
+import 'package:jithub_flutter/core/http/http_config.dart';
 
 class AppDio with DioMixin implements Dio {
   AppDio({BaseOptions? options, HttpConfig? dioConfig}) {
     options ??= BaseOptions(
-      baseUrl: dioConfig?.baseUrl ?? "",
+      baseUrl: dioConfig?.baseUrl ?? '',
       contentType: 'application/json',
       connectTimeout: dioConfig?.connectTimeout,
       sendTimeout: dioConfig?.sendTimeout,
@@ -64,7 +64,7 @@ class AppDio with DioMixin implements Dio {
     httpClientAdapter = IOHttpClientAdapter(
       createHttpClient: () {
         final client = HttpClient();
-        client.findProxy = (uri) => "PROXY $proxy";
+        client.findProxy = (uri) => 'PROXY $proxy';
         return client;
       },
     );

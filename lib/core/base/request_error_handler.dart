@@ -1,6 +1,6 @@
-import '/core/http/http_response.dart';
-import '/core/util/event.dart';
-import '/core/util/logger.dart';
+import 'package:jithub_flutter/core/http/http_response.dart';
+import 'package:jithub_flutter/core/util/event.dart';
+import 'package:jithub_flutter/core/util/logger.dart';
 
 mixin RequestErrorHandler {
   void onRequestError(HttpResponse response) {

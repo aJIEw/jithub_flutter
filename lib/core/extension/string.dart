@@ -2,7 +2,7 @@ import 'package:jithub_flutter/core/extension/int.dart';
 
 extension StringExtension on String {
   String removeDecimalZeros() {
-    return replaceAll(RegExp(r"([.]*0+)(?!.*\d)"), "");
+    return replaceAll(RegExp(r'([.]*0+)(?!.*\d)'), '');
   }
 
   String limitLength(int max) {

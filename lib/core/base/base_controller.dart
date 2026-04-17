@@ -1,7 +1,6 @@
 import 'package:get/get.dart';
-
-import '/core/util/logger.dart';
-import 'request_error_handler.dart';
+import 'package:jithub_flutter/core/base/request_error_handler.dart';
+import 'package:jithub_flutter/core/util/logger.dart';
 
 abstract class BaseController extends SuperController with RequestErrorHandler {
   dynamic arguments;
@@ -27,7 +26,7 @@ abstract class BaseController extends SuperController with RequestErrorHandler {
 
   void registerBusEvent() {}
 
-  Future<dynamic> loadData();
+  Future<Object?> loadData();
 
   void reloadData() {
     change(null, status: RxStatus.loading());

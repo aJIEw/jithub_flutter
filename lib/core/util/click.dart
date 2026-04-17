@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_utils/src/extensions/internacionalization.dart';
 
-import 'toast.dart';
+import 'package:jithub_flutter/core/util/toast.dart';
 
 class ClickUtils {
   ClickUtils._internal();

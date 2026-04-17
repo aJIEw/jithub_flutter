@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'request_error_handler.dart';
+import 'package:jithub_flutter/core/base/request_error_handler.dart';
 
 /// Not recommended, use [BaseController] instead.
 abstract class BaseViewModel extends ChangeNotifier with RequestErrorHandler {

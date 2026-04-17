@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 
-import 'explore/explore_controller.dart';
-import 'profile/profile_controller.dart';
+import 'package:jithub_flutter/page/explore/explore_controller.dart';
+import 'package:jithub_flutter/page/profile/profile_controller.dart';
 
 class InitialBinding extends Bindings {
   @override

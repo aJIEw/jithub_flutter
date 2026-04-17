@@ -150,7 +150,7 @@ class Payload {
         : null;
     if (json['commits'] != null) {
       commits = [];
-      for (dynamic item in json['commits']) {
+      for (final dynamic item in json['commits']) {
         commits?.add(Commit.fromJson(item));
       }
     }

@@ -25,7 +25,7 @@ class ProfilePage extends BaseView<ProfileController> {
   @override
   NotifierBuilder buildContent(BuildContext context) {
     return (state) {
-      GithubUser user = state;
+      final GithubUser user = state;
       return VisibilityDetector(
         key: const Key('tab_eco'),
         onVisibilityChanged: (VisibilityInfo info) {
@@ -34,7 +34,7 @@ class ProfilePage extends BaseView<ProfileController> {
                 controller.canShowPopup &&
                 controller.contributionList.isNotEmpty) {
               // 显示今日贡献弹窗
-              var event = controller
+              final event = controller
                   .contributionList[6 - controller.contributionPlaceholderDays];
               XEvent.post(BusEvent.showInitPopup, event);
             }
@@ -103,7 +103,7 @@ class ProfilePage extends BaseView<ProfileController> {
                           const SizedBox(height: 10),
                           if (user.bio?.isNotEmpty ?? false)
                             Text(
-                              user.bio ?? "",
+                              user.bio ?? '',
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w400,
@@ -185,7 +185,7 @@ class ProfilePage extends BaseView<ProfileController> {
                               ),
                               const SizedBox(width: 8),
                               Text(
-                                "Contribution",
+                                'Contribution',
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,

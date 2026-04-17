@@ -56,7 +56,7 @@ class _RepoListPageState extends State<RepoListPage> {
   }
 
   void initUserProfile(RepoListViewModel viewModel) {
-    var userProfile = Store.value<UserProfile>(context);
+    final userProfile = Store.value<UserProfile>(context);
 
     logger.d(
       '_RepoListPageState - registerBusEvent: userProfile initialized: ${userProfile.user?.name}',
@@ -70,10 +70,10 @@ class _RepoListPageState extends State<RepoListPage> {
     RepoListViewModel viewModel,
     int index,
   ) {
-    var cardRadius = const BorderRadius.all(Radius.circular(5.0));
+    final cardRadius = const BorderRadius.all(Radius.circular(5.0));
 
-    UserRepo item = viewModel.dataList[index];
-    String updateTime = item.pushedAt?.getFriendlyTime() ?? '';
+    final UserRepo item = viewModel.dataList[index];
+    final String updateTime = item.pushedAt?.getFriendlyTime() ?? '';
 
     return Card(
       elevation: 1,
@@ -82,7 +82,7 @@ class _RepoListPageState extends State<RepoListPage> {
       child: InkWell(
         borderRadius: cardRadius,
         onTap: () {
-          onPressRepo(context, item);
+          onPressRepo(item);
         },
         child: Stack(
           children: [

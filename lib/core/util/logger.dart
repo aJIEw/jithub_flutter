@@ -1,6 +1,6 @@
 import 'package:logger/logger.dart';
 
-var logger = Logger(
+final logger = Logger(
   printer: PrefixPrinter(
     PrettyPrinter(
       // number of method calls to be displayed

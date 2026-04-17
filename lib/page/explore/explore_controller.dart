@@ -5,20 +5,23 @@ import 'package:jithub_flutter/core/util/logger.dart';
 import 'package:jithub_flutter/data/response/trending_repo.dart';
 
 class ExploreController extends BaseController {
-  List<TrendingRepo> trendingRepos = [];
+  final List<TrendingRepo> trendingRepos = [];
 
   @override
-  Future loadData() async {
-    var response = await HttpClient.get(
+  Future<List<TrendingRepo>> loadData() async {
+    final response = await HttpClient.get(
       ApiService.trendingUrl + ApiService.apiTrendingRepos,
     );
 
     // var response = await Future.delayed(const Duration(seconds: 3)).then(
     //         (value) => HttpResponse.failureFromError(NetworkException(message: "Network Error")));
     if (response.ok) {
-      trendingRepos = (response.data as List)
+      final repos = (response.data as List)
           .map((item) => TrendingRepo.fromJson(item))
           .toList();
+      trendingRepos
+        ..clear()
+        ..addAll(repos);
       return trendingRepos;
     } else {
       logger.d('ExploreController - fetchTrendingRepos: ${response.error}');

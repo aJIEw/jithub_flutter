@@ -4,9 +4,9 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '/core/widget/clickable.dart';
-import '/core/widget/divider.dart';
-import '/router/router.dart';
+import 'package:jithub_flutter/core/widget/clickable.dart';
+import 'package:jithub_flutter/core/widget/divider.dart';
+import 'package:jithub_flutter/router/router.dart';
 
 void showAlertDialog(
   String title, {
@@ -83,11 +83,11 @@ void showInputDialog(
   String hintText = '请输入',
   String defaultText = '',
   String confirmText = '确认',
-  Function? onConfirm,
+  ValueChanged<String>? onConfirm,
   String cancelText = '取消',
   VoidCallback? onCancel,
 }) {
-  var controller = TextEditingController();
+  final controller = TextEditingController();
   if (defaultText.isNotEmpty) {
     controller.text = defaultText;
   }
@@ -125,7 +125,7 @@ void showInputDialog(
                   cursorColor: Colors.black87,
                   cursorWidth: 0.8,
                   decoration: InputDecoration(
-                    counterText: "",
+                    counterText: '',
                     contentPadding: const EdgeInsets.symmetric(
                       horizontal: 10,
                       vertical: 4,
@@ -144,7 +144,6 @@ void showInputDialog(
                     ),
                     hintText: hintText,
                   ),
-                  onChanged: (text) {},
                 ),
               ),
               const DefaultDivider(1, color: Color(0xCCE6E6E6)),

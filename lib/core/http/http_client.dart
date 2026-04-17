@@ -1,11 +1,11 @@
 import 'package:dio/dio.dart';
 
-import '../api_service.dart';
-import 'app_dio.dart';
-import 'http_config.dart';
-import 'http_parse.dart';
-import 'http_response.dart';
-import 'http_transformer.dart';
+import 'package:jithub_flutter/core/api_service.dart';
+import 'package:jithub_flutter/core/http/app_dio.dart';
+import 'package:jithub_flutter/core/http/http_config.dart';
+import 'package:jithub_flutter/core/http/http_parse.dart';
+import 'package:jithub_flutter/core/http/http_response.dart';
+import 'package:jithub_flutter/core/http/http_transformer.dart';
 
 class HttpClient {
   HttpClient._internal();
@@ -23,8 +23,8 @@ class HttpClient {
   static void init() {}
 
   static void setAuthToken(String authToken) {
-    Map<String, dynamic> headers = {};
-    headers["Authorization"] = 'Bearer $authToken';
+    final Map<String, dynamic> headers = {};
+    headers['Authorization'] = 'Bearer $authToken';
     _dio.options.headers.addAll(headers);
   }
 
@@ -37,7 +37,7 @@ class HttpClient {
     HttpTransformer? httpTransformer,
   }) async {
     try {
-      var response = await _dio.get(
+      final response = await _dio.get(
         uri,
         queryParameters: queryParameters,
         options: options,
@@ -61,7 +61,7 @@ class HttpClient {
     HttpTransformer? httpTransformer,
   }) async {
     try {
-      var response = await _dio.post(
+      final response = await _dio.post(
         uri,
         data: data,
         queryParameters: queryParameters,
@@ -87,7 +87,7 @@ class HttpClient {
     HttpTransformer? httpTransformer,
   }) async {
     try {
-      var response = await _dio.patch(
+      final response = await _dio.patch(
         uri,
         data: data,
         queryParameters: queryParameters,
@@ -111,7 +111,7 @@ class HttpClient {
     HttpTransformer? httpTransformer,
   }) async {
     try {
-      var response = await _dio.delete(
+      final response = await _dio.delete(
         uri,
         data: data,
         queryParameters: queryParameters,
@@ -133,7 +133,7 @@ class HttpClient {
     HttpTransformer? httpTransformer,
   }) async {
     try {
-      var response = await _dio.put(
+      final response = await _dio.put(
         uri,
         data: data,
         queryParameters: queryParameters,
@@ -159,7 +159,7 @@ class HttpClient {
     HttpTransformer? httpTransformer,
   }) async {
     try {
-      var response = await _dio.download(
+      final response = await _dio.download(
         urlPath,
         savePath,
         onReceiveProgress: onReceiveProgress,

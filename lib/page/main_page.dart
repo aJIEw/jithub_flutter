@@ -4,8 +4,13 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:jithub_flutter/core/auth/github_auth_service.dart';
 import 'package:jithub_flutter/core/base/base_controller.dart';
+import 'package:jithub_flutter/core/base/base_page.dart';
+import 'package:jithub_flutter/core/base/provider_widget.dart';
 import 'package:jithub_flutter/core/http/http_client.dart';
+import 'package:jithub_flutter/core/util/click.dart';
 import 'package:jithub_flutter/core/util/event.dart';
+import 'package:jithub_flutter/core/util/logger.dart';
+import 'package:jithub_flutter/core/util/sputils.dart';
 import 'package:jithub_flutter/core/util/toast.dart';
 import 'package:jithub_flutter/data/event/bus_event.dart';
 import 'package:jithub_flutter/data/response/user_feeds.dart';
@@ -14,16 +19,10 @@ import 'package:jithub_flutter/page/home/home_page.dart';
 import 'package:jithub_flutter/page/profile/profile_page.dart';
 import 'package:jithub_flutter/page/viewmodel/main_viewmodel.dart';
 import 'package:jithub_flutter/provider/provider.dart';
+import 'package:jithub_flutter/provider/state/app_status.dart';
+import 'package:jithub_flutter/provider/state/user_profile.dart';
 import 'package:jithub_flutter/util/app_utils.dart';
 import 'package:provider/provider.dart';
-
-import '/core/base/provider_widget.dart';
-import '/core/util/click.dart';
-import '/core/util/logger.dart';
-import '/core/util/sputils.dart';
-import '/provider/state/app_status.dart';
-import '/provider/state/user_profile.dart';
-import '../core/base/base_page.dart';
 
 /// This page is built with [ProviderWidget], just to show you how to use it.
 /// In most cases, you should use [BaseController] instead.
@@ -174,7 +173,7 @@ class _MainPageState extends State<MainPage> with AfterLayoutMixin<MainPage> {
   }
 
   void goToLogin({int? targetTabIndex}) async {
-    String? result = await GitHubAuthService.authenticate();
+    final String? result = await GitHubAuthService.authenticate();
     if (!mounted) {
       return;
     }
@@ -187,15 +186,15 @@ class _MainPageState extends State<MainPage> with AfterLayoutMixin<MainPage> {
 
   void initLoginInfo(String accessToken, {int? targetTabIndex}) async {
     HttpClient.setAuthToken(accessToken);
-    var feeds = await requestUserFeeds();
+    final feeds = await requestUserFeeds();
     if (!mounted) {
       return;
     }
-    var userUrl = feeds?.currentUserPublicUrl;
+    final userUrl = feeds?.currentUserPublicUrl;
     if (userUrl != null) {
-      var name = userUrl.substring(userUrl.lastIndexOf("/") + 1);
-      var info = {'token': accessToken, 'name': name};
-      var userProfile = Store.value<UserProfile>(context);
+      final name = userUrl.substring(userUrl.lastIndexOf('/') + 1);
+      final info = {'token': accessToken, 'name': name};
+      final userProfile = Store.value<UserProfile>(context);
       userProfile.initWithLoginInfo(info);
 
       ToastUtils.toast('login_success'.tr);
@@ -213,9 +212,9 @@ class _MainPageState extends State<MainPage> with AfterLayoutMixin<MainPage> {
   }
 
   Future<UserFeeds?> requestUserFeeds() async {
-    var response = await HttpClient.get('/feeds');
+    final response = await HttpClient.get('/feeds');
     if (response.ok) {
-      var feeds = UserFeeds.fromJson(response.data);
+      final feeds = UserFeeds.fromJson(response.data);
       return feeds;
     } else {
       logger.d('_CommonWebViewState - onRequestError: ${response.error}');

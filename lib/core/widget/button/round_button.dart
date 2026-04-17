@@ -25,7 +25,7 @@ class RoundButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var theme = Theme.of(context).buttonTheme;
+    final theme = Theme.of(context).buttonTheme;
     return ElevatedButton(
       style: ButtonStyle(
         minimumSize: WidgetStateProperty.all(

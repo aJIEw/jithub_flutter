@@ -4,7 +4,7 @@ extension InputDecorationExtension on InputDecoration {
   /// Add clear icon for InputDecoration
   /// Use it in a stateful widget, call setState to change [input] inside onChange,
   /// also call setState() and clear [input] in [clearText].
-  InputDecoration addClearableIcon(String input, Function clearText) {
+  InputDecoration addClearableIcon(String input, VoidCallback clearText) {
     return copyWith(
       border: const UnderlineInputBorder(),
       suffixIcon: input.isEmpty

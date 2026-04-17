@@ -7,8 +7,12 @@ enum ButtonState { busy, idle }
 /// Modified from https://github.com/iamyogik/argon_buttons_flutter/blob/master/lib/argon_buttons_flutter.dart
 class TimerButton extends StatefulWidget {
   final ButtonStyle? style;
-  final Function(int time)? loader;
-  final Function(Function startTimer, ButtonState? btnState)? onTap;
+  final Widget Function(int time)? loader;
+  final void Function(
+    void Function(int startSeconds) startTimer,
+    ButtonState? btnState,
+  )?
+  onTap;
   final VoidCallback? onCountdownFinished;
   final int initialTimer;
   final Duration animationDuration;
@@ -44,7 +48,7 @@ class _TimerButtonState extends State<TimerButton>
   ButtonState? btn;
   int secondsLeft = 0;
   Timer? _timer;
-  Stream emptyStream = const Stream.empty();
+  final Stream<void> emptyStream = const Stream<void>.empty();
 
   @override
   void initState() {
@@ -99,7 +103,7 @@ class _TimerButtonState extends State<TimerButton>
 
   void startTimer(int newTime) {
     if (newTime == 0) {
-      throw ("Count Down Time can not be null");
+      throw ('Count Down Time can not be null');
     }
 
     animateForward();
@@ -112,7 +116,7 @@ class _TimerButtonState extends State<TimerButton>
       _timer!.cancel();
     }
 
-    var oneSec = const Duration(seconds: 1);
+    final oneSec = const Duration(seconds: 1);
     _timer = Timer.periodic(
       oneSec,
       (Timer timer) => setState(() {
@@ -208,7 +212,10 @@ class _CountdownButtonState extends State<CountdownButton> {
     );
   }
 
-  void _onTab(Function startTimer, ButtonState? btnState) {
+  void _onTab(
+    void Function(int startSeconds) startTimer,
+    ButtonState? btnState,
+  ) {
     if (btnState == ButtonState.idle) {
       setState(() {
         canResentCode = false;

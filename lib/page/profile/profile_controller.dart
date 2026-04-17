@@ -24,10 +24,10 @@ class ProfileController extends BaseController {
   late String _authToken;
   Options? _options;
 
-  var contributionList = <ContributionRecord>[].obs;
-  var totalContribution = 0.obs;
-  var maxDailyContribution = 0.obs;
-  var minDailyContribution = 0.obs;
+  final contributionList = <ContributionRecord>[].obs;
+  final totalContribution = 0.obs;
+  final maxDailyContribution = 0.obs;
+  final minDailyContribution = 0.obs;
 
   var canShowPopup = false; // 是否可显示弹窗
   var popupShown = false;
@@ -40,7 +40,7 @@ class ProfileController extends BaseController {
   void initParams() {
     super.initParams();
 
-    var userJson = SPUtils.getUser();
+    final userJson = SPUtils.getUser();
     _userName = userJson.isNotEmpty
         ? User.fromJson(json.decode(userJson)).name ?? ''
         : '';
@@ -74,14 +74,14 @@ class ProfileController extends BaseController {
   }
 
   @override
-  Future loadData() async {
-    var response = await HttpClient.get(
+  Future<GithubUser> loadData() async {
+    final response = await HttpClient.get(
       sprintf(ApiService.apiUserInfo, [_userName]),
       options: _options,
     );
 
     if (response.ok) {
-      var user = GithubUser.fromJson(response.data);
+      final user = GithubUser.fromJson(response.data);
       return user;
     } else {
       onRequestError(response);
@@ -90,7 +90,7 @@ class ProfileController extends BaseController {
   }
 
   void _initContributionData() {
-    var today = DateTime.now();
+    final today = DateTime.now();
     switch (today.weekday) {
       case DateTime.sunday:
         contributionPlaceholderDays = 6;
@@ -117,10 +117,10 @@ class ProfileController extends BaseController {
 
     var startIndex = 7;
     if (contributionPlaceholderDays > 0) {
-      var totalOffset = 6 - contributionPlaceholderDays;
+      final totalOffset = 6 - contributionPlaceholderDays;
       for (var i = 0; i <= totalOffset; i++) {
-        var offset = totalOffset - i;
-        var date = Jiffy.now()
+        final offset = totalOffset - i;
+        final date = Jiffy.now()
             .subtract(days: offset)
             .format(pattern: Constants.dateDefaultFormat);
         _contributionRecords.add(
@@ -130,7 +130,7 @@ class ProfileController extends BaseController {
 
       for (var i = (7 - contributionPlaceholderDays); i < 7; i++) {
         _contributionRecords.add(
-          ContributionRecord(index: i, date: "", number: -1),
+          ContributionRecord(index: i, date: '', number: -1),
         );
       }
     } else {
@@ -139,10 +139,10 @@ class ProfileController extends BaseController {
 
     // 15 weeks at most
     for (var i = startIndex, j = 1; i <= 105; i = 7 * (++j)) {
-      var weekEndIndex = i + 6;
+      final weekEndIndex = i + 6;
       var weekStartIndex = i;
       for (var offset = weekEndIndex; offset >= i; offset--) {
-        var date = Jiffy.now()
+        final date = Jiffy.now()
             .subtract(days: offset - contributionPlaceholderDays)
             .format(pattern: Constants.dateDefaultFormat);
         _contributionRecords.add(
@@ -157,16 +157,16 @@ class ProfileController extends BaseController {
     );
   }
 
-  Future getUserEventsRequest() async {
-    var param = {'page': _userEventsPage, 'per_page': 100};
-    var response = await HttpClient.get(
+  Future<void> getUserEventsRequest() async {
+    final param = {'page': _userEventsPage, 'per_page': 100};
+    final response = await HttpClient.get(
       sprintf(ApiService.apiUserEvents, [_userName]),
       queryParameters: param,
       options: _options,
     );
 
     if (response.ok) {
-      var list = (response.data as List)
+      final list = (response.data as List)
           .map((item) => EventTimeline.fromJson(item))
           .toList();
 
@@ -185,21 +185,21 @@ class ProfileController extends BaseController {
   }
 
   void _filterPushEvent(List<EventTimeline> events) {
-    var firstWeekDays = 7 - contributionPlaceholderDays;
-    var today = Jiffy.now().dayOfYear;
-    for (var event in events) {
+    final firstWeekDays = 7 - contributionPlaceholderDays;
+    final today = Jiffy.now().dayOfYear;
+    for (final event in events) {
       if (event.type == GithubEvent.pushEvent.name) {
         if (event.createdAt == null || event.createdAt!.isEmpty) {
           continue;
         }
-        var date = Jiffy.parse(event.createdAt!).dayOfYear;
-        var daysInBetween = today - date;
+        final date = Jiffy.parse(event.createdAt!).dayOfYear;
+        final daysInBetween = today - date;
         if (daysInBetween >= 0 && daysInBetween < firstWeekDays) {
-          var updateIndex = firstWeekDays - 1 - daysInBetween;
+          final updateIndex = firstWeekDays - 1 - daysInBetween;
           _updateContributionNumber(updateIndex, event.payload?.commits);
         } else if (daysInBetween >= firstWeekDays) {
-          var total = daysInBetween + contributionPlaceholderDays;
-          var mid = (total / 7.0).floor() * 7 + 3;
+          final total = daysInBetween + contributionPlaceholderDays;
+          final mid = (total / 7.0).floor() * 7 + 3;
           var updateIndex = mid;
           if (total > mid) {
             updateIndex = mid - (total - mid);
@@ -223,7 +223,7 @@ class ProfileController extends BaseController {
       return;
     }
 
-    var contribution = _contributionRecords[updateIndex];
+    final contribution = _contributionRecords[updateIndex];
     contribution.number += _filterCurrentUserCommits(commits);
     _contributionRecords[updateIndex] = contribution;
   }
@@ -232,7 +232,7 @@ class ProfileController extends BaseController {
     if (commits == null) return 0;
 
     int count = 0;
-    for (var commit in commits) {
+    for (final commit in commits) {
       if (commit.author?.name == _userName) {
         count++;
       }
@@ -245,7 +245,7 @@ class ProfileController extends BaseController {
     contributionList.value = _contributionRecords;
 
     int total = 0, max = 0, min = 0;
-    for (var i in contributionList) {
+    for (final i in contributionList) {
       if (i.number > 0) {
         total += i.number;
       }

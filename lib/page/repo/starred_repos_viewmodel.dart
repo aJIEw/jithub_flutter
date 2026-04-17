@@ -10,28 +10,26 @@ class StarredReposViewModel extends RepoListViewModel {
   String get requestUrl => ApiService.apiStarredRepos;
 
   @override
-  Future<List> loadData() async {
+  Future<List<UserRepo>> loadData() async {
     if (params == null || params is! String) {
       return List.empty();
     }
 
-    var param = {'page': page, 'per_page': perPageSize, 'sort': 'pushed'};
-    var url = sprintf.call(requestUrl, [params]);
-    var response = await HttpClient.get(url, queryParameters: param);
+    final param = {'page': page, 'per_page': perPageSize, 'sort': 'pushed'};
+    final url = sprintf.call(requestUrl, [params]);
+    final response = await HttpClient.get(url, queryParameters: param);
 
-    var list = [];
     if (response.ok) {
-      List<UserRepo> data = (response.data as List)
+      final List<UserRepo> data = (response.data as List)
           .map((item) => UserRepo.fromJson(item))
           .toList();
       checkHasNextPage(data);
-
-      list = data;
+      return data;
     } else {
       logger.e('RepoListViewModel - loadData: ${response.error}: $url');
       onRequestError(response);
     }
 
-    return list;
+    return const <UserRepo>[];
   }
 }

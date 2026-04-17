@@ -4,7 +4,7 @@ import 'package:jithub_flutter/core/util/logger.dart';
 import 'package:jithub_flutter/core/widget/base_refresh_loadmore_viewmodel.dart';
 import 'package:jithub_flutter/data/response/user_repo.dart';
 
-class RepoListViewModel extends BaseRefreshLoadMoreViewModel {
+class RepoListViewModel extends BaseRefreshLoadMoreViewModel<UserRepo> {
   @override
   String get requestUrl => ApiService.apiUserRepos;
 
@@ -12,29 +12,27 @@ class RepoListViewModel extends BaseRefreshLoadMoreViewModel {
   int get perPageSize => 100;
 
   @override
-  Future<List> loadData() async {
+  Future<List<UserRepo>> loadData() async {
     /*if (params == null || params is! String) {
       return List.empty();
     }*/
 
-    var param = {'page': page, 'per_page': perPageSize, 'sort': 'pushed'};
+    final param = {'page': page, 'per_page': perPageSize, 'sort': 'pushed'};
     // var url = sprintf.call(requestUrl, [params]);
-    var url = requestUrl;
-    var response = await HttpClient.get(url, queryParameters: param);
+    final url = requestUrl;
+    final response = await HttpClient.get(url, queryParameters: param);
 
-    var list = [];
     if (response.ok) {
-      List<UserRepo> data = (response.data as List)
+      final List<UserRepo> data = (response.data as List)
           .map((item) => UserRepo.fromJson(item))
           .toList();
       checkHasNextPage(data);
-
-      list = data;
+      return data;
     } else {
       logger.e('RepoListViewModel - loadData: ${response.error}: $url');
       onRequestError(response);
     }
 
-    return list;
+    return const <UserRepo>[];
   }
 }

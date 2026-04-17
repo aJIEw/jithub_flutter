@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:jithub_flutter/core/constants.dart';
 import 'package:jithub_flutter/core/util/event.dart';
+import 'package:jithub_flutter/core/widget/anchored_popup.dart';
 import 'package:jithub_flutter/core/widget/clickable.dart';
 import 'package:jithub_flutter/data/event/bus_event.dart';
 import 'package:jithub_flutter/data/model/contribution_record.dart';
@@ -80,12 +81,12 @@ class ContributionGraphView extends GetView<ProfileController> {
                   ),
                   itemBuilder: (_, index) {
                     // contribution item
-                    ContributionRecord contribution =
+                    final ContributionRecord contribution =
                         controller.contributionList[index];
 
                     // popup window 的内容
-                    var num = contribution.number;
-                    var messageText = Text.rich(
+                    final num = contribution.number;
+                    final messageText = Text.rich(
                       TextSpan(
                         style: const TextStyle(
                           fontSize: 12,
@@ -100,7 +101,7 @@ class ContributionGraphView extends GetView<ProfileController> {
                         ],
                       ),
                     );
-                    var popupKey = GlobalKey();
+                    final popupKey = GlobalKey();
 
                     // 保存当日的 key 和 message，用于初次点击到 profile 时显示 popup
                     if (_todayKey.value == null &&
@@ -114,12 +115,12 @@ class ContributionGraphView extends GetView<ProfileController> {
                     }
 
                     // 根据当日最多和最少 commit 数显示不同深度的颜色
-                    var maxNum = controller.maxDailyContribution.value;
-                    var minNum = controller.minDailyContribution.value;
-                    var step = (maxNum - minNum) / 3;
-                    var minLevel = minNum + step;
-                    var midLevel = minNum + step * 2;
-                    var maxLevel = minNum + step * 3;
+                    final maxNum = controller.maxDailyContribution.value;
+                    final minNum = controller.minDailyContribution.value;
+                    final step = (maxNum - minNum) / 3;
+                    final minLevel = minNum + step;
+                    final midLevel = minNum + step * 2;
+                    final maxLevel = minNum + step * 3;
                     Color? contributionColor = Colors.transparent;
                     if (contribution.number >= maxLevel) {
                       contributionColor = Colors.green[800];
@@ -135,12 +136,7 @@ class ContributionGraphView extends GetView<ProfileController> {
                     return Clickable(
                       key: popupKey,
                       onPressed: () {
-                        _showPopupWindow(
-                          context,
-                          num.toString(),
-                          popupKey,
-                          messageText,
-                        );
+                        _showPopupWindow(context, popupKey, messageText);
                       },
                       child: Container(
                         decoration: BoxDecoration(
@@ -169,23 +165,22 @@ class ContributionGraphView extends GetView<ProfileController> {
 
   void _showPopupWindow(
     BuildContext context,
-    String num,
     GlobalKey popupKey,
     Widget message,
   ) {
-    /*BrnPopupWindow.showPopWindow(
-      context,
-      num.toString(),
-      popupKey,
-      widget: message,
-      popDirection: BrnPopupDirection.top,
+    showAnchoredPopup<void>(
+      context: context,
+      anchorKey: popupKey,
+      child: message,
+      preferredDirection: AnchoredPopupDirection.auto,
       backgroundColor: const Color(0xFF383D3B),
       borderRadius: 6,
       offset: 6,
       spaceMargin: -6,
+      screenPadding: 10,
       arrowHeight: 8,
-      paddingInsets: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-    );*/
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+    );
   }
 
   void registerBusEvent(BuildContext context) {
@@ -193,8 +188,7 @@ class ContributionGraphView extends GetView<ProfileController> {
       if (_todayKey.value != null &&
           _todayMessage.value != null &&
           controller.canShowPopup) {
-        var num = event.number.toString();
-        _showPopupWindow(context, num, _todayKey.value!, _todayMessage.value!);
+        _showPopupWindow(context, _todayKey.value!, _todayMessage.value!);
         controller.popupShown = true;
       }
     });

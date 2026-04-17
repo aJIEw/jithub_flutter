@@ -1,7 +1,8 @@
 import 'package:jithub_flutter/core/api_service.dart';
 import 'package:jithub_flutter/core/base/refresh_loadmore_viewmodel.dart';
 
-abstract class BaseRefreshLoadMoreViewModel extends RefreshLoadMoreViewModel {
+abstract class BaseRefreshLoadMoreViewModel<T>
+    extends RefreshLoadMoreViewModel<T> {
   int page = 1;
 
   String get requestUrl;
@@ -9,24 +10,24 @@ abstract class BaseRefreshLoadMoreViewModel extends RefreshLoadMoreViewModel {
   int perPageSize = ApiService.perPageSize;
 
   /// 是否存在下一页数据，在 [loadData] 方法中调用
-  void checkHasNextPage(List data) {
+  void checkHasNextPage(List<T> data) {
     if (data.length >= perPageSize) {
       nextPageUrl = requestUrl;
       page++;
     } else {
-      nextPageUrl = "";
+      nextPageUrl = '';
     }
   }
 
   @override
-  Future<List> onRefresh() {
+  Future<List<T>> onRefresh() {
     isRefreshing = true;
     page = 1;
     return loadRemoteData();
   }
 
   @override
-  Future<List> onLoadMore() {
+  Future<List<T>> onLoadMore() {
     isRefreshing = false;
     return loadRemoteData();
   }

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:jithub_flutter/page/main_page.dart';
+import 'package:jithub_flutter/provider/state/app_status.dart';
+import 'package:jithub_flutter/provider/state/user_profile.dart';
 import 'package:provider/provider.dart';
-
-import '/page/main_page.dart';
-import '/provider/state/app_status.dart';
-import '/provider/state/user_profile.dart';
 
 class AppUtils {
   static void logout(BuildContext context) async {
@@ -17,8 +16,8 @@ class AppUtils {
     int? pendingTabIndex,
     bool clearUserProfile = false,
   }) {
-    var appStatus = context.read<AppStatus>();
-    var targetTabIndex =
+    final appStatus = context.read<AppStatus>();
+    final targetTabIndex =
         pendingTabIndex ??
         (appStatus.tabIndex == tabIndexExplore ? null : appStatus.tabIndex);
 
@@ -34,8 +33,8 @@ class AppUtils {
   }
 
   static void restorePendingTabAfterLogin(BuildContext context) {
-    var appStatus = context.read<AppStatus>();
-    var targetTabIndex = appStatus.consumePendingTabIndex();
+    final appStatus = context.read<AppStatus>();
+    final targetTabIndex = appStatus.consumePendingTabIndex();
     if (targetTabIndex != null) {
       appStatus.tabIndex = targetTabIndex;
     }

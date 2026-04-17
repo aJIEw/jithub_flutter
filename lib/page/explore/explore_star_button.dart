@@ -50,7 +50,7 @@ class ExploreStarButton extends StatelessWidget {
             );
           }
           return Text(
-            controller.hasStarred.value ? "Unstar" : "Star",
+            controller.hasStarred.value ? 'Unstar' : 'Star',
             style: const TextStyle(color: Colors.white),
           );
         }),

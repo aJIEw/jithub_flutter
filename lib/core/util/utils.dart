@@ -1,9 +1,8 @@
 import 'package:date_format/date_format.dart';
 import 'package:flutter/services.dart';
+import 'package:jithub_flutter/core/util/toast.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-import 'toast.dart';
 
 /// 常用工具类
 class Utils {
@@ -28,7 +27,7 @@ class Utils {
     if (await canLaunchUrl(uri)) {
       await launchUrl(uri);
     } else {
-      ToastUtils.toast("暂时无法处理请求: $url");
+      ToastUtils.toast('暂时无法处理请求: $url');
     }
   }
 
@@ -36,7 +35,7 @@ class Utils {
 
   /// 获取应用基本信息
   static Future<Map<String, dynamic>> getBasicPackageInfo() async {
-    PackageInfo packageInfo = await getPackageInfo();
+    final PackageInfo packageInfo = await getPackageInfo();
     return <String, dynamic>{
       'appName': packageInfo.appName,
       'packageName': packageInfo.packageName,

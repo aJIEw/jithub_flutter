@@ -7,36 +7,37 @@ import 'package:jithub_flutter/data/model/user.dart';
 import 'package:jithub_flutter/data/response/event_timeline.dart';
 import 'package:sprintf/sprintf.dart';
 
-class HomeViewModel extends BaseRefreshLoadMoreViewModel {
+class HomeViewModel extends BaseRefreshLoadMoreViewModel<EventTimeline> {
   @override
   String get requestUrl => ApiService.apiReceivedEvents;
 
   @override
-  Future<List> loadData() async {
+  Future<List<EventTimeline>> loadData() async {
     if (params == null || params is! User) {
-      return List.empty();
+      return const <EventTimeline>[];
     }
 
-    var param = <String, dynamic>{};
-    param["page"] = page;
-    var url = sprintf.call(requestUrl, [params.name]);
-    HttpResponse response = await HttpClient.get(url, queryParameters: param);
+    final param = <String, dynamic>{};
+    param['page'] = page;
+    final url = sprintf.call(requestUrl, [params.name]);
+    final HttpResponse response = await HttpClient.get(
+      url,
+      queryParameters: param,
+    );
     // HttpResponse response = await Future.delayed(const Duration(seconds: 3))
     //     .then((value) => HttpResponse.failureFromError(HttpException("Network error")));
 
-    var list = [];
     if (response.ok) {
-      List<EventTimeline> data = (response.data as List)
+      final List<EventTimeline> data = (response.data as List)
           .map((item) => EventTimeline.fromJson(item))
           .toList();
       checkHasNextPage(data);
-
-      list = data;
+      return data;
     } else {
       logger.e('HomeViewModel - loadData: ${response.error}: $url');
       onRequestError(response);
     }
 
-    return list;
+    return const <EventTimeline>[];
   }
 }

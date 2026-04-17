@@ -2,13 +2,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:jithub_flutter/core/app_theme.dart';
+import 'package:jithub_flutter/core/constants.dart';
+import 'package:jithub_flutter/core/util/sputils.dart';
+import 'package:jithub_flutter/i18n/i18n.dart';
 import 'package:jithub_flutter/page/init_binding.dart';
-
-import '/core/app_theme.dart';
-import '/core/constants.dart';
-import '/core/util/sputils.dart';
-import '/i18n/i18n.dart';
-import '/router/router.dart';
+import 'package:jithub_flutter/router/router.dart';
 
 const bool showDebugBanner = false;
 

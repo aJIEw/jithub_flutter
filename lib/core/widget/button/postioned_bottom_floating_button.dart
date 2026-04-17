@@ -1,10 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-
-import '/core/widget/clickable.dart';
-import '/core/widget/container/shadow_container.dart';
-import '../../app_theme.dart';
+import 'package:jithub_flutter/core/app_theme.dart';
+import 'package:jithub_flutter/core/widget/clickable.dart';
+import 'package:jithub_flutter/core/widget/container/shadow_container.dart';
 
 class PositionedBottomFloatingButton extends StatelessWidget {
   const PositionedBottomFloatingButton(
@@ -22,7 +21,7 @@ class PositionedBottomFloatingButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var paddingBottom = MediaQuery.of(context).padding.bottom;
+    final paddingBottom = MediaQuery.of(context).padding.bottom;
     return Positioned(
       left: 30,
       right: 30,

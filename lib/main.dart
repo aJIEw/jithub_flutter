@@ -2,13 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-
-import '/core/http/http_client.dart';
-import '/core/util/logger.dart';
-import '/core/util/sputils.dart';
-import '/core/util/toast.dart';
-import '/provider/provider.dart';
-import 'app.dart';
+import 'package:jithub_flutter/app.dart';
+import 'package:jithub_flutter/core/http/http_client.dart';
+import 'package:jithub_flutter/core/util/logger.dart';
+import 'package:jithub_flutter/core/util/sputils.dart';
+import 'package:jithub_flutter/core/util/toast.dart';
+import 'package:jithub_flutter/provider/provider.dart';
 
 void main() => AppInit.run();
 
@@ -37,7 +36,7 @@ class AppInit {
       },
       // 未捕获的异常
       (Object obj, StackTrace stack) {
-        var details = makeDetails(obj, stack);
+        final details = makeDetails(obj, stack);
         reportErrorAndLog(details);
       },
       zoneSpecification: ZoneSpecification(

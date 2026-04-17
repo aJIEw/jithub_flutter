@@ -3,9 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jithub_flutter/core/widget/container/shadow_container.dart';
 import 'package:jithub_flutter/data/response/user_repo.dart';
+import 'package:jithub_flutter/page/home/home_page.dart';
 import 'package:jithub_flutter/page/home/home_repo_item_controller.dart';
-
-import 'home_page.dart';
 
 class HomeRepoItem extends StatelessWidget {
   HomeRepoItem(this.repoUrl, {super.key})
@@ -27,7 +26,7 @@ class HomeRepoItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(6),
         ),
         child: Obx(() {
-          UserRepo repo = controller.repo.value;
+          final UserRepo repo = controller.repo.value;
 
           if (controller.loading.value) {
             return SizedBox(
@@ -41,7 +40,7 @@ class HomeRepoItem extends StatelessWidget {
               child: InkWell(
                 borderRadius: BorderRadius.circular(6),
                 onTap: () {
-                  onPressRepo(context, repo);
+                  onPressRepo(repo);
                 },
                 child: Container(
                   padding: const EdgeInsets.all(12),

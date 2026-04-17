@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '/router/router.dart';
+import 'package:jithub_flutter/router/router.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -60,7 +60,7 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   void countDown() {
-    var duration = const Duration(seconds: 1);
+    final duration = const Duration(seconds: 1);
     Future.delayed(duration, goMainPage);
   }
 
