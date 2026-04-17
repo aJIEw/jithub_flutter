@@ -1,3 +1,6 @@
+import 'package:jithub_flutter/core/api_service.dart';
+import 'package:jithub_flutter/core/trending_repo_language_colors.dart';
+
 class TrendingRepo {
   String? author;
   String? name;
@@ -26,19 +29,53 @@ class TrendingRepo {
   });
 
   TrendingRepo.fromJson(dynamic json) {
+    if (json is Map && json.containsKey('repo')) {
+      _fromDoforceJson(json);
+      return;
+    }
+
     author = json['author'];
     name = json['name'];
     avatar = json['avatar'];
     description = json['description'];
     url = json['url'];
     language = json['language'];
-    languageColor = json['languageColor'];
+    languageColor =
+        json['languageColor'] ??
+        TrendingRepoLanguageColors.resolve(language);
     stars = json['stars'];
     forks = json['forks'];
     currentPeriodStars = json['currentPeriodStars'];
     if (json['builtBy'] != null) {
       builtBy = [];
       json['builtBy'].forEach((v) {
+        builtBy?.add(BuiltBy.fromJson(v));
+      });
+    }
+  }
+
+  void _fromDoforceJson(Map json) {
+    final repoPath = (json['repo'] as String? ?? '').trim();
+    final repoSegments = repoPath
+        .split('/')
+        .where((segment) => segment.isNotEmpty)
+        .toList();
+
+    author = repoSegments.isNotEmpty ? repoSegments.first : null;
+    name = repoSegments.length > 1 ? repoSegments[1] : null;
+    avatar = (json['build_by'] as List?)
+        ?.cast<dynamic>()
+        .firstOrNull?['avatar'];
+    description = json['desc'];
+    url = repoPath.isNotEmpty ? '${ApiService.githubUrl}$repoPath' : null;
+    language = json['lang'];
+    languageColor = TrendingRepoLanguageColors.resolve(language);
+    stars = json['stars'];
+    forks = json['forks'];
+    currentPeriodStars = json['change'];
+    if (json['build_by'] != null) {
+      builtBy = [];
+      json['build_by'].forEach((v) {
         builtBy?.add(BuiltBy.fromJson(v));
       });
     }
@@ -93,9 +130,16 @@ class BuiltBy {
   BuiltBy({this.username, this.href, this.avatar});
 
   BuiltBy.fromJson(dynamic json) {
+    avatar = json['avatar'];
+
+    if (json is Map && json.containsKey('by')) {
+      href = json['by'];
+      username = href?.split('/').last;
+      return;
+    }
+
     username = json['username'];
     href = json['href'];
-    avatar = json['avatar'];
   }
 
   String? username;
