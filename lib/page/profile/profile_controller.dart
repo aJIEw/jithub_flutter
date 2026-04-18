@@ -3,23 +3,23 @@ import 'dart:core';
 
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
-import 'package:jiffy/jiffy.dart';
 import 'package:jithub_flutter/core/api_service.dart';
 import 'package:jithub_flutter/core/base/base_controller.dart';
-import 'package:jithub_flutter/core/constants.dart';
 import 'package:jithub_flutter/core/http/http_client.dart';
 import 'package:jithub_flutter/core/util/event.dart';
 import 'package:jithub_flutter/core/util/logger.dart';
 import 'package:jithub_flutter/core/util/sputils.dart';
 import 'package:jithub_flutter/data/event/bus_event.dart';
 import 'package:jithub_flutter/data/model/contribution_record.dart';
-import 'package:jithub_flutter/data/model/github_event.dart';
 import 'package:jithub_flutter/data/model/user.dart';
 import 'package:jithub_flutter/data/response/event_timeline.dart';
 import 'package:jithub_flutter/data/response/github_repo.dart';
+import 'package:jithub_flutter/page/profile/contribution_calculator.dart';
 import 'package:sprintf/sprintf.dart';
 
 class ProfileController extends BaseController {
+  static const int _maxUserEventsPages = 3;
+
   late String _userName;
   late String _authToken;
   Options? _options;
@@ -33,8 +33,10 @@ class ProfileController extends BaseController {
   var popupShown = false;
 
   final List<ContributionRecord> _contributionRecords = [];
+  final Map<String, int> _contributionDateIndexMap = {};
   int _userEventsPage = 1;
   int contributionPlaceholderDays = 0;
+  late DateTime _contributionStartDate;
 
   @override
   void initParams() {
@@ -91,66 +93,21 @@ class ProfileController extends BaseController {
 
   void _initContributionData() {
     final today = DateTime.now();
-    switch (today.weekday) {
-      case DateTime.sunday:
-        contributionPlaceholderDays = 6;
-        break;
-      case DateTime.monday:
-        contributionPlaceholderDays = 5;
-        break;
-      case DateTime.tuesday:
-        contributionPlaceholderDays = 4;
-        break;
-      case DateTime.wednesday:
-        contributionPlaceholderDays = 3;
-        break;
-      case DateTime.thursday:
-        contributionPlaceholderDays = 2;
-        break;
-      case DateTime.friday:
-        contributionPlaceholderDays = 1;
-        break;
-      case DateTime.saturday:
-        contributionPlaceholderDays = 0;
-        break;
-    }
+    contributionPlaceholderDays = ContributionCalculator.placeholderDaysFor(
+      today,
+    );
+    _contributionStartDate = ContributionCalculator.normalizeDate(
+      today.subtract(
+        const Duration(days: ContributionCalculator.contributionDays - 1),
+      ),
+    );
 
-    var startIndex = 7;
-    if (contributionPlaceholderDays > 0) {
-      final totalOffset = 6 - contributionPlaceholderDays;
-      for (var i = 0; i <= totalOffset; i++) {
-        final offset = totalOffset - i;
-        final date = Jiffy.now()
-            .subtract(days: offset)
-            .format(pattern: Constants.dateDefaultFormat);
-        _contributionRecords.add(
-          ContributionRecord(index: i, date: date, number: 0),
-        );
-      }
-
-      for (var i = (7 - contributionPlaceholderDays); i < 7; i++) {
-        _contributionRecords.add(
-          ContributionRecord(index: i, date: '', number: -1),
-        );
-      }
-    } else {
-      startIndex = 0;
-    }
-
-    // 15 weeks at most
-    for (var i = startIndex, j = 1; i <= 105; i = 7 * (++j)) {
-      final weekEndIndex = i + 6;
-      var weekStartIndex = i;
-      for (var offset = weekEndIndex; offset >= i; offset--) {
-        final date = Jiffy.now()
-            .subtract(days: offset - contributionPlaceholderDays)
-            .format(pattern: Constants.dateDefaultFormat);
-        _contributionRecords.add(
-          ContributionRecord(index: weekStartIndex, date: date, number: 0),
-        );
-        weekStartIndex++;
-      }
-    }
+    _contributionRecords
+      ..clear()
+      ..addAll(ContributionCalculator.buildContributionRecords(today: today));
+    _contributionDateIndexMap
+      ..clear()
+      ..addAll(ContributionCalculator.buildDateIndexMap(_contributionRecords));
 
     logger.d(
       'ProfileController - _initContributionData: ${_contributionRecords.length}',
@@ -170,9 +127,9 @@ class ProfileController extends BaseController {
           .map((item) => EventTimeline.fromJson(item))
           .toList();
 
-      _filterPushEvent(list);
+      _applyContributionEvents(list);
 
-      if (list.length > 99) {
+      if (_shouldLoadMoreEvents(list)) {
         _userEventsPage++;
         await getUserEventsRequest();
       } else {
@@ -184,38 +141,72 @@ class ProfileController extends BaseController {
     }
   }
 
-  void _filterPushEvent(List<EventTimeline> events) {
-    final firstWeekDays = 7 - contributionPlaceholderDays;
-    final today = Jiffy.now().dayOfYear;
+  /// We can only load 300 events or events created within the past 30 days
+  /// See <https://docs.github.com/en/rest/activity/events>
+  bool _shouldLoadMoreEvents(List<EventTimeline> events) {
+    if (events.isEmpty || events.length < 100) {
+      return false;
+    }
+
+    if (_userEventsPage >= _maxUserEventsPages) {
+      return false;
+    }
+
+    DateTime? oldestEventDate;
     for (final event in events) {
-      if (event.type == GithubEvent.pushEvent.name) {
-        if (event.createdAt == null || event.createdAt!.isEmpty) {
-          continue;
-        }
-        final date = Jiffy.parse(event.createdAt!).dayOfYear;
-        final daysInBetween = today - date;
-        if (daysInBetween >= 0 && daysInBetween < firstWeekDays) {
-          final updateIndex = firstWeekDays - 1 - daysInBetween;
-          _updateContributionNumber(updateIndex, event.payload?.commits);
-        } else if (daysInBetween >= firstWeekDays) {
-          final total = daysInBetween + contributionPlaceholderDays;
-          final mid = (total / 7.0).floor() * 7 + 3;
-          var updateIndex = mid;
-          if (total > mid) {
-            updateIndex = mid - (total - mid);
-          } else if (total < mid) {
-            updateIndex = mid + (mid - total);
-          }
-          _updateContributionNumber(
-            updateIndex.toInt(),
-            event.payload?.commits,
-          );
-        }
+      if (event.createdAt == null || event.createdAt!.isEmpty) {
+        continue;
       }
+
+      final eventDate = DateTime.tryParse(event.createdAt!);
+      if (eventDate == null) {
+        continue;
+      }
+
+      final normalizedEventDate = ContributionCalculator.normalizeDate(
+        eventDate,
+      );
+      if (oldestEventDate == null ||
+          normalizedEventDate.isBefore(oldestEventDate)) {
+        oldestEventDate = normalizedEventDate;
+      }
+    }
+
+    if (oldestEventDate == null) {
+      return false;
+    }
+
+    return !oldestEventDate.isBefore(_contributionStartDate);
+  }
+
+  void _applyContributionEvents(List<EventTimeline> events) {
+    for (final event in events) {
+      if (event.createdAt == null || event.createdAt!.isEmpty) {
+        continue;
+      }
+
+      final contributionCount =
+          ContributionCalculator.countContributionForEvent(event);
+      if (contributionCount <= 0) {
+        continue;
+      }
+
+      final eventDate = DateTime.tryParse(event.createdAt!);
+      if (eventDate == null) {
+        continue;
+      }
+
+      final updateIndex =
+          _contributionDateIndexMap[ContributionCalculator.dateKey(eventDate)];
+      if (updateIndex == null) {
+        continue;
+      }
+
+      _updateContributionNumber(updateIndex, contributionCount);
     }
   }
 
-  void _updateContributionNumber(int updateIndex, List<Commit>? commits) {
+  void _updateContributionNumber(int updateIndex, int contributionCount) {
     if (updateIndex < 0 || updateIndex >= _contributionRecords.length) {
       logger.e(
         'ProfileController - updateContributionNumber: index out of range: $updateIndex',
@@ -224,21 +215,8 @@ class ProfileController extends BaseController {
     }
 
     final contribution = _contributionRecords[updateIndex];
-    contribution.number += _filterCurrentUserCommits(commits);
+    contribution.number += contributionCount;
     _contributionRecords[updateIndex] = contribution;
-  }
-
-  int _filterCurrentUserCommits(List<Commit>? commits) {
-    if (commits == null) return 0;
-
-    int count = 0;
-    for (final commit in commits) {
-      if (commit.author?.name == _userName) {
-        count++;
-      }
-    }
-
-    return count;
   }
 
   void _initObservableData() {
