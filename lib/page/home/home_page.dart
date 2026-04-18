@@ -82,7 +82,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildItem(EventTimeline item, String? repoName) {
+  Widget _buildItem(EventTimeline item, String? repoUrl) {
     return Container(
       padding: const EdgeInsets.all(8),
       child: Column(
@@ -105,7 +105,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-          HomeRepoItem(repoName ?? ''),
+          HomeRepoItem(repoUrl ?? ''),
         ],
       ),
     );

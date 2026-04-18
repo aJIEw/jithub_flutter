@@ -11,6 +11,12 @@ class GithubEvent {
   static const publicEvent = GithubEvent._('PublicEvent');
   static const issuesEvent = GithubEvent._('IssuesEvent');
   static const issueCommentEvent = GithubEvent._('IssueCommentEvent');
+  static const pullRequestEvent = GithubEvent._('PullRequestEvent');
+  static const pullRequestReviewEvent = GithubEvent._('PullRequestReviewEvent');
+  static const pullRequestReviewCommentEvent = GithubEvent._(
+    'PullRequestReviewCommentEvent',
+  );
+  static const commitCommentEvent = GithubEvent._('CommitCommentEvent');
 
   static const values = [
     watchEvent,
@@ -21,5 +27,9 @@ class GithubEvent {
     publicEvent,
     issuesEvent,
     issueCommentEvent,
+    pullRequestEvent,
+    pullRequestReviewEvent,
+    pullRequestReviewCommentEvent,
+    commitCommentEvent,
   ];
 }
