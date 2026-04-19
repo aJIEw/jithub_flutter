@@ -126,17 +126,27 @@ class Payload {
   String? action; // watch event
   GithubUser? forkee; // fork event
   String? refType; // create event
+  String? ref; // branch or tag name
   ReleaseRepo? release; // release event
   List<Commit>? commits; // push event
   int? size; // commits number
+  IssuePayloadItem? issue; // issue event
+  PullRequestPayloadItem? pullRequest; // pull request event
+  CommentPayloadItem? comment; // comment event
+  ReviewPayloadItem? review; // review event
 
   Payload({
     this.action,
     this.forkee,
     this.refType,
+    this.ref,
     this.release,
     this.commits,
     this.size,
+    this.issue,
+    this.pullRequest,
+    this.comment,
+    this.review,
   });
 
   Payload.fromJson(dynamic json) {
@@ -145,6 +155,7 @@ class Payload {
         ? GithubUser.fromJson(json['forkee'])
         : null;
     refType = json['ref_type'];
+    ref = json['ref'];
     release = json['release'] != null
         ? ReleaseRepo.fromJson(json['release'])
         : null;
@@ -155,22 +166,44 @@ class Payload {
       }
     }
     size = json['size'];
+    issue = json['issue'] != null
+        ? IssuePayloadItem.fromJson(json['issue'])
+        : null;
+    pullRequest = json['pull_request'] != null
+        ? PullRequestPayloadItem.fromJson(json['pull_request'])
+        : null;
+    comment = json['comment'] != null
+        ? CommentPayloadItem.fromJson(json['comment'])
+        : null;
+    review = json['review'] != null
+        ? ReviewPayloadItem.fromJson(json['review'])
+        : null;
   }
 
   Payload copyWith({
     String? action,
     GithubUser? forkee,
     String? refType,
+    String? ref,
     ReleaseRepo? release,
     List<Commit>? commits,
     int? size,
+    IssuePayloadItem? issue,
+    PullRequestPayloadItem? pullRequest,
+    CommentPayloadItem? comment,
+    ReviewPayloadItem? review,
   }) => Payload(
     action: action ?? this.action,
     forkee: forkee ?? this.forkee,
     refType: refType ?? this.refType,
+    ref: ref ?? this.ref,
     release: release ?? this.release,
     commits: commits ?? this.commits,
     size: size ?? this.size,
+    issue: issue ?? this.issue,
+    pullRequest: pullRequest ?? this.pullRequest,
+    comment: comment ?? this.comment,
+    review: review ?? this.review,
   );
 
   Map<String, dynamic> toJson() {
@@ -178,9 +211,131 @@ class Payload {
     map['action'] = action;
     map['forkee'] = forkee;
     map['ref_type'] = refType;
+    map['ref'] = ref;
     map['release'] = release;
     map['commits'] = commits?.map((dynamic item) => item.toJson()).toList();
     map['size'] = size;
+    map['issue'] = issue?.toJson();
+    map['pull_request'] = pullRequest?.toJson();
+    map['comment'] = comment?.toJson();
+    map['review'] = review?.toJson();
+    return map;
+  }
+}
+
+class IssuePayloadItem {
+  int? id;
+  int? number;
+  String? title;
+
+  IssuePayloadItem({this.id, this.number, this.title});
+
+  IssuePayloadItem.fromJson(dynamic json) {
+    id = json['id'];
+    number = json['number'];
+    title = json['title'];
+  }
+
+  IssuePayloadItem copyWith({int? id, int? number, String? title}) =>
+      IssuePayloadItem(
+        id: id ?? this.id,
+        number: number ?? this.number,
+        title: title ?? this.title,
+      );
+
+  Map<String, dynamic> toJson() {
+    final map = <String, dynamic>{};
+    map['id'] = id;
+    map['number'] = number;
+    map['title'] = title;
+    return map;
+  }
+}
+
+class PullRequestPayloadItem {
+  int? id;
+  int? number;
+  String? title;
+
+  PullRequestPayloadItem({this.id, this.number, this.title});
+
+  PullRequestPayloadItem.fromJson(dynamic json) {
+    id = json['id'];
+    number = json['number'];
+    title = json['title'];
+  }
+
+  PullRequestPayloadItem copyWith({int? id, int? number, String? title}) =>
+      PullRequestPayloadItem(
+        id: id ?? this.id,
+        number: number ?? this.number,
+        title: title ?? this.title,
+      );
+
+  Map<String, dynamic> toJson() {
+    final map = <String, dynamic>{};
+    map['id'] = id;
+    map['number'] = number;
+    map['title'] = title;
+    return map;
+  }
+}
+
+class CommentPayloadItem {
+  int? id;
+  String? body;
+  String? commitId;
+  String? path;
+
+  CommentPayloadItem({this.id, this.body, this.commitId, this.path});
+
+  CommentPayloadItem.fromJson(dynamic json) {
+    id = json['id'];
+    body = json['body'];
+    commitId = json['commit_id'];
+    path = json['path'];
+  }
+
+  CommentPayloadItem copyWith({
+    int? id,
+    String? body,
+    String? commitId,
+    String? path,
+  }) => CommentPayloadItem(
+    id: id ?? this.id,
+    body: body ?? this.body,
+    commitId: commitId ?? this.commitId,
+    path: path ?? this.path,
+  );
+
+  Map<String, dynamic> toJson() {
+    final map = <String, dynamic>{};
+    map['id'] = id;
+    map['body'] = body;
+    map['commit_id'] = commitId;
+    map['path'] = path;
+    return map;
+  }
+}
+
+class ReviewPayloadItem {
+  int? id;
+  String? state;
+
+  ReviewPayloadItem({this.id, this.state});
+
+  ReviewPayloadItem.fromJson(dynamic json) {
+    id = json['id'];
+    state = json['state'];
+  }
+
+  ReviewPayloadItem copyWith({int? id, String? state}) =>
+      ReviewPayloadItem(id: id ?? this.id, state: state ?? this.state);
+
+  Map<String, dynamic> toJson() {
+    final map = <String, dynamic>{};
+    map['id'] = id;
+    map['state'] = state;
     return map;
   }
 }

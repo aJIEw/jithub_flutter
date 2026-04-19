@@ -123,6 +123,51 @@ class _HomePageState extends State<HomePage> {
     );
 
     final repo = TextSpan(text: item.repo?.name ?? '', style: boldStyle);
+    final payload = item.payload;
+
+    TextSpan boldText(String? text) =>
+        TextSpan(text: text ?? '', style: boldStyle);
+
+    String actionLabel(String? action) {
+      switch (action) {
+        case 'opened':
+          return ' opened ';
+        case 'closed':
+          return ' closed ';
+        case 'reopened':
+          return ' reopened ';
+        case 'created':
+          return ' commented on ';
+        case 'submitted':
+          return ' reviewed ';
+        case 'published':
+          return ' published ';
+        case 'synchronize':
+          return ' synchronized ';
+        case 'edited':
+          return ' edited ';
+        case 'deleted':
+          return ' deleted ';
+        default:
+          return action == null || action.isEmpty ? ' updated ' : ' $action ';
+      }
+    }
+
+    TextSpan issueText(IssuePayloadItem? issue) => TextSpan(
+      children: [
+        boldText('#${issue?.number ?? ''}'),
+        if ((issue?.title ?? '').isNotEmpty)
+          TextSpan(text: ' "${issue?.title}"'),
+      ],
+    );
+
+    TextSpan pullRequestText(PullRequestPayloadItem? pullRequest) => TextSpan(
+      children: [
+        boldText('#${pullRequest?.number ?? ''}'),
+        if ((pullRequest?.title ?? '').isNotEmpty)
+          TextSpan(text: ' "${pullRequest?.title}"'),
+      ],
+    );
 
     final type = item.type;
     if (type == GithubEvent.watchEvent.name) {
@@ -140,35 +185,163 @@ class _HomePageState extends State<HomePage> {
         ],
       );
     } else if (type == GithubEvent.releaseEvent.name) {
-      if (item.payload?.action == 'published' &&
-          item.payload?.release != null) {
+      if (payload?.release != null) {
         actionText = TextSpan(
           children: [
-            const TextSpan(text: ' released '),
-            TextSpan(
-              text: item.payload?.release?.tagName ?? '',
-              style: boldStyle,
+            TextSpan(text: actionLabel(payload?.action)),
+            boldText(
+              payload?.release?.tagName ??
+                  payload?.release?.name ??
+                  'a release',
             ),
             const TextSpan(text: ' of '),
             repo,
           ],
         );
-      }
-    } else if (type == GithubEvent.createEvent.name) {
-      if (item.payload?.refType == 'repository') {
+      } else {
         actionText = TextSpan(
           children: [
-            const TextSpan(text: '  created a repository '),
+            TextSpan(text: '${actionLabel(payload?.action)}a release of '),
             repo,
           ],
         );
       }
+    } else if (type == GithubEvent.createEvent.name) {
+      if (payload?.refType == 'repository') {
+        actionText = TextSpan(
+          children: [
+            const TextSpan(text: ' created a repository '),
+            repo,
+          ],
+        );
+      } else if (payload?.refType == 'branch') {
+        actionText = TextSpan(
+          children: [
+            const TextSpan(text: ' created branch '),
+            boldText(payload?.ref ?? ''),
+            const TextSpan(text: ' at '),
+            repo,
+          ],
+        );
+      } else if (payload?.refType == 'tag') {
+        actionText = TextSpan(
+          children: [
+            const TextSpan(text: ' created tag '),
+            boldText(payload?.ref ?? ''),
+            const TextSpan(text: ' at '),
+            repo,
+          ],
+        );
+      } else {
+        actionText = TextSpan(
+          children: [
+            const TextSpan(text: ' created '),
+            boldText(payload?.refType ?? 'something'),
+            const TextSpan(text: ' in '),
+            repo,
+          ],
+        );
+      }
+    } else if (type == GithubEvent.pushEvent.name) {
+      final refName = payload?.ref?.split('/').last;
+      actionText = TextSpan(
+        children: [
+          const TextSpan(text: ' pushed '),
+          if ((refName ?? '').isNotEmpty) ...[
+            const TextSpan(text: 'to '),
+            boldText(refName),
+          ],
+          const TextSpan(text: ' at '),
+          repo,
+        ],
+      );
     } else if (type == GithubEvent.publicEvent.name) {
       actionText = TextSpan(
         children: [
           const TextSpan(text: ' made '),
           repo,
           const TextSpan(text: ' public'),
+        ],
+      );
+    } else if (type == GithubEvent.issuesEvent.name) {
+      actionText = TextSpan(
+        children: [
+          TextSpan(text: actionLabel(payload?.action)),
+          const TextSpan(text: 'issue '),
+          issueText(payload?.issue),
+          const TextSpan(text: ' in '),
+          repo,
+        ],
+      );
+    } else if (type == GithubEvent.issueCommentEvent.name) {
+      actionText = TextSpan(
+        children: [
+          TextSpan(text: actionLabel(payload?.action)),
+          const TextSpan(text: 'issue '),
+          issueText(payload?.issue),
+          const TextSpan(text: ' in '),
+          repo,
+        ],
+      );
+    } else if (type == GithubEvent.pullRequestEvent.name) {
+      actionText = TextSpan(
+        children: [
+          TextSpan(text: actionLabel(payload?.action)),
+          const TextSpan(text: 'pull request '),
+          pullRequestText(payload?.pullRequest),
+          const TextSpan(text: ' in '),
+          repo,
+        ],
+      );
+    } else if (type == GithubEvent.pullRequestReviewEvent.name) {
+      final reviewState = payload?.review?.state?.toLowerCase();
+      final reviewVerb = switch (reviewState) {
+        'approved' => ' approved ',
+        'changes_requested' => ' requested changes on ',
+        'commented' => ' reviewed ',
+        _ => actionLabel(payload?.action),
+      };
+      actionText = TextSpan(
+        children: [
+          TextSpan(text: reviewVerb),
+          const TextSpan(text: 'pull request '),
+          pullRequestText(payload?.pullRequest),
+          const TextSpan(text: ' in '),
+          repo,
+        ],
+      );
+    } else if (type == GithubEvent.pullRequestReviewCommentEvent.name) {
+      actionText = TextSpan(
+        children: [
+          const TextSpan(text: ' commented on pull request '),
+          pullRequestText(payload?.pullRequest),
+          const TextSpan(text: ' in '),
+          repo,
+        ],
+      );
+    } else if (type == GithubEvent.commitCommentEvent.name) {
+      final shortSha = payload?.comment?.commitId;
+      actionText = TextSpan(
+        children: [
+          const TextSpan(text: ' commented on commit '),
+          boldText(
+            shortSha != null && shortSha.length > 7
+                ? shortSha.substring(0, 7)
+                : shortSha ?? '',
+          ),
+          const TextSpan(text: ' in '),
+          repo,
+        ],
+      );
+    } else {
+      actionText = TextSpan(
+        children: [
+          const TextSpan(text: ' triggered '),
+          boldText(type ?? 'an event'),
+          if ((item.repo?.name ?? '').isNotEmpty) ...[
+            const TextSpan(text: ' on '),
+            repo,
+          ],
         ],
       );
     }
@@ -178,7 +351,7 @@ class _HomePageState extends State<HomePage> {
         style: normalStyle,
         children: [
           TextSpan(text: item.actor?.login ?? '', style: boldStyle),
-          actionText ?? const TextSpan(text: ''),
+          actionText,
         ],
       ),
     );
