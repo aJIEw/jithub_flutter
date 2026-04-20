@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:get/get.dart';
 import 'package:jithub_flutter/core/base/provider_widget.dart';
 import 'package:jithub_flutter/core/extension/string.dart';
 import 'package:jithub_flutter/core/util/event.dart';
 import 'package:jithub_flutter/core/util/logger.dart';
+import 'package:jithub_flutter/core/widget/loading/loading_dialog.dart';
 import 'package:jithub_flutter/core/widget/pull_to_refresh.dart';
 import 'package:jithub_flutter/data/event/bus_event.dart';
 import 'package:jithub_flutter/data/model/github_event.dart';
@@ -53,30 +56,45 @@ class _HomePageState extends State<HomePage> {
 
             registerBusEvent(viewModel);
           },
-          builder:
-              (BuildContext context, HomeViewModel viewModel, Widget? child) =>
-                  RefreshConfiguration(
-                    enableLoadingWhenNoData: false,
-                    child: SmartRefresher(
-                      header: PullToRefreshHelper.getClassicI18nHeader(context),
-                      footer: PullToRefreshHelper.getClassicI18nFooter(context),
-                      enablePullUp: true,
-                      controller: viewModel.refreshController,
-                      onRefresh: viewModel.onRefresh,
-                      onLoading: viewModel.onLoadMore,
-                      child: ListView.builder(
-                        physics: const RangeMaintainingScrollPhysics(),
-                        controller: scrollController,
-                        cacheExtent: 9999,
-                        itemCount: viewModel.dataList.length,
-                        itemBuilder: (context, index) {
-                          final EventTimeline item = viewModel.dataList[index];
-
-                          return _buildItem(item, item.repo?.url);
-                        },
-                      ),
-                    ),
+          builder: (context, viewModel, child) {
+            if (viewModel.isLoading && viewModel.dataList.isEmpty) {
+              return Center(
+                child: LoadingDialog(
+                  content: Text(
+                    'message_handling'.tr,
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodyLarge?.apply(color: Colors.white),
                   ),
+                  dialogBackgroundColor: Colors.black38,
+                  loadingView: const SpinKitCircle(color: Colors.white),
+                ),
+              );
+            }
+
+            return RefreshConfiguration(
+              enableLoadingWhenNoData: false,
+              child: SmartRefresher(
+                header: PullToRefreshHelper.getClassicI18nHeader(context),
+                footer: PullToRefreshHelper.getClassicI18nFooter(context),
+                enablePullUp: true,
+                controller: viewModel.refreshController,
+                onRefresh: viewModel.onRefresh,
+                onLoading: viewModel.onLoadMore,
+                child: ListView.builder(
+                  physics: const RangeMaintainingScrollPhysics(),
+                  controller: scrollController,
+                  cacheExtent: 9999,
+                  itemCount: viewModel.dataList.length,
+                  itemBuilder: (context, index) {
+                    final EventTimeline item = viewModel.dataList[index];
+
+                    return _buildItem(item, item.repo?.url);
+                  },
+                ),
+              ),
+            );
+          },
         ),
       ),
     );
@@ -123,6 +141,46 @@ class _HomePageState extends State<HomePage> {
     );
 
     final repo = TextSpan(text: item.repo?.name ?? '', style: boldStyle);
+    final payload = item.payload;
+
+    TextSpan boldText(String? text) =>
+        TextSpan(text: text ?? '', style: boldStyle);
+
+    String actionLabel(String? action) {
+      switch (action) {
+        case 'opened':
+          return ' opened ';
+        case 'closed':
+          return ' closed ';
+        case 'reopened':
+          return ' reopened ';
+        case 'published':
+          return ' published ';
+        case 'edited':
+          return ' edited ';
+        case 'deleted':
+          return ' deleted ';
+        default:
+          return action == null || action.isEmpty ? ' updated ' : ' $action ';
+      }
+    }
+
+    TextSpan issueText(IssuePayloadItem? issue) => TextSpan(
+      children: [
+        boldText('#${issue?.number ?? ''}'),
+        // TODO: 2026/4/20 Display title?
+        // if ((issue?.title ?? '').isNotEmpty)
+        //   TextSpan(text: ' "${issue?.title}"'),
+      ],
+    );
+
+    TextSpan pullRequestText(PullRequestPayloadItem? pullRequest) => TextSpan(
+      children: [
+        boldText('#${pullRequest?.number ?? ''}'),
+        if ((pullRequest?.title ?? '').isNotEmpty)
+          TextSpan(text: ' "${pullRequest?.title}"'),
+      ],
+    );
 
     final type = item.type;
     if (type == GithubEvent.watchEvent.name) {
@@ -140,35 +198,113 @@ class _HomePageState extends State<HomePage> {
         ],
       );
     } else if (type == GithubEvent.releaseEvent.name) {
-      if (item.payload?.action == 'published' &&
-          item.payload?.release != null) {
+      if (payload?.release != null) {
         actionText = TextSpan(
           children: [
-            const TextSpan(text: ' released '),
-            TextSpan(
-              text: item.payload?.release?.tagName ?? '',
-              style: boldStyle,
+            TextSpan(text: actionLabel(payload?.action)),
+            boldText(
+              payload?.release?.tagName ??
+                  payload?.release?.name ??
+                  'a release',
             ),
             const TextSpan(text: ' of '),
             repo,
           ],
         );
-      }
-    } else if (type == GithubEvent.createEvent.name) {
-      if (item.payload?.refType == 'repository') {
+      } else {
         actionText = TextSpan(
           children: [
-            const TextSpan(text: '  created a repository '),
+            TextSpan(text: '${actionLabel(payload?.action)}a release of '),
             repo,
           ],
         );
       }
+    } else if (type == GithubEvent.createEvent.name) {
+      if (payload?.refType == 'repository') {
+        actionText = TextSpan(
+          children: [
+            const TextSpan(text: ' created a repository '),
+            repo,
+          ],
+        );
+      } else if (payload?.refType == 'branch') {
+        actionText = TextSpan(
+          children: [
+            const TextSpan(text: ' created branch '),
+            boldText(payload?.ref ?? ''),
+            const TextSpan(text: ' at '),
+            repo,
+          ],
+        );
+      } else if (payload?.refType == 'tag') {
+        actionText = TextSpan(
+          children: [
+            const TextSpan(text: ' created tag '),
+            boldText(payload?.ref ?? ''),
+            const TextSpan(text: ' at '),
+            repo,
+          ],
+        );
+      } else {
+        actionText = TextSpan(
+          children: [
+            const TextSpan(text: ' created '),
+            boldText(payload?.refType ?? 'something'),
+            const TextSpan(text: ' in '),
+            repo,
+          ],
+        );
+      }
+    } else if (type == GithubEvent.pushEvent.name) {
+      final refName = payload?.ref?.split('/').last;
+      actionText = TextSpan(
+        children: [
+          const TextSpan(text: ' pushed '),
+          if ((refName ?? '').isNotEmpty) ...[
+            const TextSpan(text: 'to '),
+            boldText(refName),
+          ],
+          const TextSpan(text: ' at '),
+          repo,
+        ],
+      );
     } else if (type == GithubEvent.publicEvent.name) {
       actionText = TextSpan(
         children: [
           const TextSpan(text: ' made '),
           repo,
           const TextSpan(text: ' public'),
+        ],
+      );
+    } else if (type == GithubEvent.issuesEvent.name) {
+      actionText = TextSpan(
+        children: [
+          TextSpan(text: actionLabel(payload?.action)),
+          const TextSpan(text: 'issue '),
+          issueText(payload?.issue),
+          const TextSpan(text: ' in '),
+          repo,
+        ],
+      );
+    } else if (type == GithubEvent.pullRequestEvent.name) {
+      actionText = TextSpan(
+        children: [
+          TextSpan(text: actionLabel(payload?.action)),
+          const TextSpan(text: 'pull request '),
+          pullRequestText(payload?.pullRequest),
+          const TextSpan(text: ' in '),
+          repo,
+        ],
+      );
+    } else {
+      actionText = TextSpan(
+        children: [
+          const TextSpan(text: ' triggered '),
+          boldText(type ?? 'an event'),
+          if ((item.repo?.name ?? '').isNotEmpty) ...[
+            const TextSpan(text: ' on '),
+            repo,
+          ],
         ],
       );
     }
@@ -178,7 +314,7 @@ class _HomePageState extends State<HomePage> {
         style: normalStyle,
         children: [
           TextSpan(text: item.actor?.login ?? '', style: boldStyle),
-          actionText ?? const TextSpan(text: ''),
+          actionText,
         ],
       ),
     );

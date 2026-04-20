@@ -141,8 +141,10 @@ class ProfileController extends BaseController {
     }
   }
 
-  /// We can only load 300 events or events created within the past 30 days
-  /// See <https://docs.github.com/en/rest/activity/events>
+  /// TODO: 2026/4/20 We can only load 300 events or events created within
+  /// the past 30 days. See <https://docs.github.com/en/rest/activity/events>
+  /// We can change the way contribution graph view shows data or
+  /// update this to use github's GraphQL API.
   bool _shouldLoadMoreEvents(List<EventTimeline> events) {
     if (events.isEmpty || events.length < 100) {
       return false;
