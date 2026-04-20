@@ -7,6 +7,5 @@ void main() {
   test('GithubEvent keeps api event names stable', () {
     expect(GithubEvent.watchEvent.name, 'WatchEvent');
     expect(GithubEvent.pushEvent.name, 'PushEvent');
-    expect(GithubEvent.issueCommentEvent.name, 'IssueCommentEvent');
   });
 }

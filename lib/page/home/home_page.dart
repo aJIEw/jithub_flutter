@@ -136,14 +136,8 @@ class _HomePageState extends State<HomePage> {
           return ' closed ';
         case 'reopened':
           return ' reopened ';
-        case 'created':
-          return ' commented on ';
-        case 'submitted':
-          return ' reviewed ';
         case 'published':
           return ' published ';
-        case 'synchronize':
-          return ' synchronized ';
         case 'edited':
           return ' edited ';
         case 'deleted':
@@ -156,8 +150,9 @@ class _HomePageState extends State<HomePage> {
     TextSpan issueText(IssuePayloadItem? issue) => TextSpan(
       children: [
         boldText('#${issue?.number ?? ''}'),
-        if ((issue?.title ?? '').isNotEmpty)
-          TextSpan(text: ' "${issue?.title}"'),
+        // TODO: 2026/4/20 Display title?
+        // if ((issue?.title ?? '').isNotEmpty)
+        //   TextSpan(text: ' "${issue?.title}"'),
       ],
     );
 
@@ -273,62 +268,12 @@ class _HomePageState extends State<HomePage> {
           repo,
         ],
       );
-    } else if (type == GithubEvent.issueCommentEvent.name) {
-      actionText = TextSpan(
-        children: [
-          TextSpan(text: actionLabel(payload?.action)),
-          const TextSpan(text: 'issue '),
-          issueText(payload?.issue),
-          const TextSpan(text: ' in '),
-          repo,
-        ],
-      );
     } else if (type == GithubEvent.pullRequestEvent.name) {
       actionText = TextSpan(
         children: [
           TextSpan(text: actionLabel(payload?.action)),
           const TextSpan(text: 'pull request '),
           pullRequestText(payload?.pullRequest),
-          const TextSpan(text: ' in '),
-          repo,
-        ],
-      );
-    } else if (type == GithubEvent.pullRequestReviewEvent.name) {
-      final reviewState = payload?.review?.state?.toLowerCase();
-      final reviewVerb = switch (reviewState) {
-        'approved' => ' approved ',
-        'changes_requested' => ' requested changes on ',
-        'commented' => ' reviewed ',
-        _ => actionLabel(payload?.action),
-      };
-      actionText = TextSpan(
-        children: [
-          TextSpan(text: reviewVerb),
-          const TextSpan(text: 'pull request '),
-          pullRequestText(payload?.pullRequest),
-          const TextSpan(text: ' in '),
-          repo,
-        ],
-      );
-    } else if (type == GithubEvent.pullRequestReviewCommentEvent.name) {
-      actionText = TextSpan(
-        children: [
-          const TextSpan(text: ' commented on pull request '),
-          pullRequestText(payload?.pullRequest),
-          const TextSpan(text: ' in '),
-          repo,
-        ],
-      );
-    } else if (type == GithubEvent.commitCommentEvent.name) {
-      final shortSha = payload?.comment?.commitId;
-      actionText = TextSpan(
-        children: [
-          const TextSpan(text: ' commented on commit '),
-          boldText(
-            shortSha != null && shortSha.length > 7
-                ? shortSha.substring(0, 7)
-                : shortSha ?? '',
-          ),
           const TextSpan(text: ' in '),
           repo,
         ],

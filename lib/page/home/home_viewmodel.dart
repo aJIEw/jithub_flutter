@@ -3,11 +3,16 @@ import 'package:jithub_flutter/core/http/http_client.dart';
 import 'package:jithub_flutter/core/http/http_response.dart';
 import 'package:jithub_flutter/core/util/logger.dart';
 import 'package:jithub_flutter/core/widget/base_refresh_loadmore_viewmodel.dart';
+import 'package:jithub_flutter/data/model/github_event.dart';
 import 'package:jithub_flutter/data/model/user.dart';
 import 'package:jithub_flutter/data/response/event_timeline.dart';
 import 'package:sprintf/sprintf.dart';
 
 class HomeViewModel extends BaseRefreshLoadMoreViewModel<EventTimeline> {
+  static final Set<String> _allowedEventTypes = GithubEvent.values
+      .map((event) => event.name)
+      .toSet();
+
   @override
   String get requestUrl => ApiService.apiReceivedEvents;
 
@@ -17,9 +22,11 @@ class HomeViewModel extends BaseRefreshLoadMoreViewModel<EventTimeline> {
       return const <EventTimeline>[];
     }
 
+    final currentUser = params as User;
+    final currentLogin = currentUser.name?.trim().toLowerCase();
     final param = <String, dynamic>{};
     param['page'] = page;
-    final url = sprintf.call(requestUrl, [params.name]);
+    final url = sprintf.call(requestUrl, [currentUser.name]);
     final HttpResponse response = await HttpClient.get(
       url,
       queryParameters: param,
@@ -32,7 +39,17 @@ class HomeViewModel extends BaseRefreshLoadMoreViewModel<EventTimeline> {
           .map((item) => EventTimeline.fromJson(item))
           .toList();
       checkHasNextPage(data);
-      return data;
+      if (currentLogin == null || currentLogin.isEmpty) {
+        return data
+            .where((item) => _allowedEventTypes.contains(item.type))
+            .toList();
+      }
+
+      return data.where((item) {
+        final actorLogin = item.actor?.login?.trim().toLowerCase();
+        return actorLogin != currentLogin &&
+            _allowedEventTypes.contains(item.type);
+      }).toList();
     } else {
       logger.e('HomeViewModel - loadData: ${response.error}: $url');
       onRequestError(response);
