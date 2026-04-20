@@ -70,17 +70,18 @@ class HomeRepoItem extends StatelessWidget {
                               size: 12,
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
-                            child: buildIconText(
-                              repo.language ?? '',
-                              Icon(
-                                Icons.circle,
-                                color: Colors.grey[850],
-                                size: 8,
+                          if (repo.language?.isNotEmpty ?? false)
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+                              child: buildIconText(
+                                repo.language ?? '',
+                                Icon(
+                                  Icons.circle,
+                                  color: Colors.grey[850],
+                                  size: 8,
+                                ),
                               ),
                             ),
-                          ),
                         ],
                       ),
                     ],

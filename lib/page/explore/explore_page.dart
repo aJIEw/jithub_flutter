@@ -90,17 +90,18 @@ class ExplorePage extends BaseView<ExploreController> {
                                   ),
                                 ),
                                 const SizedBox(width: 12),
-                                buildIconText(
-                                  repo.language ?? '',
-                                  Icon(
-                                    Icons.circle,
-                                    color: Color(
-                                      repo.languageColor?.toHexValue() ??
-                                          0xffffff,
+                                if (repo.language?.isNotEmpty ?? false)
+                                  buildIconText(
+                                    repo.language ?? '',
+                                    Icon(
+                                      Icons.circle,
+                                      color: Color(
+                                        repo.languageColor?.toHexValue() ??
+                                            0xffffff,
+                                      ),
+                                      size: 10,
                                     ),
-                                    size: 10,
                                   ),
-                                ),
                               ],
                             ),
                           ),
