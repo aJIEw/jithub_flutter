@@ -5,6 +5,7 @@ import 'package:jithub_flutter/core/widget/container/shadow_container.dart';
 import 'package:jithub_flutter/data/response/user_repo.dart';
 import 'package:jithub_flutter/page/home/home_page.dart';
 import 'package:jithub_flutter/page/home/home_repo_item_controller.dart';
+import 'package:jithub_flutter/page/home/home_star_button.dart';
 
 class HomeRepoItem extends StatelessWidget {
   HomeRepoItem(this.repoUrl, {super.key})
@@ -79,6 +80,17 @@ class HomeRepoItem extends StatelessWidget {
                                   Icons.circle,
                                   color: Colors.grey[850],
                                   size: 8,
+                                ),
+                              ),
+                            ),
+                          if ((repo.owner?.login?.isNotEmpty ?? false) &&
+                              (repo.name?.isNotEmpty ?? false))
+                            Expanded(
+                              child: Align(
+                                alignment: Alignment.centerRight,
+                                child: HomeStarButton(
+                                  repo.owner?.login ?? '',
+                                  repo.name ?? '',
                                 ),
                               ),
                             ),

@@ -33,6 +33,9 @@ class StarButtonController extends GetxController {
     super.onInit();
 
     isLoggedIn.value = SPUtils.isLoggedIn();
+    if (isLoggedIn.value) {
+      _refreshStarState();
+    }
 
     _loginSubscription = XEvent.on(BusEvent.userLoggedIn, (value) async {
       logger.d('StarButtonController: userLoggedIn');
