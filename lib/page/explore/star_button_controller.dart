@@ -1,9 +1,13 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:jithub_flutter/core/api_service.dart';
 import 'package:jithub_flutter/core/http/http_client.dart';
+import 'package:jithub_flutter/core/util/event.dart';
 import 'package:jithub_flutter/core/util/logger.dart';
 import 'package:jithub_flutter/core/util/sputils.dart';
+import 'package:jithub_flutter/data/event/bus_event.dart';
 import 'package:sprintf/sprintf.dart';
 
 class StarButtonController extends GetxController {
@@ -17,7 +21,10 @@ class StarButtonController extends GetxController {
   final String author;
   final String repoName;
 
-  final notLoggedIn = true.obs;
+  StreamSubscription? _loginSubscription;
+  StreamSubscription? _logoutSubscription;
+
+  final isLoggedIn = true.obs;
   final loading = false.obs;
   final hasStarred = false.obs;
 
@@ -25,13 +32,30 @@ class StarButtonController extends GetxController {
   void onInit() {
     super.onInit();
 
-    _authToken = SPUtils.getAuthToken();
+    isLoggedIn.value = SPUtils.isLoggedIn();
 
-    if (_authToken.isNotEmpty) {
-      checkIsRepoStarred();
-      notLoggedIn.value = false;
-      _options = Options(headers: {'Authorization': 'Bearer $_authToken'});
-    }
+    _loginSubscription = XEvent.on(BusEvent.userLoggedIn, (value) async {
+      logger.d('StarButtonController: userLoggedIn');
+
+      isLoggedIn.value = true;
+      _refreshStarState();
+    });
+
+    _logoutSubscription = XEvent.on(BusEvent.userLoggedOut, (value) async {
+      logger.d('StarButtonController: userLoggedOut');
+
+      // Clear state
+      _options = null;
+      isLoggedIn.value = false;
+      hasStarred.value = false;
+      loading.value = false;
+    });
+  }
+
+  void _refreshStarState() {
+    _authToken = SPUtils.getAuthToken();
+    _options = Options(headers: {'Authorization': 'Bearer $_authToken'});
+    checkIsRepoStarred();
   }
 
   void checkIsRepoStarred() async {
@@ -99,5 +123,13 @@ class StarButtonController extends GetxController {
     }
 
     loading.value = false;
+  }
+
+  @override
+  void dispose() {
+    XEvent.cancel(BusEvent.userLoggedIn, _loginSubscription);
+    XEvent.cancel(BusEvent.userLoggedOut, _logoutSubscription);
+
+    super.dispose();
   }
 }

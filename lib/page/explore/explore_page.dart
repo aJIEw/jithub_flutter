@@ -51,24 +51,50 @@ class ExplorePage extends BaseView<ExploreController> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          ListTile(
-                            leading: ClipRRect(
-                              borderRadius: BorderRadius.circular(25),
-                              child: DefaultNetworkImage(
-                                repo.avatar ?? '',
-                                width: 50,
-                                height: 50,
-                              ),
+                          // Repo owner and star button
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(25),
+                                  child: DefaultNetworkImage(
+                                    repo.avatar ?? '',
+                                    width: 50,
+                                    height: 50,
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(top: 2),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          repo.name ?? '',
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 2),
+                                        Text(repo.author ?? ''),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                ExploreStarButton(
+                                  repo.author ?? '',
+                                  repo.name ?? '',
+                                ),
+                              ],
                             ),
-                            title: Text(
-                              repo.name ?? '',
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            subtitle: Text(repo.author ?? ''),
                           ),
+
+                          // Repo description
                           Padding(
                             padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
                             child: Text(
@@ -77,6 +103,8 @@ class ExplorePage extends BaseView<ExploreController> {
                               textAlign: TextAlign.left,
                             ),
                           ),
+
+                          // Repo star and other info
                           Padding(
                             padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
                             child: Row(
@@ -105,6 +133,8 @@ class ExplorePage extends BaseView<ExploreController> {
                               ],
                             ),
                           ),
+
+                          // Total star and fork number
                           Padding(
                             padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
                             child: Row(
@@ -129,8 +159,10 @@ class ExplorePage extends BaseView<ExploreController> {
                               ],
                             ),
                           ),
+
+                          // Built by, top 7 contributors
                           Padding(
-                            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                             child: Row(
                               children: [
                                 buildIconText(
@@ -161,7 +193,6 @@ class ExplorePage extends BaseView<ExploreController> {
                               ],
                             ),
                           ),
-                          ExploreStarButton(repo.author ?? '', repo.name ?? ''),
                         ],
                       ),
                     ),
