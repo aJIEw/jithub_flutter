@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:get/get.dart';
 import 'package:jithub_flutter/core/base/provider_widget.dart';
 import 'package:jithub_flutter/core/extension/string.dart';
 import 'package:jithub_flutter/core/util/event.dart';
 import 'package:jithub_flutter/core/util/logger.dart';
+import 'package:jithub_flutter/core/widget/loading/loading_dialog.dart';
 import 'package:jithub_flutter/core/widget/pull_to_refresh.dart';
 import 'package:jithub_flutter/data/event/bus_event.dart';
 import 'package:jithub_flutter/data/model/github_event.dart';
@@ -53,30 +56,45 @@ class _HomePageState extends State<HomePage> {
 
             registerBusEvent(viewModel);
           },
-          builder:
-              (BuildContext context, HomeViewModel viewModel, Widget? child) =>
-                  RefreshConfiguration(
-                    enableLoadingWhenNoData: false,
-                    child: SmartRefresher(
-                      header: PullToRefreshHelper.getClassicI18nHeader(context),
-                      footer: PullToRefreshHelper.getClassicI18nFooter(context),
-                      enablePullUp: true,
-                      controller: viewModel.refreshController,
-                      onRefresh: viewModel.onRefresh,
-                      onLoading: viewModel.onLoadMore,
-                      child: ListView.builder(
-                        physics: const RangeMaintainingScrollPhysics(),
-                        controller: scrollController,
-                        cacheExtent: 9999,
-                        itemCount: viewModel.dataList.length,
-                        itemBuilder: (context, index) {
-                          final EventTimeline item = viewModel.dataList[index];
-
-                          return _buildItem(item, item.repo?.url);
-                        },
-                      ),
-                    ),
+          builder: (context, viewModel, child) {
+            if (viewModel.isLoading && viewModel.dataList.isEmpty) {
+              return Center(
+                child: LoadingDialog(
+                  content: Text(
+                    'message_handling'.tr,
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodyLarge?.apply(color: Colors.white),
                   ),
+                  dialogBackgroundColor: Colors.black38,
+                  loadingView: const SpinKitCircle(color: Colors.white),
+                ),
+              );
+            }
+
+            return RefreshConfiguration(
+              enableLoadingWhenNoData: false,
+              child: SmartRefresher(
+                header: PullToRefreshHelper.getClassicI18nHeader(context),
+                footer: PullToRefreshHelper.getClassicI18nFooter(context),
+                enablePullUp: true,
+                controller: viewModel.refreshController,
+                onRefresh: viewModel.onRefresh,
+                onLoading: viewModel.onLoadMore,
+                child: ListView.builder(
+                  physics: const RangeMaintainingScrollPhysics(),
+                  controller: scrollController,
+                  cacheExtent: 9999,
+                  itemCount: viewModel.dataList.length,
+                  itemBuilder: (context, index) {
+                    final EventTimeline item = viewModel.dataList[index];
+
+                    return _buildItem(item, item.repo?.url);
+                  },
+                ),
+              ),
+            );
+          },
         ),
       ),
     );
