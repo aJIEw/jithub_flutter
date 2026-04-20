@@ -34,8 +34,11 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> with AfterLayoutMixin<MainPage> {
+  static const String _loginThrottleKey = 'login_flow';
+
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final List<Widget?> _tabPages = List<Widget?>.filled(tabCount, null);
+  bool _isLoginFlowInProgress = false;
 
   @override
   void afterFirstLayout(BuildContext context) {
@@ -46,7 +49,7 @@ class _MainPageState extends State<MainPage> with AfterLayoutMixin<MainPage> {
 
   void registerBusEvent() {
     XEvent.on(BusEvent.showLoginPage, (value) async {
-      goToLogin();
+      _triggerLogin();
     });
   }
 
@@ -114,7 +117,7 @@ class _MainPageState extends State<MainPage> with AfterLayoutMixin<MainPage> {
                                   context,
                                   pendingTabIndex: index,
                                 );
-                                goToLogin(targetTabIndex: index);
+                                _triggerLogin(targetTabIndex: index);
                               }
                             },
                           ),
@@ -172,7 +175,21 @@ class _MainPageState extends State<MainPage> with AfterLayoutMixin<MainPage> {
     }
   }
 
-  void goToLogin({int? targetTabIndex}) async {
+  Future<void> _triggerLogin({int? targetTabIndex}) async {
+    if (_isLoginFlowInProgress ||
+        !ClickUtils.allowAction(_loginThrottleKey, duration: 1000)) {
+      return;
+    }
+
+    _isLoginFlowInProgress = true;
+    try {
+      await goToLogin(targetTabIndex: targetTabIndex);
+    } finally {
+      _isLoginFlowInProgress = false;
+    }
+  }
+
+  Future<void> goToLogin({int? targetTabIndex}) async {
     final String? result = await GitHubAuthService.authenticate();
     if (!mounted) {
       return;

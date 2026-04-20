@@ -6,12 +6,16 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:jithub_flutter/core/api_service.dart';
 import 'package:jithub_flutter/core/http/http_client.dart';
+import 'package:jithub_flutter/core/http/http_response.dart';
 import 'package:jithub_flutter/core/util/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class GitHubAuthService {
   static const String _deviceCodeGrantType =
       'urn:ietf:params:oauth:grant-type:device_code';
+  static const Duration _oauthConnectTimeout = Duration(seconds: 15);
+  static const Duration _oauthSendTimeout = Duration(seconds: 15);
+  static const Duration _oauthReceiveTimeout = Duration(seconds: 60);
 
   static Future<String?> authenticate() async {
     final session = await _requestDeviceCode();
@@ -74,7 +78,7 @@ class GitHubAuthService {
         'client_id': ApiService.clientId,
         'scope': ApiService.githubOauthScopes,
       },
-      options: Options(headers: {'Accept': 'application/json'}),
+      options: _oauthRequestOptions(),
     );
 
     if (!response.ok || response.data is! Map) {
@@ -119,8 +123,12 @@ class GitHubAuthService {
           'device_code': session.deviceCode,
           'grant_type': _deviceCodeGrantType,
         },
-        options: Options(headers: {'Accept': 'application/json'}),
+        options: _oauthRequestOptions(),
       );
+
+      if (!response.ok && _isTimeoutResponse(response)) {
+        continue;
+      }
 
       if (!response.ok || response.data is! Map) {
         onError('github_login_poll_failed'.tr);
@@ -168,6 +176,19 @@ class GitHubAuthService {
   static Future<void> _copyUserCode(String userCode) async {
     await Clipboard.setData(ClipboardData(text: userCode));
     ToastUtils.toast('github_device_code_copied'.tr);
+  }
+
+  static Options _oauthRequestOptions() {
+    return Options(
+      headers: {'Accept': 'application/json'},
+      connectTimeout: _oauthConnectTimeout,
+      sendTimeout: _oauthSendTimeout,
+      receiveTimeout: _oauthReceiveTimeout,
+    );
+  }
+
+  static bool _isTimeoutResponse(HttpResponse response) {
+    return response.error?.message == '请求超时';
   }
 
   static String _mapDeviceFlowError(String errorCode) {
