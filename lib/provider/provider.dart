@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jithub_flutter/core/util/sputils.dart';
 import 'package:jithub_flutter/page/main_page.dart';
 import 'package:jithub_flutter/provider/state/app_status.dart';
 import 'package:jithub_flutter/provider/state/user_profile.dart';
@@ -12,12 +13,15 @@ class Store {
   static MultiProvider init(Widget child) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider.value(value: AppStatus(tabIndexExplore)),
+        ChangeNotifierProvider.value(value: AppStatus(initialTabIndex())),
         ChangeNotifierProvider.value(value: UserProfile()),
       ],
       child: child,
     );
   }
+
+  static int initialTabIndex() =>
+      SPUtils.isLoggedIn() ? tabIndexHome : tabIndexExplore;
 
   /// 获取值 of(context)，监听状态变化
   static T of<T>(BuildContext context) {
