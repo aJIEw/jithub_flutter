@@ -1,4 +1,5 @@
 import 'package:jithub_flutter/data/model/contribution_record.dart';
+import 'package:jithub_flutter/data/response/contribution_calendar.dart';
 import 'package:jithub_flutter/data/response/event_timeline.dart';
 
 class ContributionCalculator {
@@ -54,6 +55,21 @@ class ContributionCalculator {
       }
     }
     return map;
+  }
+
+  static void applyContributionDays(
+    List<ContributionRecord> records,
+    List<GithubContributionDay> days,
+  ) {
+    final dateIndexMap = buildDateIndexMap(records);
+    for (final day in days) {
+      final updateIndex = dateIndexMap[day.date];
+      if (updateIndex == null) {
+        continue;
+      }
+
+      records[updateIndex].number = day.contributionCount;
+    }
   }
 
   static int countContributionCommits(Payload? payload) {

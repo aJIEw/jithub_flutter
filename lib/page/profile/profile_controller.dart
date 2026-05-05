@@ -6,20 +6,19 @@ import 'package:get/get.dart';
 import 'package:jithub_flutter/core/api_service.dart';
 import 'package:jithub_flutter/core/base/base_controller.dart';
 import 'package:jithub_flutter/core/http/http_client.dart';
+import 'package:jithub_flutter/core/http/http_response.dart';
 import 'package:jithub_flutter/core/util/event.dart';
 import 'package:jithub_flutter/core/util/logger.dart';
 import 'package:jithub_flutter/core/util/sputils.dart';
 import 'package:jithub_flutter/data/event/bus_event.dart';
 import 'package:jithub_flutter/data/model/contribution_record.dart';
 import 'package:jithub_flutter/data/model/user.dart';
-import 'package:jithub_flutter/data/response/event_timeline.dart';
+import 'package:jithub_flutter/data/response/contribution_calendar.dart';
 import 'package:jithub_flutter/data/response/github_repo.dart';
 import 'package:jithub_flutter/page/profile/contribution_calculator.dart';
 import 'package:sprintf/sprintf.dart';
 
 class ProfileController extends BaseController {
-  static const int _maxUserEventsPages = 3;
-
   late String _userName;
   late String _authToken;
   Options? _options;
@@ -33,10 +32,9 @@ class ProfileController extends BaseController {
   var popupShown = false;
 
   final List<ContributionRecord> _contributionRecords = [];
-  final Map<String, int> _contributionDateIndexMap = {};
-  int _userEventsPage = 1;
   int contributionPlaceholderDays = 0;
   late DateTime _contributionStartDate;
+  late DateTime _contributionEndDate;
 
   @override
   void initParams() {
@@ -60,7 +58,7 @@ class ProfileController extends BaseController {
 
       append(() => loadData);
 
-      getUserEventsRequest();
+      getUserContributionsRequest();
     });
   }
 
@@ -71,7 +69,7 @@ class ProfileController extends BaseController {
     _initContributionData();
 
     if (_options != null) {
-      getUserEventsRequest();
+      getUserContributionsRequest();
     }
   }
 
@@ -101,39 +99,59 @@ class ProfileController extends BaseController {
         const Duration(days: ContributionCalculator.contributionDays - 1),
       ),
     );
+    _contributionEndDate = ContributionCalculator.normalizeDate(today);
 
     _contributionRecords
       ..clear()
       ..addAll(ContributionCalculator.buildContributionRecords(today: today));
-    _contributionDateIndexMap
-      ..clear()
-      ..addAll(ContributionCalculator.buildDateIndexMap(_contributionRecords));
 
     logger.d(
       'ProfileController - _initContributionData: ${_contributionRecords.length}',
     );
   }
 
-  Future<void> getUserEventsRequest() async {
-    final param = {'page': _userEventsPage, 'per_page': 100};
-    final response = await HttpClient.get(
-      sprintf(ApiService.apiUserEvents, [_userName]),
-      queryParameters: param,
+  Future<void> getUserContributionsRequest() async {
+    final response = await HttpClient.graphql(
+      GithubContributionQueries.userContributions,
+      variables: <String, dynamic>{
+        'login': _userName,
+        'from': _toGraphqlDateTime(_contributionStartDate),
+        'to': _toGraphqlDateTime(
+          DateTime(
+              _contributionEndDate.year,
+              _contributionEndDate.month,
+              _contributionEndDate.day,
+              23,
+              59,
+              59,
+          ),
+        ),
+      },
       options: _options,
     );
 
     if (response.ok) {
-      final list = (response.data as List)
-          .map((item) => EventTimeline.fromJson(item))
-          .toList();
+      try {
+        final responseData = response.data;
+        if (responseData is! Map<String, dynamic>) {
+          throw const FormatException('GraphQL response missing data');
+        }
 
-      _applyContributionEvents(list);
-
-      if (_shouldLoadMoreEvents(list)) {
-        _userEventsPage++;
-        await getUserEventsRequest();
-      } else {
+        final calendar = GithubContributionCalendar.fromGraphqlData(
+          responseData,
+        );
+        ContributionCalculator.applyContributionDays(
+          _contributionRecords,
+          calendar.days,
+        );
         _initObservableData();
+      } on FormatException catch (e) {
+        final failure = HttpResponse.failure(
+          errorMsg: e.message,
+          errorCode: response.code,
+        );
+        onRequestError(failure);
+        return Future.error(e.message);
       }
     } else {
       onRequestError(response);
@@ -141,84 +159,8 @@ class ProfileController extends BaseController {
     }
   }
 
-  /// TODO: 2026/4/20 We can only load 300 events or events created within
-  /// the past 30 days. See <https://docs.github.com/en/rest/activity/events>
-  /// We can change the way contribution graph view shows data or
-  /// update this to use github's GraphQL API.
-  bool _shouldLoadMoreEvents(List<EventTimeline> events) {
-    if (events.isEmpty || events.length < 100) {
-      return false;
-    }
-
-    if (_userEventsPage >= _maxUserEventsPages) {
-      return false;
-    }
-
-    DateTime? oldestEventDate;
-    for (final event in events) {
-      if (event.createdAt == null || event.createdAt!.isEmpty) {
-        continue;
-      }
-
-      final eventDate = DateTime.tryParse(event.createdAt!);
-      if (eventDate == null) {
-        continue;
-      }
-
-      final normalizedEventDate = ContributionCalculator.normalizeDate(
-        eventDate,
-      );
-      if (oldestEventDate == null ||
-          normalizedEventDate.isBefore(oldestEventDate)) {
-        oldestEventDate = normalizedEventDate;
-      }
-    }
-
-    if (oldestEventDate == null) {
-      return false;
-    }
-
-    return !oldestEventDate.isBefore(_contributionStartDate);
-  }
-
-  void _applyContributionEvents(List<EventTimeline> events) {
-    for (final event in events) {
-      if (event.createdAt == null || event.createdAt!.isEmpty) {
-        continue;
-      }
-
-      final contributionCount =
-          ContributionCalculator.countContributionForEvent(event);
-      if (contributionCount <= 0) {
-        continue;
-      }
-
-      final eventDate = DateTime.tryParse(event.createdAt!);
-      if (eventDate == null) {
-        continue;
-      }
-
-      final updateIndex =
-          _contributionDateIndexMap[ContributionCalculator.dateKey(eventDate)];
-      if (updateIndex == null) {
-        continue;
-      }
-
-      _updateContributionNumber(updateIndex, contributionCount);
-    }
-  }
-
-  void _updateContributionNumber(int updateIndex, int contributionCount) {
-    if (updateIndex < 0 || updateIndex >= _contributionRecords.length) {
-      logger.e(
-        'ProfileController - updateContributionNumber: index out of range: $updateIndex',
-      );
-      return;
-    }
-
-    final contribution = _contributionRecords[updateIndex];
-    contribution.number += contributionCount;
-    _contributionRecords[updateIndex] = contribution;
+  String _toGraphqlDateTime(DateTime date) {
+    return date.toLocal().toUtc().toIso8601String();
   }
 
   void _initObservableData() {

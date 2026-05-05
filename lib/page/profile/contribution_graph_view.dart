@@ -32,7 +32,11 @@ class ContributionGraphView extends GetView<ProfileController> {
           _buildContributionLabel(),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4.0),
-            child: Container(color: Colors.grey[300], width: 1, height: _graphSize),
+            child: Container(
+              color: Colors.grey[300],
+              width: 1,
+              height: _graphSize,
+            ),
           ),
           _buildContributionTable(context),
         ],
@@ -144,6 +148,7 @@ class ContributionGraphView extends GetView<ProfileController> {
     ContributionRecord contribution,
   ) {
     final num = contribution.number;
+    final isPlaceholder = contribution.date.isEmpty || contribution.number < 0;
     final contributionDateText = contribution.date.isNotEmpty
         ? Jiffy.parse(contribution.date).format(pattern: 'MMM dd, yyyy')
         : '';
@@ -188,18 +193,24 @@ class ContributionGraphView extends GetView<ProfileController> {
       contributionColor = const Color(0xFFE9E9E9);
     }
 
+    final cell = Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(3),
+        color: contributionColor,
+      ),
+      margin: const EdgeInsets.all(4),
+    );
+
+    if (isPlaceholder) {
+      return cell;
+    }
+
     return Clickable(
       key: popupKey,
       onPressed: () {
         _showPopupWindow(context, popupKey, messageText);
       },
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(3),
-          color: contributionColor,
-        ),
-        margin: const EdgeInsets.all(4),
-      ),
+      child: cell,
     );
   }
 
