@@ -23,9 +23,35 @@ class HttpClient {
   static void init() {}
 
   static void setAuthToken(String authToken) {
-    final Map<String, dynamic> headers = {};
-    headers['Authorization'] = 'Bearer $authToken';
-    _dio.options.headers.addAll(headers);
+    if (authToken.isEmpty) {
+      _dio.options.headers.remove('Authorization');
+      return;
+    }
+
+    _dio.options.headers['Authorization'] = 'Bearer $authToken';
+  }
+
+  static Future<HttpResponse> graphql(
+    String query, {
+    Map<String, dynamic>? variables,
+    String? operationName,
+    Options? options,
+    CancelToken? cancelToken,
+    HttpTransformer? httpTransformer,
+  }) {
+    final data = <String, dynamic>{
+      'query': query,
+      'variables': ?variables,
+      'operationName': ?operationName,
+    };
+
+    return post(
+      ApiService.apiGraphql,
+      data: data,
+      options: options,
+      cancelToken: cancelToken,
+      httpTransformer: httpTransformer ?? GraphqlHttpTransformer.getInstance(),
+    );
   }
 
   static Future<HttpResponse> get(

@@ -11,6 +11,7 @@ class ApiService {
   // Rest APIs
   static const String apiAccessToken = '/login/oauth/access_token';
   static const String apiDeviceCode = '/login/device/code';
+  static const String apiGraphql = '/graphql';
   static const String apiTrendingRepos = '/repo';
   static const String apiReceivedEvents = '/users/%s/received_events';
   static const String apiUserInfo = '/users/%s';

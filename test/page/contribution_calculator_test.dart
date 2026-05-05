@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:jithub_flutter/page/profile/contribution_calculator.dart';
 import 'package:jithub_flutter/data/response/event_timeline.dart';
+import 'package:jithub_flutter/page/profile/contribution_calculator.dart';
 
 void main() {
   group('ContributionCalculator', () {
