@@ -11,6 +11,7 @@ import 'package:jithub_flutter/data/event/bus_event.dart';
 import 'package:jithub_flutter/data/model/github_event.dart';
 import 'package:jithub_flutter/data/response/event_timeline.dart';
 import 'package:jithub_flutter/data/response/user_repo.dart';
+import 'package:jithub_flutter/page/home/home_event_grouping.dart';
 import 'package:jithub_flutter/page/home/home_repo_item.dart';
 import 'package:jithub_flutter/page/home/home_viewmodel.dart';
 import 'package:jithub_flutter/provider/provider.dart';
@@ -257,9 +258,15 @@ class _HomePageState extends State<HomePage> {
       }
     } else if (type == GithubEvent.pushEvent.name) {
       final refName = payload?.ref?.split('/').last;
+      final commitCount = HomeEventGrouping.pushCommitCount(item);
+      final commitLabel = commitCount == 1 ? 'commit' : 'commits';
       actionText = TextSpan(
         children: [
           const TextSpan(text: ' pushed '),
+          if (commitCount > 0) ...[
+            boldText('$commitCount'),
+            TextSpan(text: ' $commitLabel '),
+          ],
           if ((refName ?? '').isNotEmpty) ...[
             const TextSpan(text: 'to '),
             boldText(refName),
