@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:jithub_flutter/data/response/contribution_calendar.dart';
 import 'package:jithub_flutter/data/response/event_timeline.dart';
 import 'package:jithub_flutter/page/profile/contribution_calculator.dart';
 
@@ -47,6 +48,27 @@ void main() {
       expect(dateIndexMap.containsKey('2025-10-06'), isTrue);
       expect(dateIndexMap.containsKey('2025-10-05'), isTrue);
       expect(dateIndexMap.containsKey('2025-10-04'), isFalse);
+    });
+
+    test('applies GraphQL contribution days to existing records', () {
+      final records = ContributionCalculator.buildContributionRecords(
+        today: DateTime(2026, 4, 18),
+      );
+
+      ContributionCalculator.applyContributionDays(
+        records,
+        <GithubContributionDay>[
+          GithubContributionDay(date: '2026-04-18', contributionCount: 5),
+          GithubContributionDay(date: '2026-04-17', contributionCount: 0),
+          GithubContributionDay(date: '2026-01-01', contributionCount: 9),
+        ],
+      );
+
+      final dateIndexMap = ContributionCalculator.buildDateIndexMap(records);
+
+      expect(records[dateIndexMap['2026-04-18']!].number, 5);
+      expect(records[dateIndexMap['2026-04-17']!].number, 0);
+      expect(dateIndexMap.containsKey('2026-01-01'), isFalse);
     });
 
     test(
