@@ -4,6 +4,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:jithub_flutter/core/api_service.dart';
+import 'package:jithub_flutter/core/auth/github_device_flow_poller.dart';
+import 'package:jithub_flutter/core/http/app_log_interceptor.dart';
 import 'package:jithub_flutter/core/http/http_client.dart';
 import 'package:jithub_flutter/core/http/http_response.dart';
 import 'package:jithub_flutter/core/util/toast.dart';
@@ -11,8 +13,6 @@ import 'package:material_ui/material_ui.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class GitHubAuthService {
-  static const String _deviceCodeGrantType =
-      'urn:ietf:params:oauth:grant-type:device_code';
   static const Duration _oauthConnectTimeout = Duration(seconds: 15);
   static const Duration _oauthSendTimeout = Duration(seconds: 15);
   static const Duration _oauthReceiveTimeout = Duration(seconds: 60);
@@ -26,43 +26,66 @@ class GitHubAuthService {
     var cancelled = false;
     String? accessToken;
     String? errorMessage;
+    final lifecycleGate = GitHubAuthLifecycleGate(
+      resumeCallback: HttpClient.resetConnections,
+    );
+    final poller = GitHubDeviceFlowPoller(
+      post: _postOAuth,
+      isAppActive: () => lifecycleGate.isActive,
+      waitForAppActive: lifecycleGate.waitUntilActive,
+      onTransientFailure: HttpClient.resetConnections,
+    );
 
     unawaited(
-      _pollForAccessToken(
-        session,
-        isCancelled: () => cancelled,
-        onSuccess: (token) {
-          accessToken = token;
-          if (Get.isDialogOpen ?? false) {
-            Get.back();
-          }
-        },
-        onError: (message) {
-          errorMessage = message;
-          if (Get.isDialogOpen ?? false) {
-            Get.back();
-          }
-        },
-      ),
+      poller.poll(session, isCancelled: () => cancelled).then((result) {
+        if (cancelled) {
+          return;
+        }
+        switch (result) {
+          case GitHubDevicePollSuccess(accessToken: final token):
+            accessToken = token;
+          case GitHubDevicePollFailure(:final messageKey):
+            errorMessage = messageKey.tr;
+          case GitHubDevicePollCancelled():
+            return;
+        }
+        if (Get.isDialogOpen ?? false) {
+          Get.back();
+        }
+      }),
     );
 
-    await Get.dialog(
-      _GitHubDeviceLoginDialog(
-        session: session,
-        onOpenBrowser: () => _openVerificationPage(session.verificationUri),
-        onCopyCode: () => _copyUserCode(session.userCode),
-        onCancel: () {
-          cancelled = true;
-          if (Get.isDialogOpen ?? false) {
-            Get.back();
-          }
-        },
-      ),
-      barrierDismissible: false,
-      barrierColor: Colors.black54,
-      transitionDuration: const Duration(milliseconds: 150),
-      transitionCurve: Curves.easeOut,
-    );
+    try {
+      await Get.dialog(
+        _GitHubDeviceLoginDialog(
+          session: session,
+          onOpenBrowser: () {
+            lifecycleGate.pause();
+            unawaited(
+              _openVerificationPage(
+                session.verificationUri,
+                onOpenFailed: lifecycleGate.resume,
+              ),
+            );
+          },
+          onCopyCode: () => _copyUserCode(session.userCode),
+          onCancel: () {
+            cancelled = true;
+            lifecycleGate.resume();
+            if (Get.isDialogOpen ?? false) {
+              Get.back();
+            }
+          },
+        ),
+        barrierDismissible: false,
+        barrierColor: Colors.black54,
+        transitionDuration: const Duration(milliseconds: 150),
+        transitionCurve: Curves.easeOut,
+      );
+    } finally {
+      cancelled = true;
+      lifecycleGate.dispose();
+    }
 
     if (errorMessage != null && errorMessage!.isNotEmpty) {
       ToastUtils.toast(errorMessage!);
@@ -71,7 +94,19 @@ class GitHubAuthService {
     return accessToken;
   }
 
-  static Future<_GitHubDeviceSession?> _requestDeviceCode() async {
+  static Future<HttpResponse> _postOAuth(
+    String url, {
+    required Map<String, dynamic> queryParameters,
+    required Options options,
+  }) {
+    return HttpClient.post(
+      url,
+      queryParameters: queryParameters,
+      options: options,
+    );
+  }
+
+  static Future<GitHubDeviceSession?> _requestDeviceCode() async {
     final response = await HttpClient.post(
       ApiService.githubUrl + ApiService.apiDeviceCode,
       queryParameters: {
@@ -94,81 +129,21 @@ class GitHubAuthService {
     }
 
     try {
-      return _GitHubDeviceSession.fromJson(data);
+      return GitHubDeviceSession.fromJson(data);
     } catch (_) {
       ToastUtils.toast('message_data_error'.tr);
       return null;
     }
   }
 
-  static Future<void> _pollForAccessToken(
-    _GitHubDeviceSession session, {
-    required bool Function() isCancelled,
-    required void Function(String token) onSuccess,
-    required void Function(String message) onError,
+  static Future<void> _openVerificationPage(
+    String verificationUri, {
+    required VoidCallback onOpenFailed,
   }) async {
-    var interval = session.interval;
-    final deadline = DateTime.now().add(Duration(seconds: session.expiresIn));
-
-    while (!isCancelled() && DateTime.now().isBefore(deadline)) {
-      await Future.delayed(Duration(seconds: interval));
-      if (isCancelled()) {
-        return;
-      }
-
-      final response = await HttpClient.post(
-        ApiService.githubUrl + ApiService.apiAccessToken,
-        queryParameters: {
-          'client_id': ApiService.clientId,
-          'device_code': session.deviceCode,
-          'grant_type': _deviceCodeGrantType,
-        },
-        options: _oauthRequestOptions(),
-      );
-
-      if (!response.ok && _isTimeoutResponse(response)) {
-        continue;
-      }
-
-      if (!response.ok || response.data is! Map) {
-        onError('github_login_poll_failed'.tr);
-        return;
-      }
-
-      final data = Map<String, dynamic>.from(response.data as Map);
-      final accessToken = data['access_token'];
-      if (accessToken is String && accessToken.isNotEmpty) {
-        onSuccess(accessToken);
-        return;
-      }
-
-      final error = data['error'];
-      if (error is! String || error.isEmpty) {
-        onError('github_login_poll_failed'.tr);
-        return;
-      }
-
-      switch (error) {
-        case 'authorization_pending':
-          continue;
-        case 'slow_down':
-          interval += 5;
-          continue;
-        default:
-          onError(_mapDeviceFlowError(error).tr);
-          return;
-      }
-    }
-
-    if (!isCancelled()) {
-      onError('github_device_code_expired'.tr);
-    }
-  }
-
-  static Future<void> _openVerificationPage(String verificationUri) async {
     final uri = Uri.parse(verificationUri);
     final opened = await launchUrl(uri, mode: LaunchMode.externalApplication);
     if (!opened) {
+      onOpenFailed();
       ToastUtils.toast('github_open_browser_failed'.tr);
     }
   }
@@ -180,15 +155,14 @@ class GitHubAuthService {
 
   static Options _oauthRequestOptions() {
     return Options(
-      headers: {'Accept': 'application/json'},
+      headers: const <String, String>{'Accept': 'application/json'},
+      extra: const <String, dynamic>{
+        AppLogInterceptor.redactSensitiveDataKey: true,
+      },
       connectTimeout: _oauthConnectTimeout,
       sendTimeout: _oauthSendTimeout,
       receiveTimeout: _oauthReceiveTimeout,
     );
-  }
-
-  static bool _isTimeoutResponse(HttpResponse response) {
-    return response.error?.message == '请求超时';
   }
 
   static String _mapDeviceFlowError(String errorCode) {
@@ -212,32 +186,6 @@ class GitHubAuthService {
   }
 }
 
-class _GitHubDeviceSession {
-  _GitHubDeviceSession({
-    required this.deviceCode,
-    required this.userCode,
-    required this.verificationUri,
-    required this.expiresIn,
-    required this.interval,
-  });
-
-  factory _GitHubDeviceSession.fromJson(Map<String, dynamic> json) {
-    return _GitHubDeviceSession(
-      deviceCode: json['device_code'] as String,
-      userCode: json['user_code'] as String,
-      verificationUri: json['verification_uri'] as String,
-      expiresIn: json['expires_in'] as int,
-      interval: json['interval'] as int,
-    );
-  }
-
-  final String deviceCode;
-  final String userCode;
-  final String verificationUri;
-  final int expiresIn;
-  final int interval;
-}
-
 class _GitHubDeviceLoginDialog extends StatelessWidget {
   const _GitHubDeviceLoginDialog({
     required this.session,
@@ -246,7 +194,7 @@ class _GitHubDeviceLoginDialog extends StatelessWidget {
     required this.onCancel,
   });
 
-  final _GitHubDeviceSession session;
+  final GitHubDeviceSession session;
   final VoidCallback onOpenBrowser;
   final VoidCallback onCopyCode;
   final VoidCallback onCancel;
