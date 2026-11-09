@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:jithub_flutter/core/base/base_app_bar.dart';
@@ -7,6 +6,7 @@ import 'package:jithub_flutter/core/util/event.dart';
 import 'package:jithub_flutter/core/widget/loading/loading_dialog.dart';
 import 'package:jithub_flutter/router/router.dart';
 import 'package:jithub_flutter/util/app_utils.dart';
+import 'package:material_ui/material_ui.dart';
 
 class BasePageWrapper extends StatefulWidget {
   final Widget? child;
@@ -78,9 +78,8 @@ class BaseLoadingPage extends StatelessWidget {
       child: LoadingDialog(
         content: Text(
           'message_handling'.tr,
-          style: Theme.of(
-            context,
-          ).textTheme.bodyLarge?.apply(color: Colors.white),
+          style: Theme.of(context).textTheme.bodyLarge
+              ?.apply(color: Colors.white),
         ),
         dialogBackgroundColor: Colors.black38,
         loadingView: const SpinKitCircle(color: Colors.white),

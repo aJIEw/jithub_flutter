@@ -49,3 +49,9 @@ app.*.map.json
 AGENTS.md
 skills-lock.json
 .agents/private/**
+
+# FVM Version Cache
+.fvm/
+
+# Local dependency upgrade reports
+/package_upgrade_report/

@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jithub_flutter/core/base/base_app_bar.dart';
 import 'package:jithub_flutter/core/util/sputils.dart';
 import 'package:jithub_flutter/i18n/i18n.dart';
+import 'package:material_ui/material_ui.dart';
 
 class LanguagePage extends StatelessWidget {
   const LanguagePage({super.key});

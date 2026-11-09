@@ -1,8 +1,7 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
-
 import 'package:jithub_flutter/router/router.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Custom app bar
 class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {

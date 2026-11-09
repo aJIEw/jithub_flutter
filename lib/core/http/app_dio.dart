@@ -7,10 +7,12 @@ import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:flutter/foundation.dart';
 
+import 'package:jithub_flutter/core/http/app_log_interceptor.dart';
 import 'package:jithub_flutter/core/http/http_config.dart';
 
 class AppDio with DioMixin implements Dio {
   AppDio({BaseOptions? options, HttpConfig? dioConfig}) {
+    _proxy = dioConfig?.proxy;
     options ??= BaseOptions(
       baseUrl: dioConfig?.baseUrl ?? '',
       contentType: 'application/json',
@@ -41,7 +43,7 @@ class AppDio with DioMixin implements Dio {
 
     if (kDebugMode) {
       interceptors.add(
-        LogInterceptor(
+        AppLogInterceptor(
           responseBody: true,
           error: true,
           requestHeader: false,
@@ -54,13 +56,29 @@ class AppDio with DioMixin implements Dio {
     if (dioConfig?.interceptors?.isNotEmpty ?? false) {
       interceptors.addAll(dioConfig!.interceptors!);
     }
-    httpClientAdapter = IOHttpClientAdapter();
-    if (dioConfig?.proxy?.isNotEmpty ?? false) {
-      setProxy(dioConfig!.proxy!);
-    }
+    _replaceHttpClientAdapter();
   }
 
+  String? _proxy;
+
   void setProxy(String proxy) {
+    _proxy = proxy;
+    httpClientAdapter.close(force: true);
+    _replaceHttpClientAdapter();
+  }
+
+  void resetConnections() {
+    httpClientAdapter.close(force: true);
+    _replaceHttpClientAdapter();
+  }
+
+  void _replaceHttpClientAdapter() {
+    final proxy = _proxy;
+    if (proxy == null || proxy.isEmpty) {
+      httpClientAdapter = IOHttpClientAdapter();
+      return;
+    }
+
     httpClientAdapter = IOHttpClientAdapter(
       createHttpClient: () {
         final client = HttpClient();

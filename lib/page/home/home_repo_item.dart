@@ -1,11 +1,11 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:get/get.dart';
 import 'package:jithub_flutter/core/widget/container/shadow_container.dart';
 import 'package:jithub_flutter/data/response/user_repo.dart';
 import 'package:jithub_flutter/page/home/home_page.dart';
 import 'package:jithub_flutter/page/home/home_repo_item_controller.dart';
 import 'package:jithub_flutter/page/home/home_star_button.dart';
+import 'package:material_ui/material_ui.dart';
 
 class HomeRepoItem extends StatelessWidget {
   HomeRepoItem(this.repoUrl, {super.key})

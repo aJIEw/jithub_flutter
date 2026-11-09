@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:jithub_flutter/core/base/base_app_bar.dart';
@@ -11,6 +10,7 @@ import 'package:jithub_flutter/page/home/home_page.dart';
 import 'package:jithub_flutter/page/repo/repo_list_viewmodel.dart';
 import 'package:jithub_flutter/provider/provider.dart';
 import 'package:jithub_flutter/provider/state/user_profile.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class RepoListPage extends StatefulWidget {
@@ -93,9 +93,8 @@ class _RepoListPageState extends State<RepoListPage> {
                 children: [
                   Text(
                     item.name ?? '',
-                    style: Theme.of(
-                      context,
-                    ).textTheme.titleLarge?.copyWith(fontSize: 18),
+                    style: Theme.of(context).textTheme.titleLarge
+                        ?.copyWith(fontSize: 18),
                   ),
                   if (item.description != null) ...[
                     const SizedBox(height: 8),
@@ -150,9 +149,8 @@ class _RepoListPageState extends State<RepoListPage> {
                   ),
                   child: Text(
                     'Private',
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodySmall?.copyWith(color: Colors.grey[850]!),
+                    style: Theme.of(context).textTheme.bodySmall
+                        ?.copyWith(color: Colors.grey[850]!),
                   ),
                 ),
               ),

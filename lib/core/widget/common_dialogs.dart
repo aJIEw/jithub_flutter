@@ -1,12 +1,11 @@
 import 'dart:io';
 
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import 'package:jithub_flutter/core/widget/clickable.dart';
 import 'package:jithub_flutter/core/widget/divider.dart';
 import 'package:jithub_flutter/router/router.dart';
+import 'package:material_ui/material_ui.dart';
 
 void showAlertDialog(
   String title, {

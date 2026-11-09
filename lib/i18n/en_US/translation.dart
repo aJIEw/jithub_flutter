@@ -53,11 +53,13 @@ const Map<String, String> enUs = {
   'github_device_open_browser': 'Open GitHub',
   'github_device_copy_code': 'Copy Code',
   'github_device_login_hint':
-      'This code expires in @minutes minutes. The app will continue automatically after authorization.',
+      'This code expires in @minutes minutes. Return to the app after authorization to finish signing in.',
   'github_device_code_copied': 'Device code copied',
   'github_open_browser_failed': 'Unable to open the system browser',
   'github_login_start_failed': 'Unable to start GitHub sign-in',
   'github_login_poll_failed': 'GitHub sign-in failed. Please try again.',
+  'github_login_network_error':
+      'Unable to connect to GitHub. Check your network and try again.',
   'github_login_slow_down':
       'GitHub sign-in is still processing. Please wait a moment.',
   'github_device_code_expired':

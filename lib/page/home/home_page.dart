@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart' show ScrollCacheExtent;
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:jithub_flutter/core/base/provider_widget.dart';
@@ -18,6 +18,7 @@ import 'package:jithub_flutter/provider/provider.dart';
 import 'package:jithub_flutter/provider/state/user_profile.dart';
 import 'package:jithub_flutter/router/router.dart';
 import 'package:jithub_flutter/widget/network_image.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class HomePage extends StatefulWidget {
@@ -63,9 +64,8 @@ class _HomePageState extends State<HomePage> {
                 child: LoadingDialog(
                   content: Text(
                     'message_handling'.tr,
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodyLarge?.apply(color: Colors.white),
+                    style: Theme.of(context).textTheme.bodyLarge
+                        ?.apply(color: Colors.white),
                   ),
                   dialogBackgroundColor: Colors.black38,
                   loadingView: const SpinKitCircle(color: Colors.white),
@@ -85,7 +85,7 @@ class _HomePageState extends State<HomePage> {
                 child: ListView.builder(
                   physics: const RangeMaintainingScrollPhysics(),
                   controller: scrollController,
-                  cacheExtent: 9999,
+                  scrollCacheExtent: const ScrollCacheExtent.pixels(9999),
                   itemCount: viewModel.dataList.length,
                   itemBuilder: (context, index) {
                     final EventTimeline item = viewModel.dataList[index];

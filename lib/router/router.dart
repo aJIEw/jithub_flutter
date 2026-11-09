@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jithub_flutter/core/widget/webview/common_webview.dart';
 import 'package:jithub_flutter/page/login/login_page.dart';
@@ -9,6 +8,7 @@ import 'package:jithub_flutter/page/settings/language_page.dart';
 import 'package:jithub_flutter/page/settings/settings_page.dart';
 import 'package:jithub_flutter/page/settings/theme_page.dart';
 import 'package:jithub_flutter/page/splash_page.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Router manager
 class XRouter {

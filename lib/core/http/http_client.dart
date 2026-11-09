@@ -22,6 +22,10 @@ class HttpClient {
   /// do some initialization work if it's needed
   static void init() {}
 
+  static void resetConnections() {
+    _dio.resetConnections();
+  }
+
   static void setAuthToken(String authToken) {
     if (authToken.isEmpty) {
       _dio.options.headers.remove('Authorization');

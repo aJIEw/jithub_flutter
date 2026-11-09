@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jithub_flutter/core/base/base_app_bar.dart';
 import 'package:jithub_flutter/core/base/base_controller.dart';
@@ -7,6 +6,7 @@ import 'package:jithub_flutter/core/widget/common_dialogs.dart';
 import 'package:jithub_flutter/core/widget/divider.dart';
 import 'package:jithub_flutter/router/router.dart';
 import 'package:jithub_flutter/util/app_utils.dart';
+import 'package:material_ui/material_ui.dart';
 
 class SettingsController extends BaseController {
   @override

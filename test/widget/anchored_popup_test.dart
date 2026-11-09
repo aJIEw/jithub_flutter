@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:jithub_flutter/core/widget/anchored_popup.dart';
+import 'package:material_ui/material_ui.dart';
 
 void main() {
   testWidgets('shows popup and dismisses on barrier tap', (tester) async {
