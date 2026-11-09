@@ -14,6 +14,10 @@ import 'package:jithub_flutter/router/router.dart';
 import 'package:jithub_flutter/widget/network_image.dart';
 import 'package:material_ui/material_ui.dart';
 
+/// Source size for the 50dp repo avatar; covers up to 4x displays.
+const int _repoAvatarSourceSize = 200;
+const int _repoBuiltBySourceSize = 96;
+
 class ExplorePage extends BaseView<ExploreController> {
   const ExplorePage({super.key});
 
@@ -31,6 +35,8 @@ class ExplorePage extends BaseView<ExploreController> {
           itemCount: trendingRepos.length,
           itemBuilder: (_, index) {
             final TrendingRepo repo = trendingRepos[index];
+            final String avatarUrl =
+                repo.avatar?.githubAvatarAtSize(_repoAvatarSourceSize) ?? '';
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               child: ShadowContainer(
@@ -61,7 +67,7 @@ class ExplorePage extends BaseView<ExploreController> {
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(25),
                                   child: DefaultNetworkImage(
-                                    repo.avatar ?? '',
+                                    avatarUrl,
                                     width: 50,
                                     height: 50,
                                   ),
@@ -185,7 +191,11 @@ class ExplorePage extends BaseView<ExploreController> {
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(12),
                                       child: DefaultNetworkImage(
-                                        repo.builtBy?[i].avatar ?? '',
+                                        repo.builtBy?[i].avatar
+                                                ?.githubAvatarAtSize(
+                                                  _repoBuiltBySourceSize,
+                                                ) ??
+                                            '',
                                         width: 24,
                                         height: 24,
                                       ),
