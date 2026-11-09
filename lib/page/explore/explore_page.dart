@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart' show ScrollCacheExtent;
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:jithub_flutter/core/base/base_page.dart';
@@ -12,6 +12,7 @@ import 'package:jithub_flutter/page/explore/explore_star_button.dart';
 import 'package:jithub_flutter/page/home/home_page.dart';
 import 'package:jithub_flutter/router/router.dart';
 import 'package:jithub_flutter/widget/network_image.dart';
+import 'package:material_ui/material_ui.dart';
 
 class ExplorePage extends BaseView<ExploreController> {
   const ExplorePage({super.key});
@@ -26,7 +27,7 @@ class ExplorePage extends BaseView<ExploreController> {
       return Scaffold(
         body: ListView.builder(
           physics: const BouncingScrollPhysics(),
-          cacheExtent: 9999,
+          scrollCacheExtent: const ScrollCacheExtent.pixels(9999),
           itemCount: trendingRepos.length,
           itemBuilder: (_, index) {
             final TrendingRepo repo = trendingRepos[index];

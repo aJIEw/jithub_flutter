@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
-
 import 'package:jithub_flutter/router/router.dart';
+import 'package:material_ui/material_ui.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});

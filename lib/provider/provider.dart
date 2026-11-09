@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:jithub_flutter/core/util/sputils.dart';
 import 'package:jithub_flutter/page/main_page.dart';
 import 'package:jithub_flutter/provider/state/app_status.dart';
 import 'package:jithub_flutter/provider/state/user_profile.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 /// 状态管理

@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:jithub_flutter/app.dart';
 import 'package:jithub_flutter/core/http/http_client.dart';
@@ -8,6 +7,7 @@ import 'package:jithub_flutter/core/util/logger.dart';
 import 'package:jithub_flutter/core/util/sputils.dart';
 import 'package:jithub_flutter/core/util/toast.dart';
 import 'package:jithub_flutter/provider/provider.dart';
+import 'package:material_ui/material_ui.dart';
 
 void main() => AppInit.run();
 

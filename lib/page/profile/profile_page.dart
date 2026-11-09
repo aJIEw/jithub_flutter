@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:jithub_flutter/core/base/base_page.dart';
@@ -14,6 +13,7 @@ import 'package:jithub_flutter/page/profile/contribution_graph_view.dart';
 import 'package:jithub_flutter/page/profile/profile_controller.dart';
 import 'package:jithub_flutter/router/router.dart';
 import 'package:jithub_flutter/widget/network_image.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 class ProfilePage extends BaseView<ProfileController> {

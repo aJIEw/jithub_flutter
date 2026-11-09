@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jithub_flutter/core/base/base_app_bar.dart';
 import 'package:jithub_flutter/core/base/provider_widget.dart';
@@ -10,6 +9,7 @@ import 'package:jithub_flutter/page/repo/starred_repos_viewmodel.dart';
 import 'package:jithub_flutter/provider/provider.dart';
 import 'package:jithub_flutter/provider/state/user_profile.dart';
 import 'package:jithub_flutter/widget/network_image.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class StarredReposPage extends StatefulWidget {
@@ -98,9 +98,8 @@ class _StarredReposPageState extends State<StarredReposPage> {
                 ),
                 title: Text(
                   '${item.owner?.login ?? ''} / ${item.name ?? ''}',
-                  style: Theme.of(
-                    context,
-                  ).textTheme.titleLarge?.copyWith(fontSize: 18),
+                  style: Theme.of(context).textTheme.titleLarge
+                      ?.copyWith(fontSize: 18),
                 ),
               ),
               if (item.description != null) ...[

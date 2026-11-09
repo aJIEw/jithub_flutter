@@ -1,13 +1,13 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:jithub_flutter/core/api_service.dart';
 import 'package:jithub_flutter/core/http/http_client.dart';
 import 'package:jithub_flutter/core/http/http_response.dart';
 import 'package:jithub_flutter/core/util/toast.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class GitHubAuthService {

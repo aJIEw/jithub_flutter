@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jithub_flutter/page/explore/star_button_controller.dart';
+import 'package:material_ui/material_ui.dart';
 
 class HomeStarButton extends StatelessWidget {
   HomeStarButton(this.author, this.repoName, {super.key})

@@ -1,5 +1,4 @@
 import 'package:after_layout/after_layout.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:jithub_flutter/core/auth/github_auth_service.dart';
@@ -22,6 +21,7 @@ import 'package:jithub_flutter/provider/provider.dart';
 import 'package:jithub_flutter/provider/state/app_status.dart';
 import 'package:jithub_flutter/provider/state/user_profile.dart';
 import 'package:jithub_flutter/util/app_utils.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 
 /// This page is built with [ProviderWidget], just to show you how to use it.

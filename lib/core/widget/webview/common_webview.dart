@@ -1,8 +1,8 @@
 import 'dart:io' hide HttpClient;
 
-import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:jithub_flutter/core/base/base_app_bar.dart';
+import 'package:material_ui/material_ui.dart';
 
 class CommonWebView extends StatefulWidget {
   const CommonWebView(this.url, this.title, {super.key});

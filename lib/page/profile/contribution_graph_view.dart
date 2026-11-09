@@ -1,5 +1,4 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:get/get.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:jithub_flutter/core/util/event.dart';
@@ -8,6 +7,7 @@ import 'package:jithub_flutter/core/widget/clickable.dart';
 import 'package:jithub_flutter/data/event/bus_event.dart';
 import 'package:jithub_flutter/data/model/contribution_record.dart';
 import 'package:jithub_flutter/page/profile/profile_controller.dart';
+import 'package:material_ui/material_ui.dart';
 
 class ContributionGraphView extends GetView<ProfileController> {
   ContributionGraphView({super.key});

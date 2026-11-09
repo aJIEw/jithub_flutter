@@ -1,7 +1,6 @@
 import 'package:animations/animations.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jithub_flutter/core/base/base_page.dart';
 import 'package:jithub_flutter/core/base/provider_widget.dart';
@@ -18,6 +17,7 @@ import 'package:jithub_flutter/provider/state/app_status.dart';
 import 'package:jithub_flutter/provider/state/user_profile.dart';
 import 'package:jithub_flutter/router/router.dart';
 import 'package:jithub_flutter/util/app_utils.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
 class LoginPage extends StatefulWidget {
@@ -59,9 +59,8 @@ class _LoginPageState extends State<LoginPage> {
                       padding: const EdgeInsets.all(12.0),
                       child: Text(
                         'app_title'.tr,
-                        style: Theme.of(
-                          context,
-                        ).textTheme.titleLarge?.apply(color: Colors.white),
+                        style: Theme.of(context).textTheme.titleLarge
+                            ?.apply(color: Colors.white),
                       ),
                     ),
                   ],
@@ -349,9 +348,8 @@ class _ContentInputCodeState extends State<ContentInputCode> {
                   'sms_has_sent_to'.trParams({
                     'phone_number': widget.phoneNumber,
                   }),
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyLarge?.apply(color: Colors.grey),
+                  style: Theme.of(context).textTheme.bodyLarge
+                      ?.apply(color: Colors.grey),
                 ),
               ),
               Padding(

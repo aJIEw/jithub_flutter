@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:jithub_flutter/core/app_theme.dart';
 import 'package:jithub_flutter/core/constants.dart';
 import 'package:jithub_flutter/core/util/sputils.dart';
+import 'package:jithub_flutter/core/widget/material_ui_theme_scope.dart';
 import 'package:jithub_flutter/i18n/i18n.dart';
 import 'package:jithub_flutter/page/init_binding.dart';
 import 'package:jithub_flutter/router/router.dart';
@@ -21,7 +22,9 @@ class AppEntrance extends StatelessWidget with WidgetsBindingObserver {
       builder: (context, child) => GetMaterialApp(
         title: Constants.appTitle,
         debugShowCheckedModeBanner: kDebugMode && showDebugBanner,
-        theme: AppTheme.getDefaultTheme(SPUtils.getThemeIndex()),
+        theme: AppTheme.getLegacyTheme(SPUtils.getThemeIndex()),
+        builder: (context, child) =>
+            MaterialUiThemeScope(child: child ?? const SizedBox.shrink()),
         locale: I18n.getLocale(),
         // Must non-null!
         supportedLocales: I18n.supportedLocales,

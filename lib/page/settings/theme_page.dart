@@ -1,9 +1,8 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import 'package:jithub_flutter/core/app_theme.dart';
+import 'package:material_ui/material_ui.dart';
 
 class ThemePage extends StatefulWidget {
   const ThemePage({super.key});

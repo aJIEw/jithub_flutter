@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 enum ButtonState { busy, idle }
 
@@ -235,9 +235,8 @@ class _CountdownButtonState extends State<CountdownButton> {
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Text(
         text,
-        style: Theme.of(context).textTheme.bodyLarge?.merge(
-          const TextStyle(color: Colors.white, fontSize: 18),
-        ),
+        style: Theme.of(context).textTheme.bodyLarge
+            ?.merge(const TextStyle(color: Colors.white, fontSize: 18)),
       ),
     );
   }

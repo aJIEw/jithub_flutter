@@ -1,9 +1,10 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_localizations/flutter_localizations.dart' as framework;
 import 'package:get/get.dart';
 import 'package:jithub_flutter/core/util/sputils.dart';
 import 'package:jithub_flutter/i18n/en_US/translation.dart';
 import 'package:jithub_flutter/i18n/zh_CN/translation.dart';
+import 'package:material_ui/material_ui.dart' as modern;
 
 class I18n extends Translations {
   static const fallbackLocale = Locale('zh', 'CN');
@@ -28,9 +29,9 @@ class I18n extends Translations {
       SPUtils.saveLocale(localeString);
 
   static List<LocalizationsDelegate<dynamic>> get delegates => [
-    GlobalMaterialLocalizations.delegate,
-    GlobalWidgetsLocalizations.delegate,
-    GlobalCupertinoLocalizations.delegate,
+    ...modern.GlobalMaterialLocalizations.delegates,
+    framework.GlobalMaterialLocalizations.delegate,
+    framework.GlobalCupertinoLocalizations.delegate,
   ];
 
   @override
